@@ -1,0 +1,362 @@
+{
+  "menu": [
+    {
+      "id": 1,
+      "group": "Gà Rán",
+      "name": "Đùi Gà Rán (1 miếng)",
+      "description": "Đùi tẩm bột giòn",
+      "price": 40000,
+      "options": [
+        {
+          "name": "Cay/Không cay",
+          "price": 0
+        },
+        {
+          "name": "Size",
+          "price": 0
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "group": "Gà Rán",
+      "name": "Cánh Gà Rán (1 miếng)",
+      "description": "Cánh tẩm bột giòn",
+      "price": 35000,
+      "options": [
+        {
+          "name": "Cay/Không cay",
+          "price": 0
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "group": "Gà Rán",
+      "name": "Gà Fillet (1 miếng)",
+      "description": "Thịt gà không xương",
+      "price": 45000,
+      "options": [
+        {
+          "name": "Cay/Không cay",
+          "price": 0
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "group": "Gà Rán",
+      "name": "Gà Popcorn (Gà Viên)",
+      "description": "Gà viên chiên giòn",
+      "price": 35000,
+      "options": [
+        {
+          "name": "Nhỏ/Vừa/Lớn",
+          "price": 0
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "group": "Burger",
+      "name": "Burger Bò Tiêu Chuẩn",
+      "description": "Bò, rau, sốt đặc biệt",
+      "price": 55000,
+      "options": [
+        {
+          "name": "Thêm phô mai",
+          "price": 10000
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "group": "Burger",
+      "name": "Burger Gà Giòn",
+      "description": "Gà giòn, rau, sốt",
+      "price": 50000,
+      "options": [
+        {
+          "name": "Thêm trứng ốp la",
+          "price": 8000
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "group": "Sandwich",
+      "name": "Sandwich Trứng",
+      "description": "Bán vào buổi sáng (nếu có)",
+      "price": 30000,
+      "options": [
+        {
+          "name": "-",
+          "price": 0
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "group": "Khoai Tây",
+      "name": "Khoai Tây Chiên",
+      "description": "Khoai tây cắt thanh",
+      "price": 40000,
+      "options": [
+        {
+          "name": "Nhỏ  / Vừa  / Lớn",
+          "price": 0
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "group": "Khoai Tây",
+      "name": "Khoai Tây Lắc",
+      "description": "Khoai chiên, lắc bột",
+      "price": 40000,
+      "options": [
+        {
+          "name": "Phô Mai/Rong biển/Trứng muối",
+          "price": 0
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "group": "Ăn Kèm",
+      "name": "Xúc Xích (1 thanh)",
+      "description": "Xúc xích chiên hoặc nướng",
+      "price": 20000,
+      "options": [
+        {
+          "name": "-",
+          "price": 0
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "group": "Ăn Kèm",
+      "name": "Bánh Gà (1 cái)",
+      "description": "Bánh nhân gà xay",
+      "price": 25000,
+      "options": [
+        {
+          "name": "-",
+          "price": 0
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "group": "Salad",
+      "name": "Salad Trộn Rau Củ",
+      "description": "Rau củ tươi, sốt",
+      "price": 30000,
+      "options": [
+        {
+          "name": "Sốt mè rang/dầu giấm",
+          "price": 0
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "group": "Mì",
+      "name": "Mì Ý Sốt Bò Băm",
+      "description": "Mì Spaghetti sốt Bolognese",
+      "price": 40000,
+      "options": [
+        {
+          "name": "Size Vừa / Size Lớn",
+          "price": 0
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "group": "Tráng Miệng",
+      "name": "Kem Ly",
+      "description": "Kem tươi các vị cơ bản",
+      "price": 25000,
+      "options": [
+        {
+          "name": "Vani",
+          "price": 0
+        },
+        {
+          "name": "Chocolate",
+          "price": 0
+        },
+        {
+          "name": "Dâu",
+          "price": 0
+        }
+      ]
+    },
+    {
+      "id": 15,
+      "group": "Tráng Miệng",
+      "name": "Bánh Tart Trứng (2 cái)",
+      "description": "Bánh tart nhỏ, nhân trứng béo ngậy",
+      "price": 15000,
+      "options": [
+        {
+          "name": "-",
+          "price": 0
+        }
+      ]
+    },
+    {
+      "id": 16,
+      "group": "Tráng Miệng",
+      "name": "Pudding Trái Cây",
+      "description": "Pudding mềm mịn, thạch trái cây",
+      "price": 35000,
+      "options": [
+        {
+          "name": "Vị Dâu/Cam/Matcha",
+          "price": 0
+        }
+      ]
+    },
+    {
+      "id": 17,
+      "group": "Nước Ngọt",
+      "name": "Nước Ngọt Có Ga",
+      "description": "Coca Cola/Peps",
+      "price": 15000,
+      "options": [
+        {
+          "name": "Chai  / Lon",
+          "price": 0
+        }
+      ]
+    },
+    {
+      "id": 18,
+      "group": "Nước Khác",
+      "name": "Nước Suối",
+      "description": "Nước lọc đóng chai",
+      "price": 10000,
+      "options": [
+        {
+          "name": "-",
+          "price": 0
+        }
+      ]
+    },
+    {
+      "id": 19,
+      "group": "Tên Combo",
+      "name": "Nội Dung Combo",
+      "description": "Khẩu Phần",
+      "price": 40000,
+      "options": [
+        {
+          "name": "Giá Gốc",
+          "price": 0
+        }
+      ]
+    },
+    {
+      "id": 20,
+      "group": "The Golden Crisp",
+      "name": "1 Đùi Gà Rán (40K) + 1 Khoai Tây Lắc (40K) + 1 Pudding Trái Cây (35K)",
+      "description": "1 người",
+      "price": 40000,
+      "options": [
+        {
+          "name": "115.000 VNĐ",
+          "price": 0
+        }
+      ]
+    },
+    {
+      "id": 21,
+      "group": "Noodle Delight",
+      "name": "1 Mì Ý Sốt Bò Băm (65K - Size Vừa) + 1 Xúc Xích (20K) + 1 Pudding Trái Cây (35K)",
+      "description": "1 người",
+      "price": 40000,
+      "options": [
+        {
+          "name": "120.000 VNĐ",
+          "price": 0
+        }
+      ]
+    },
+    {
+      "id": 22,
+      "group": "Duet Deluxe",
+      "name": "1 Burger Gà Giòn (50K) + 1 Burger Bò (55K) + 1 Khoai Tây Chiên (35K - Size M) + 2 Nước Suối (20K)",
+      "description": "2 người",
+      "price": 40000,
+      "options": [
+        {
+          "name": "160.000 VNĐ",
+          "price": 0
+        }
+      ]
+    },
+    {
+      "id": 23,
+      "group": "Sweet Duo",
+      "name": "1 Burger Gà Giòn (50K) + 2 Bánh Tart Trứng (15K) + 2 Kem Ly (50K)",
+      "description": "2 người",
+      "price": 40000,
+      "options": [
+        {
+          "name": "115.000 VNĐ",
+          "price": 0
+        }
+      ]
+    },
+    {
+      "id": 24,
+      "group": "The Mega Feast",
+      "name": "4 Đùi Gà Rán (160K) + 2 Burger Bò (110K) + 1 Khoai Tây Chiên (45K - Size L) + 1 Gà Popcorn (65K - Size Lớn) + 4 Nước Ngọt (60K)",
+      "description": "4-5 người",
+      "price": 40000,
+      "options": [
+        {
+          "name": "440.000 VNĐ",
+          "price": 0
+        }
+      ]
+    },
+    {
+      "id": 25,
+      "group": "Family Grand Set",
+      "name": "4 Gà Fillet (180K) + 4 Cánh Gà Rán (140K) + 1 Khoai Tây Lắc (55K - Size Vừa) + 2 Salad Rau Củ (60K) + 4 Nước Suối (40K)",
+      "description": "4-5 người",
+      "price": 40000,
+      "options": [
+        {
+          "name": "475.000 VNĐ",
+          "price": 0
+        }
+      ]
+    },
+    {
+      "id": 26,
+      "group": "The Party Box",
+      "name": "6 Cánh Gà Rán (210K) + 1 Burger Bò (55K) + 1 Mì Ý Sốt Bò Băm (85K - Size Lớn) + 2 Khoai Tây Lắc (80K) + 3 Nước Ngọt (45K)",
+      "description": "3-4 người",
+      "price": 40000,
+      "options": [
+        {
+          "name": "475.000 VNĐ",
+          "price": 0
+        }
+      ]
+    },
+    {
+      "id": 27,
+      "group": "nan",
+      "name": "6 Cánh Gà Rán (+ 1 Burger Bò + 1 Mì Ý Sốt Bò Băm + 2 Khoai Tây Lắc + 3 Nước Ngọt",
+      "description": "nan",
+      "price": 40000,
+      "options": []
+    }
+  ]
+}

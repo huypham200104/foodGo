@@ -1,0 +1,27 @@
+{
+  "cartItems": [
+    {
+      "id": "c1",
+      "item": {
+        "id": "m1",
+        "name": "Burger Bò Phô Mai",
+        "description": "Bánh burger bò kèm phô mai",
+        "price": 59000,
+        "imageUrl": "assets/doAn/burgerBo.png",
+        "toppings": [{"name": "Phô mai thêm", "price": 10000}],
+        "ingredients": ["bò", "bánh", "phô mai", "xà lách"],
+        "isAvailable": true
+      },
+      "quantity": 2,
+      "selectedToppings": [{"name": "Phô mai thêm", "price": 10000}],
+      "note": "ít sốt",
+      "userId": "u1",
+      "restaurantId": "r1",
+      "createdAt": "2025-03-05T11:30:00Z",
+      "priceAtAdd": 59000,
+      "currency": "VND"
+    }
+  ]
+}
+
+

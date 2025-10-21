@@ -1,0 +1,60 @@
+{
+  "orders": [
+    {
+      "id": "o1",
+      "status": "delivered",
+      "user": {
+        "id": "u1",
+        "name": "Nguyen Van A",
+        "email": "a@example.com",
+        "phone": "+84900000001",
+        "avatarUrl": "assets/icons/google.png",
+        "rewardPoints": 120,
+        "addresses": [
+          {
+            "id": "addr1",
+            "label": "Nhà",
+            "detail": "123 Lê Lợi, P. Bến Nghé",
+            "latitude": 10.776889,
+            "longitude": 106.700806
+          }
+        ]
+      },
+      "restaurant": {
+        "id": "r1",
+        "name": "FoodGo Burger",
+        "imageUrl": "assets/doAn/burgerBo.png",
+        "rating": 4.5,
+        "estimatedTime": 25,
+        "address": "101 Pasteur, Q1, HCM",
+        "menu": [],
+        "promotions": []
+      },
+      "items": [
+        {
+          "item": {
+            "id": "m1",
+            "name": "Burger Bò Phô Mai",
+            "description": "Bánh burger bò kèm phô mai",
+            "price": 59000,
+            "imageUrl": "assets/doAn/burgerBo.png",
+            "toppings": [{"name": "Phô mai thêm", "price": 10000}],
+            "ingredients": ["bò", "bánh", "phô mai", "xà lách"],
+            "isAvailable": true
+          },
+          "quantity": 2,
+          "selectedToppings": [{"name": "Phô mai thêm", "price": 10000}],
+          "note": "ít sốt"
+        }
+      ],
+      "deliveryFee": 15000,
+      "totalPrice": 153000,
+      "paymentMethod": "cash",
+      "createdAt": "2025-03-05T11:30:00Z",
+      "deliveredAt": "2025-03-05T12:10:00Z",
+      "note": "Gọi trước khi giao"
+    }
+  ]
+}
+
+

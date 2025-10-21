@@ -1,0 +1,15 @@
+Bug
+
+
+Figma
+-
+
+Page
+- 40% home page
+
+Other
+- Link firebase to flutter app
+- Link cloud firestore to flutter app
+
+Task
+

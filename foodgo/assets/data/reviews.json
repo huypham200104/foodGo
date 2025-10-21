@@ -1,0 +1,26 @@
+{
+  "reviews": [
+    {
+      "id": "rv1",
+      "restaurantId": "r1",
+      "menuItemId": "m1",
+      "user": {
+        "id": "u1",
+        "name": "Nguyen Van A",
+        "email": "a@example.com",
+        "phone": "+84900000001",
+        "avatarUrl": "assets/icons/google.png",
+        "rewardPoints": 120,
+        "addresses": []
+      },
+      "stars": 5,
+      "comment": "Ngon, giao nhanh!",
+      "images": ["assets/doAn/burgerBo.png"],
+      "date": "2025-03-06T09:00:00Z",
+      "isVerified": true,
+      "likes": 3
+    }
+  ]
+}
+
+

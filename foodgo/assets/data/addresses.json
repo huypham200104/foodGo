@@ -1,0 +1,42 @@
+{
+  "addresses": [
+    {
+      "id": "addr1",
+      "label": "Nhà",
+      "detail": "123 Lê Lợi, P. Bến Nghé",
+      "latitude": 10.776889,
+      "longitude": 106.700806,
+      "userId": "u1",
+      "isDefault": true,
+      "city": "HCM",
+      "district": "Q1",
+      "ward": "Bến Nghé"
+    },
+    {
+      "id": "addr2",
+      "label": "Cơ quan",
+      "detail": "45 Hai Bà Trưng, P. Bến Nghé",
+      "latitude": 10.780321,
+      "longitude": 106.701234,
+      "userId": "u1",
+      "isDefault": false,
+      "city": "HCM",
+      "district": "Q1",
+      "ward": "Bến Nghé"
+    },
+    {
+      "id": "addr3",
+      "label": "Nhà",
+      "detail": "12 Nguyễn Huệ, P. Bến Nghé",
+      "latitude": 10.773211,
+      "longitude": 106.704567,
+      "userId": "u2",
+      "isDefault": true,
+      "city": "HCM",
+      "district": "Q1",
+      "ward": "Bến Nghé"
+    }
+  ]
+}
+
+

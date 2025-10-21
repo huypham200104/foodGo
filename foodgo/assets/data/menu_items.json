@@ -1,0 +1,349 @@
+{
+  "menu": [
+    {
+      "id": "g1",
+      "name": "Đùi Gà Rán (1 miếng)",
+      "description": "Đùi tẩm bột giòn",
+      "price": 40000,
+      "imageUrl": "assets/doAn/duiGa.png",
+      "toppings": [
+        {"name": "Cay", "price": 0},
+        {"name": "Không cay", "price": 0},
+        {"name": "Size Má đùi", "price": 5000}
+      ],
+      "ingredients": ["gà", "bột giòn", "gia vị"],
+      "isAvailable": true,
+      "restaurantId": "r1",
+      "category": "chicken"
+    },
+    {
+      "id": "g2",
+      "name": "Cánh Gà Rán (1 miếng)",
+      "description": "Cánh tẩm bột giòn",
+      "price": 35000,
+      "imageUrl": "assets/doAn/canhGa.png",
+      "toppings": [
+        {"name": "Cay", "price": 0},
+        {"name": "Không cay", "price": 0}
+      ],
+      "ingredients": ["gà", "bột giòn", "gia vị"],
+      "isAvailable": true,
+      "restaurantId": "r1",
+      "category": "chicken"
+    },
+    {
+      "id": "g3",
+      "name": "Gà Fillet (1 miếng)",
+      "description": "Thịt gà không xương",
+      "price": 45000,
+      "imageUrl": "assets/doAn/gaKhongXuong.png",
+      "toppings": [
+        {"name": "Cay", "price": 0},
+        {"name": "Không cay", "price": 0}
+      ],
+      "ingredients": ["gà", "bột giòn", "gia vị"],
+      "isAvailable": true,
+      "restaurantId": "r1",
+      "category": "chicken"
+    },
+    {
+      "id": "g4",
+      "name": "Gà Popcorn (Gà Viên)",
+      "description": "Gà viên chiên giòn",
+      "price": 35000,
+      "imageUrl": "assets/doAn/gaVien.png",
+      "toppings": [
+        {"name": "Size Vừa", "price": 15000},
+        {"name": "Size Lớn", "price": 30000}
+      ],
+      "ingredients": ["gà", "bột giòn", "gia vị"],
+      "isAvailable": true,
+      "restaurantId": "r1",
+      "category": "chicken"
+    },
+    {
+      "id": "b1",
+      "name": "Burger Bò Tiêu Chuẩn",
+      "description": "Bò, rau, sốt đặc biệt",
+      "price": 55000,
+      "imageUrl": "assets/doAn/burgerBo.png",
+      "toppings": [
+        {"name": "Thêm phô mai", "price": 10000}
+      ],
+      "ingredients": ["bò", "bánh", "xà lách", "sốt"],
+      "isAvailable": true,
+      "restaurantId": "r1",
+      "category": "burger"
+    },
+    {
+      "id": "b2",
+      "name": "Burger Gà Giòn",
+      "description": "Gà giòn, rau, sốt",
+      "price": 50000,
+      "imageUrl": "assets/doAn/burgerGa.png",
+      "toppings": [
+        {"name": "Thêm trứng ốp la", "price": 8000}
+      ],
+      "ingredients": ["gà", "bánh", "xà lách", "sốt"],
+      "isAvailable": true,
+      "restaurantId": "r1",
+      "category": "burger"
+    },
+    {
+      "id": "b3",
+      "name": "Sandwich Trứng",
+      "description": "Bán vào buổi sáng (nếu có)",
+      "price": 30000,
+      "imageUrl": "assets/doAn/sandwichTrung.png",
+      "toppings": [],
+      "ingredients": ["bánh mì", "trứng", "sốt"],
+      "isAvailable": true,
+      "restaurantId": "r1",
+      "category": "sandwich"
+    },
+    {
+      "id": "s1",
+      "name": "Khoai Tây Chiên",
+      "description": "Khoai tây cắt thanh",
+      "price": 25000,
+      "imageUrl": "assets/doAn/khoaiTayChien.png",
+      "toppings": [
+        {"name": "Size M", "price": 10000},
+        {"name": "Size L", "price": 20000}
+      ],
+      "ingredients": ["khoai tây", "muối"],
+      "isAvailable": true,
+      "restaurantId": "r1",
+      "category": "side"
+    },
+    {
+      "id": "s2",
+      "name": "Khoai Tây Lắc",
+      "description": "Khoai chiên, lắc bột",
+      "price": 40000,
+      "imageUrl": "assets/doAn/khoatTayLac.png",
+      "toppings": [
+        {"name": "Size Vừa", "price": 15000},
+        {"name": "Phô mai", "price": 0},
+        {"name": "Rong biển", "price": 0},
+        {"name": "Trứng muối", "price": 0}
+      ],
+      "ingredients": ["khoai tây", "bột lắc"],
+      "isAvailable": true,
+      "restaurantId": "r1",
+      "category": "side"
+    },
+    {
+      "id": "s3",
+      "name": "Xúc Xích (1 thanh)",
+      "description": "Xúc xích chiên hoặc nướng",
+      "price": 20000,
+      "imageUrl": "assets/doAn/xucXich.png",
+      "toppings": [],
+      "ingredients": ["xúc xích"],
+      "isAvailable": true,
+      "restaurantId": "r1",
+      "category": "side"
+    },
+    {
+      "id": "s4",
+      "name": "Bánh Gà (1 cái)",
+      "description": "Bánh nhân gà xay",
+      "price": 25000,
+      "imageUrl": "assets/doAn/duiGa.png",
+      "toppings": [],
+      "ingredients": ["bột", "gà xay"],
+      "isAvailable": true,
+      "restaurantId": "r1",
+      "category": "side"
+    },
+    {
+      "id": "s5",
+      "name": "Salad Trộn Rau Củ",
+      "description": "Rau củ tươi, sốt",
+      "price": 30000,
+      "imageUrl": "assets/doAn/salad.png",
+      "toppings": [
+        {"name": "Sốt mè rang", "price": 0},
+        {"name": "Dầu giấm", "price": 0}
+      ],
+      "ingredients": ["rau củ", "sốt"],
+      "isAvailable": true,
+      "restaurantId": "r1",
+      "category": "side"
+    },
+    {
+      "id": "n1",
+      "name": "Mì Ý Sốt Bò Băm",
+      "description": "Mì Spaghetti sốt Bolognese",
+      "price": 65000,
+      "imageUrl": "assets/doAn/miY.png",
+      "toppings": [
+        {"name": "Size Lớn", "price": 20000}
+      ],
+      "ingredients": ["mì spaghetti", "sốt bò băm"],
+      "isAvailable": true,
+      "restaurantId": "r1",
+      "category": "noodle"
+    },
+    {
+      "id": "d1",
+      "name": "Kem Ly",
+      "description": "Kem tươi các vị cơ bản",
+      "price": 25000,
+      "imageUrl": "assets/doAn/kemLy.png",
+      "toppings": [
+        {"name": "Vani", "price": 0},
+        {"name": "Chocolate", "price": 0},
+        {"name": "Dâu", "price": 0}
+      ],
+      "ingredients": ["kem tươi"],
+      "isAvailable": true,
+      "restaurantId": "r1",
+      "category": "dessert"
+    },
+    {
+      "id": "d2",
+      "name": "Bánh Tart Trứng (2 cái)",
+      "description": "Bánh tart nhỏ, nhân trứng béo ngậy",
+      "price": 15000,
+      "imageUrl": "assets/doAn/banhTartTrung.png",
+      "toppings": [],
+      "ingredients": ["bột", "trứng", "sữa"],
+      "isAvailable": true,
+      "restaurantId": "r1",
+      "category": "dessert"
+    },
+    {
+      "id": "d3",
+      "name": "Pudding Trái Cây",
+      "description": "Pudding mềm mịn, thạch trái cây",
+      "price": 35000,
+      "imageUrl": "assets/doAn/puddingTraiCay.png",
+      "toppings": [
+        {"name": "Vị Dâu", "price": 0},
+        {"name": "Vị Cam", "price": 0},
+        {"name": "Vị Matcha", "price": 0}
+      ],
+      "ingredients": ["pudding", "thạch trái cây"],
+      "isAvailable": true,
+      "restaurantId": "r1",
+      "category": "dessert"
+    },
+    {
+      "id": "dr1",
+      "name": "Nước Ngọt Có Ga",
+      "description": "Coca Cola/Pepsi",
+      "price": 15000,
+      "imageUrl": "assets/doAn/coca.jpg",
+      "toppings": [
+        {"name": "Coca", "price": 0},
+        {"name": "Pepsi", "price": 0},
+        {"name": "Chai 330ml", "price": 0},
+        {"name": "Lon", "price": 0}
+      ],
+      "ingredients": ["nước ngọt có ga"],
+      "isAvailable": true,
+      "restaurantId": "r1",
+      "category": "drink"
+    },
+    {
+      "id": "dr2",
+      "name": "Nước Suối",
+      "description": "Nước lọc đóng chai",
+      "price": 10000,
+      "imageUrl": "assets/doAn/aqua.jpg",
+      "toppings": [],
+      "ingredients": ["nước"],
+      "isAvailable": true,
+      "restaurantId": "r1",
+      "category": "drink"
+    },
+    {
+      "id": "c1",
+      "name": "The Golden Crisp",
+      "description": "1 Đùi Gà Rán + 1 Khoai Tây Lắc + 1 Pudding Trái Cây",
+      "price": 105000,
+      "imageUrl": "assets/doAn/combo1.png",
+      "toppings": [],
+      "ingredients": [],
+      "isAvailable": true,
+      "restaurantId": "r1",
+      "category": "combo"
+    },
+    {
+      "id": "c2",
+      "name": "Noodle Delight",
+      "description": "1 Mì Ý (Size Vừa) + 1 Xúc Xích + 1 Pudding",
+      "price": 110000,
+      "imageUrl": "assets/doAn/combo2.png",
+      "toppings": [],
+      "ingredients": [],
+      "isAvailable": true,
+      "restaurantId": "r1",
+      "category": "combo"
+    },
+    {
+      "id": "c3",
+      "name": "Duet Deluxe",
+      "description": "1 Burger Gà + 1 Burger Bò + 1 Khoai Tây Chiên (M) + 2 Nước Suối",
+      "price": 145000,
+      "imageUrl": "assets/doAn/combo3.png",
+      "toppings": [],
+      "ingredients": [],
+      "isAvailable": true,
+      "restaurantId": "r1",
+      "category": "combo"
+    },
+    {
+      "id": "c4",
+      "name": "Sweet Duo",
+      "description": "1 Burger Gà + 2 Bánh Tart Trứng + 2 Kem Ly",
+      "price": 105000,
+      "imageUrl": "assets/doAn/combo4.png",
+      "toppings": [],
+      "ingredients": [],
+      "isAvailable": true,
+      "restaurantId": "r1",
+      "category": "combo"
+    },
+    {
+      "id": "c5",
+      "name": "The Mega Feast",
+      "description": "4 Đùi Gà + 2 Burger Bò + 1 Khoai Tây Chiên (L) + 1 Gà Popcorn (L) + 4 Nước Ngọt",
+      "price": 400000,
+      "imageUrl": "assets/doAn/combo5.png",
+      "toppings": [],
+      "ingredients": [],
+      "isAvailable": true,
+      "restaurantId": "r1",
+      "category": "combo"
+    },
+    {
+      "id": "c6",
+      "name": "Family Grand Set",
+      "description": "4 Gà Fillet + 4 Cánh Gà + 1 Khoai Tây Lắc (Vừa) + 2 Salad + 4 Nước Suối",
+      "price": 430000,
+      "imageUrl": "assets/doAn/combo6.png",
+      "toppings": [],
+      "ingredients": [],
+      "isAvailable": true,
+      "restaurantId": "r1",
+      "category": "combo"
+    },
+    {
+      "id": "c7",
+      "name": "The Party Box",
+      "description": "6 Cánh Gà + 1 Burger Bò + 1 Mì Ý (Lớn) + 2 Khoai Tây Lắc + 3 Nước Ngọt",
+      "price": 435000,
+      "imageUrl": "assets/doAn/combo7.png",
+      "toppings": [],
+      "ingredients": [],
+      "isAvailable": true,
+      "restaurantId": "r1",
+      "category": "combo"
+    }
+  ]
+}
+
+

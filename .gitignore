@@ -1,0 +1,5 @@
+# Ignore Python virtual environment
+.venv/
+backend/.venv/
+foodgo/.env
+backend/firebase-key.json

@@ -1,0 +1,20 @@
+{
+  "rewards": [
+    {
+      "points": 120,
+      "tier": "Silver",
+      "redeemableVouchers": [
+        {"id": "v1", "title": "Giảm 30K", "description": "Đơn từ 150K", "discountValue": 30000, "freeShip": false, "expiryDate": "2025-12-31T23:59:59Z"}
+      ],
+      "userId": "u1",
+      "updatedAt": "2025-03-05T12:00:00Z",
+      "totalEarned": 500,
+      "totalRedeemed": 380,
+      "active": true,
+      "nextTier": "Gold",
+      "progress": 0.6
+    }
+  ]
+}
+
+

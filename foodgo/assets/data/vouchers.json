@@ -1,0 +1,30 @@
+{
+  "vouchers": [
+    {
+      "id": "v1",
+      "title": "Giảm 30K",
+      "description": "Đơn từ 150K",
+      "discountValue": 30000,
+      "freeShip": false,
+      "expiryDate": "2025-12-31T23:59:59Z",
+      "minOrderValue": 150000,
+      "restaurantId": "r1",
+      "usageLimit": 100,
+      "usedCount": 5
+    },
+    {
+      "id": "v2",
+      "title": "Freeship",
+      "description": "Áp dụng mọi đơn",
+      "discountValue": 0,
+      "freeShip": true,
+      "expiryDate": "2025-08-31T23:59:59Z",
+      "minOrderValue": 0,
+      "restaurantId": "",
+      "usageLimit": 500,
+      "usedCount": 120
+    }
+  ]
+}
+
+

@@ -5,7 +5,7 @@ class TopSearchChips extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<String> chips = const ['Món ăn dưới 80k', 'Đồ ăn chay', 'Combo no nê'];
+    final List<String> chips = const ['Món ăn dưới 80k', 'Đồ ăn chay'];
     return Wrap(
       spacing: 8,
       runSpacing: 8,

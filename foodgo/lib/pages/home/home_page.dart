@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../providers/theme_provider.dart';
 import '../../providers/auth_provider.dart';
+import '../../models/voucher_model.dart';
 import 'widgets/top_bar.dart';
 import 'widgets/search_field.dart';
 import 'widgets/banner_carousel.dart';
@@ -25,35 +27,41 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _currentBanner = 0;
   int _currentTab = 0;
+  
+  List<String> _bannerImageUrls = [];
+  bool _isLoading = true;
 
-  final List<String> _bannerImageUrls = const [
-    'https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339581/voucher_donDauTien.jpg',
-    'https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339581/voucher_freeship.jpg',
-    'https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339581/voucher_t3HangTuan.jpg',
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _loadVoucherData();
+  }
 
-  final List<Map<String, dynamic>> _newProducts = const [
-    {
-      'imageUrl': 'https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339581/pizza_HaiSan.png',
-      'name': 'Pizza Hải Sản',
-      'price': '299.000đ'
-    },
-    {
-      'imageUrl': 'https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339581/pizza_ThapCam.png',
-      'name': 'Pizza Thập Cẩm',
-      'price': '279.000đ'
-    },
-    {
-      'imageUrl': 'https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339581/burgerBo.png',
-      'name': 'Burger Bò',
-      'price': '89.000đ'
-    },
-    {
-      'imageUrl': 'https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339581/burgerGa.png',
-      'name': 'Burger Gà',
-      'price': '79.000đ'
-    },
-  ];
+  Future<void> _loadVoucherData() async {
+    try {
+      setState(() => _isLoading = true);
+
+      final QuerySnapshot snapshot = await FirebaseFirestore.instance
+          .collection('vouchers')
+          .get();
+
+      List<VoucherModel> vouchers = snapshot.docs.map((doc) {
+        final data = doc.data() as Map<String, dynamic>;
+        data['id'] = doc.id; // Thêm id từ document
+        return VoucherModel.fromJson(data);
+      }).toList();
+
+      // Lấy imageUrl từ vouchers để làm banner
+      _bannerImageUrls = vouchers.map((voucher) => voucher.imageUrl).toList();
+
+      setState(() => _isLoading = false);
+    } catch (e) {
+      print('Error loading voucher data: $e');
+      setState(() => _isLoading = false);
+      // Fallback nếu không lấy được từ Firebase
+      _bannerImageUrls = [];
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,35 +70,39 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: TopBar(onToggleTheme: themeProvider.toggleTheme),
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 8),
-              const SearchField(),
-              const SizedBox(height: 12),
-              BannerCarousel(
-                imageUrls: _bannerImageUrls,
-                currentIndex: _currentBanner,
-                onPageChanged: (i) => setState(() => _currentBanner = i),
+        child: _isLoading 
+          ? const Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 8),
+                  const SearchField(),
+                  const SizedBox(height: 12),
+                  if (_bannerImageUrls.isNotEmpty) ...[
+                    BannerCarousel(
+                      imageUrls: _bannerImageUrls,
+                      currentIndex: _currentBanner,
+                      onPageChanged: (i) => setState(() => _currentBanner = i),
+                    ),
+                    const SizedBox(height: 8),
+                  ],
+                  Text('Top tìm kiếm', style: Theme.of(context).textTheme.titleMedium),
+                  const SizedBox(height: 8),
+                  const TopSearchChips(),
+                  const SizedBox(height: 12),
+                  const SectionHeader(title: 'Sản phẩm mới'),
+                  const SizedBox(height: 8),
+                  const HorizontalCardList(products: []), // Để trống
+                  const SizedBox(height: 12),
+                  const SectionHeader(title: 'Sản phẩm bán chạy'),
+                  const SizedBox(height: 8),
+                  const HorizontalCardList(products: []), // Để trống
+                  const SizedBox(height: 24),
+                ],
               ),
-              const SizedBox(height: 8),
-              Text('Top tìm kiếm', style: Theme.of(context).textTheme.titleMedium),
-              const SizedBox(height: 8),
-              const TopSearchChips(),
-              const SizedBox(height: 12),
-              const SectionHeader(title: 'Sản phẩm mới'),
-              const SizedBox(height: 8),
-              HorizontalCardList(products: _newProducts),
-              const SizedBox(height: 12),
-              const SectionHeader(title: 'Sản phẩm bán chạy'),
-              const SizedBox(height: 8),
-              HorizontalCardList(products: _newProducts),
-              const SizedBox(height: 24),
-            ],
-          ),
-        ),
+            ),
       ),
       bottomNavigationBar: Consumer<AuthProvider>(
         builder: (context, authProvider, child) {
@@ -99,17 +111,14 @@ class _HomePageState extends State<HomePage> {
             onTap: (i) {
               setState(() => _currentTab = i);
               if (i == 1) {
-                // Notifications
                 Navigator.of(context).push(MaterialPageRoute(builder: (_) => const NotificationPage()));
               } else if (i == 2) {
-                // Cart - Check authentication
                 if (authProvider.isLoggedIn) {
                   Navigator.of(context).push(MaterialPageRoute(builder: (_) => const CartPage()));
                 } else {
                   _showCustomLoginForm(context, 'Giỏ hàng', 'Vui lòng đăng nhập để xem giỏ hàng của bạn');
                 }
               } else if (i == 3) {
-                // Profile - Check authentication
                 if (authProvider.isLoggedIn) {
                   Navigator.of(context).push(MaterialPageRoute(builder: (_) => const ProfilePage()));
                 } else {
@@ -151,7 +160,6 @@ class _HomePageState extends State<HomePage> {
           title: title,
           message: message,
           onSuccess: () {
-            // Navigate to the intended page after successful login
             if (title == 'Giỏ hàng') {
               Navigator.of(context).push(MaterialPageRoute(builder: (_) => const CartPage()));
             } else if (title == 'Tài khoản') {

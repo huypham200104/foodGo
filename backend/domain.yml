@@ -3,36 +3,61 @@ version: "3.1"
 intents:
   - greet
   - goodbye
-  - affirm
+  - thank
+  - order_food
+  - ask_menu
+  - ask_price
   - deny
-  - mood_great
-  - mood_unhappy
-  - bot_challenge
-  - show_menu
+  - confirm_order
+  - cancel_order
+  - ask_opening_hours
+  - out_of_scope
 
-actions:
-  - action_show_menu
+entities:
+  - food
+  - quantity
+  - size
+
+slots:
+  food:
+    type: text
+    influence_conversation: true
+    mappings:
+      - type: from_entity
+        entity: food
+
+  quantity:
+    type: text
+    influence_conversation: true
+    mappings:
+      - type: from_entity
+        entity: quantity
+
+  size:
+    type: text
+    influence_conversation: true
+    mappings:
+      - type: from_entity
+        entity: size
 
 responses:
   utter_greet:
-  - text: "Hey! How are you?"
-
-  utter_cheer_up:
-  - text: "Here is something to cheer you up:"
-    image: "https://i.imgur.com/nGF1K8f.jpg"
-
-  utter_did_that_help:
-  - text: "Did that help you?"
-
-  utter_happy:
-  - text: "Great, carry on!"
-
+    - text: "Xin chào! Bạn muốn gọi món gì hôm nay?"
   utter_goodbye:
-  - text: "Bye"
+    - text: "Tạm biệt bạn! Hẹn gặp lại nhé 👋"
+  utter_thank:
+    - text: "Cảm ơn bạn nhiều nha!"
+  utter_confirm_order:
+    - text: "Bạn muốn đặt {quantity} phần {food}, đúng không ạ?"
+  utter_out_of_scope:
+    - text: "Xin lỗi, tôi chưa hiểu ý bạn. Bạn có thể nói lại về món ăn hoặc đặt món nhé?"
+  utter_cancel:
+    - text: "Đơn hàng của bạn đã được huỷ."
+  utter_opening_hours:
+    - text: "Quán mở cửa từ 8:00 sáng đến 10:00 tối mỗi ngày."
 
-  utter_iamabot:
-  - text: "I am a bot, powered by Rasa."
-
-session_config:
-  session_expiration_time: 60
-  carry_over_slots_to_new_session: true
+actions:
+  - action_show_menu
+  - action_get_price
+  - action_order_food
+  - action_out_of_scope

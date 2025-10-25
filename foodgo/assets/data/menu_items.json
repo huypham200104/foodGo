@@ -2,10 +2,10 @@
   "menu": [
     {
       "id": "g1",
-      "name": "Đùi Gà Rán (1 miếng)",
-      "description": "Đùi tẩm bột giòn",
+      "name": "Đùi Gà Rán",
+      "description": "Đùi gà tẩm bột giòn, chiên vàng giòn, thơm ngon",
       "price": 40000,
-      "imageUrl": "assets/doAn/duiGa.png",
+      "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339578/duiGa_jgg2pw.png",
       "toppings": [
         {"name": "Cay", "price": 0},
         {"name": "Không cay", "price": 0},
@@ -18,10 +18,10 @@
     },
     {
       "id": "g2",
-      "name": "Cánh Gà Rán (1 miếng)",
-      "description": "Cánh tẩm bột giòn",
+      "name": "Cánh Gà Rán",
+      "description": "Cánh gà tẩm bột giòn, chiên vàng giòn, thơm ngon",
       "price": 35000,
-      "imageUrl": "assets/doAn/canhGa.png",
+      "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339576/canhGa_auibz9.png",
       "toppings": [
         {"name": "Cay", "price": 0},
         {"name": "Không cay", "price": 0}
@@ -33,10 +33,10 @@
     },
     {
       "id": "g3",
-      "name": "Gà Fillet (1 miếng)",
+      "name": "Gà Fillet",
       "description": "Thịt gà không xương",
       "price": 45000,
-      "imageUrl": "assets/doAn/gaKhongXuong.png",
+      "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339578/gaKhongXuong_csuaph.png",
       "toppings": [
         {"name": "Cay", "price": 0},
         {"name": "Không cay", "price": 0}
@@ -48,10 +48,10 @@
     },
     {
       "id": "g4",
-      "name": "Gà Popcorn (Gà Viên)",
+      "name": "Gà Popcorn",
       "description": "Gà viên chiên giòn",
       "price": 35000,
-      "imageUrl": "assets/doAn/gaVien.png",
+      "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339578/gaVien_td7fpk.png",
       "toppings": [
         {"name": "Size Vừa", "price": 15000},
         {"name": "Size Lớn", "price": 30000}
@@ -63,10 +63,10 @@
     },
     {
       "id": "b1",
-      "name": "Burger Bò Tiêu Chuẩn",
+      "name": "Burger Bò",
       "description": "Bò, rau, sốt đặc biệt",
       "price": 55000,
-      "imageUrl": "assets/doAn/burgerBo.png",
+      "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339575/burgerBo_ccuojj.png",
       "toppings": [
         {"name": "Thêm phô mai", "price": 10000}
       ],
@@ -80,7 +80,7 @@
       "name": "Burger Gà Giòn",
       "description": "Gà giòn, rau, sốt",
       "price": 50000,
-      "imageUrl": "assets/doAn/burgerGa.png",
+      "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339576/burgerGa_xufy8q.png",
       "toppings": [
         {"name": "Thêm trứng ốp la", "price": 8000}
       ],
@@ -92,9 +92,9 @@
     {
       "id": "b3",
       "name": "Sandwich Trứng",
-      "description": "Bán vào buổi sáng (nếu có)",
+      "description": "Bán vào buổi sáng",
       "price": 30000,
-      "imageUrl": "assets/doAn/sandwichTrung.png",
+      "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339581/sandwichTrung_jz9lvc.png",
       "toppings": [],
       "ingredients": ["bánh mì", "trứng", "sốt"],
       "isAvailable": true,
@@ -106,7 +106,7 @@
       "name": "Khoai Tây Chiên",
       "description": "Khoai tây cắt thanh",
       "price": 25000,
-      "imageUrl": "assets/doAn/khoaiTayChien.png",
+      "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339579/khoaiTayChien_laz8eg.png",
       "toppings": [
         {"name": "Size M", "price": 10000},
         {"name": "Size L", "price": 20000}
@@ -121,7 +121,7 @@
       "name": "Khoai Tây Lắc",
       "description": "Khoai chiên, lắc bột",
       "price": 40000,
-      "imageUrl": "assets/doAn/khoatTayLac.png",
+      "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339580/khoatTayLac_czsaqz.png",
       "toppings": [
         {"name": "Size Vừa", "price": 15000},
         {"name": "Phô mai", "price": 0},
@@ -135,10 +135,10 @@
     },
     {
       "id": "s3",
-      "name": "Xúc Xích (1 thanh)",
+      "name": "Xúc Xích",
       "description": "Xúc xích chiên hoặc nướng",
       "price": 20000,
-      "imageUrl": "assets/doAn/xucXich.png",
+      "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339581/xucXich_bl1twu.png",
       "toppings": [],
       "ingredients": ["xúc xích"],
       "isAvailable": true,
@@ -147,22 +147,10 @@
     },
     {
       "id": "s4",
-      "name": "Bánh Gà (1 cái)",
-      "description": "Bánh nhân gà xay",
-      "price": 25000,
-      "imageUrl": "assets/doAn/duiGa.png",
-      "toppings": [],
-      "ingredients": ["bột", "gà xay"],
-      "isAvailable": true,
-      "restaurantId": "r1",
-      "category": "side"
-    },
-    {
-      "id": "s5",
-      "name": "Salad Trộn Rau Củ",
+      "name": "Salad",
       "description": "Rau củ tươi, sốt",
       "price": 30000,
-      "imageUrl": "assets/doAn/salad.png",
+      "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339580/salad_waamec.png",
       "toppings": [
         {"name": "Sốt mè rang", "price": 0},
         {"name": "Dầu giấm", "price": 0}
@@ -177,7 +165,7 @@
       "name": "Mì Ý Sốt Bò Băm",
       "description": "Mì Spaghetti sốt Bolognese",
       "price": 65000,
-      "imageUrl": "assets/doAn/miY.png",
+      "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339579/miY_vje1om.png",
       "toppings": [
         {"name": "Size Lớn", "price": 20000}
       ],
@@ -191,7 +179,7 @@
       "name": "Kem Ly",
       "description": "Kem tươi các vị cơ bản",
       "price": 25000,
-      "imageUrl": "assets/doAn/kemLy.png",
+      "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339578/kemLy_qjr1ri.png",
       "toppings": [
         {"name": "Vani", "price": 0},
         {"name": "Chocolate", "price": 0},
@@ -204,10 +192,10 @@
     },
     {
       "id": "d2",
-      "name": "Bánh Tart Trứng (2 cái)",
+      "name": "Bánh Tart Trứng",
       "description": "Bánh tart nhỏ, nhân trứng béo ngậy",
       "price": 15000,
-      "imageUrl": "assets/doAn/banhTartTrung.png",
+      "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339576/banhTartTrung_zdjie7.png",
       "toppings": [],
       "ingredients": ["bột", "trứng", "sữa"],
       "isAvailable": true,
@@ -219,7 +207,7 @@
       "name": "Pudding Trái Cây",
       "description": "Pudding mềm mịn, thạch trái cây",
       "price": 35000,
-      "imageUrl": "assets/doAn/puddingTraiCay.png",
+      "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339580/puddingTraiCay_bhhcg8.png",
       "toppings": [
         {"name": "Vị Dâu", "price": 0},
         {"name": "Vị Cam", "price": 0},
@@ -232,16 +220,11 @@
     },
     {
       "id": "dr1",
-      "name": "Nước Ngọt Có Ga",
-      "description": "Coca Cola/Pepsi",
+      "name": "Pepsi",
+      "description": "Pepsi 330ml",
       "price": 15000,
-      "imageUrl": "assets/doAn/coca.jpg",
-      "toppings": [
-        {"name": "Coca", "price": 0},
-        {"name": "Pepsi", "price": 0},
-        {"name": "Chai 330ml", "price": 0},
-        {"name": "Lon", "price": 0}
-      ],
+      "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339579/pepsi_ovwnnl.jpg",
+      "toppings": [],
       "ingredients": ["nước ngọt có ga"],
       "isAvailable": true,
       "restaurantId": "r1",
@@ -249,10 +232,23 @@
     },
     {
       "id": "dr2",
+      "name": "Coca",
+      "description": "Coca cola 330ml",
+      "price": 15000,
+      "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339575/coca_li7fj6.jpg",
+      "toppings": [],
+      "ingredients": ["nước ngọt có ga"],
+      "isAvailable": true,
+      "restaurantId": "r1",
+      "category": "drink"
+    },
+
+    {
+      "id": "dr3",
       "name": "Nước Suối",
       "description": "Nước lọc đóng chai",
       "price": 10000,
-      "imageUrl": "assets/doAn/aqua.jpg",
+      "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339575/aqua_xvsuye.jpg",
       "toppings": [],
       "ingredients": ["nước"],
       "isAvailable": true,
@@ -264,7 +260,7 @@
       "name": "The Golden Crisp",
       "description": "1 Đùi Gà Rán + 1 Khoai Tây Lắc + 1 Pudding Trái Cây",
       "price": 105000,
-      "imageUrl": "assets/doAn/combo1.png",
+      "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339576/combo1_tmrbbl.png",
       "toppings": [],
       "ingredients": [],
       "isAvailable": true,
@@ -276,7 +272,7 @@
       "name": "Noodle Delight",
       "description": "1 Mì Ý (Size Vừa) + 1 Xúc Xích + 1 Pudding",
       "price": 110000,
-      "imageUrl": "assets/doAn/combo2.png",
+      "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339577/combo2_oqvqzu.png",
       "toppings": [],
       "ingredients": [],
       "isAvailable": true,
@@ -288,7 +284,7 @@
       "name": "Duet Deluxe",
       "description": "1 Burger Gà + 1 Burger Bò + 1 Khoai Tây Chiên (M) + 2 Nước Suối",
       "price": 145000,
-      "imageUrl": "assets/doAn/combo3.png",
+      "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339577/combo3_a9s5ye.png",
       "toppings": [],
       "ingredients": [],
       "isAvailable": true,
@@ -300,7 +296,7 @@
       "name": "Sweet Duo",
       "description": "1 Burger Gà + 2 Bánh Tart Trứng + 2 Kem Ly",
       "price": 105000,
-      "imageUrl": "assets/doAn/combo4.png",
+      "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339577/combo4_c3xbqs.png",
       "toppings": [],
       "ingredients": [],
       "isAvailable": true,
@@ -312,7 +308,7 @@
       "name": "The Mega Feast",
       "description": "4 Đùi Gà + 2 Burger Bò + 1 Khoai Tây Chiên (L) + 1 Gà Popcorn (L) + 4 Nước Ngọt",
       "price": 400000,
-      "imageUrl": "assets/doAn/combo5.png",
+      "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339577/combo5_hhasqc.png",
       "toppings": [],
       "ingredients": [],
       "isAvailable": true,
@@ -324,7 +320,7 @@
       "name": "Family Grand Set",
       "description": "4 Gà Fillet + 4 Cánh Gà + 1 Khoai Tây Lắc (Vừa) + 2 Salad + 4 Nước Suối",
       "price": 430000,
-      "imageUrl": "assets/doAn/combo6.png",
+      "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339577/combo6_or8nz3.png",
       "toppings": [],
       "ingredients": [],
       "isAvailable": true,
@@ -336,7 +332,7 @@
       "name": "The Party Box",
       "description": "6 Cánh Gà + 1 Burger Bò + 1 Mì Ý (Lớn) + 2 Khoai Tây Lắc + 3 Nước Ngọt",
       "price": 435000,
-      "imageUrl": "assets/doAn/combo7.png",
+      "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339577/combo7_potcs8.png",
       "toppings": [],
       "ingredients": [],
       "isAvailable": true,

@@ -59,6 +59,7 @@ flutter:
     - assets/doAn/
     - assets/logo/
     - assets/voucher/
-    - .env
     - assets/icons/
     - assets/data/
+    - assets/other/
+    - assets/.env

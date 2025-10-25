@@ -1,18 +1,52 @@
 version: "3.1"
 
 rules:
-
-- rule: Say goodbye anytime the user says goodbye
+- rule: greet
   steps:
-  - intent: goodbye
-  - action: utter_goodbye
+    - intent: greet
+    - action: utter_greet
 
-- rule: Say 'I am a bot' anytime the user challenges
+- rule: goodbye
   steps:
-  - intent: bot_challenge
-  - action: utter_iamabot
+    - intent: goodbye
+    - action: utter_goodbye
 
-- rule: Show menu
+- rule: thank
   steps:
-    - intent: show_menu
+    - intent: thank
+    - action: utter_thank
+
+- rule: ask menu
+  steps:
+    - intent: ask_menu
     - action: action_show_menu
+
+- rule: ask price
+  steps:
+    - intent: ask_price
+    - action: action_get_price
+
+- rule: ask opening hours
+  steps:
+    - intent: ask_opening_hours
+    - action: utter_opening_hours
+
+- rule: cancel order
+  steps:
+    - intent: cancel_order
+    - action: utter_cancel
+
+- rule: handle out of scope
+  steps:
+    - intent: out_of_scope
+    - action: utter_out_of_scope
+
+- rule: order food
+  steps:
+    - intent: order_food
+    - action: action_order_food
+
+- rule: confirm order
+  steps:
+    - intent: confirm_order
+    - action: utter_confirm_order

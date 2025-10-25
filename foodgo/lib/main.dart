@@ -24,7 +24,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Load biến môi trường
-  await dotenv.load(fileName: ".env");
+  await dotenv.load(fileName: "assets/.env");
 
   // Khởi tạo Cloudinary
   CloudinaryService.init();
@@ -36,21 +36,22 @@ Future<void> main() async {
     );
   }
 
-  // Xóa dữ liệu cũ rồi seed lại
-  // await _clearCollections([
-  //   'users',
-  //   'addresses',
-  //   'restaurants',
-  //   'menu_items',
-  //   'vouchers',
-  //   'rewards',
-  //   'cart_items',
-  //   'orders',
-  //   'reviews',
-  //   'complaints',
-  // ]);
-  //
-  // await uploadAllSeeds();
+  //Xóa dữ liệu cũ rồi seed lại
+
+  await _clearCollections([
+    'users',
+    'addresses',
+    'restaurants',
+    'menu_items',
+    'vouchers',
+    'rewards',
+    'cart_items',
+    'orders',
+    'reviews',
+    'complaints',
+  ]);
+
+  await uploadAllSeeds();
 
   // Chạy app
   runApp(const MyApp());

@@ -26,17 +26,33 @@ class _HomePageState extends State<HomePage> {
   int _currentBanner = 0;
   int _currentTab = 0;
 
-  final List<String> _bannerAssets = const [
-    'assets/voucher/voucher_donDauTien.jpg',
-    'assets/voucher/voucher_freeship.jpg',
-    'assets/voucher/voucher_t3HangTuan.jpg',
+  final List<String> _bannerImageUrls = const [
+    'https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339581/voucher_donDauTien.jpg',
+    'https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339581/voucher_freeship.jpg',
+    'https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339581/voucher_t3HangTuan.jpg',
   ];
 
-  final List<String> _newProductAssets = const [
-    'assets/doAn/pizza_HaiSan.png',
-    'assets/doAn/pizza_ThapCam.png',
-    'assets/doAn/pizza_HaiSan.png',
-    'assets/doAn/pizza_ThapCam.png',
+  final List<Map<String, dynamic>> _newProducts = const [
+    {
+      'imageUrl': 'https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339581/pizza_HaiSan.png',
+      'name': 'Pizza Hải Sản',
+      'price': '299.000đ'
+    },
+    {
+      'imageUrl': 'https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339581/pizza_ThapCam.png',
+      'name': 'Pizza Thập Cẩm',
+      'price': '279.000đ'
+    },
+    {
+      'imageUrl': 'https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339581/burgerBo.png',
+      'name': 'Burger Bò',
+      'price': '89.000đ'
+    },
+    {
+      'imageUrl': 'https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339581/burgerGa.png',
+      'name': 'Burger Gà',
+      'price': '79.000đ'
+    },
   ];
 
   @override
@@ -55,7 +71,7 @@ class _HomePageState extends State<HomePage> {
               const SearchField(),
               const SizedBox(height: 12),
               BannerCarousel(
-                assets: _bannerAssets,
+                imageUrls: _bannerImageUrls,
                 currentIndex: _currentBanner,
                 onPageChanged: (i) => setState(() => _currentBanner = i),
               ),
@@ -66,11 +82,11 @@ class _HomePageState extends State<HomePage> {
               const SizedBox(height: 12),
               const SectionHeader(title: 'Sản phẩm mới'),
               const SizedBox(height: 8),
-              HorizontalCardList(assets: _newProductAssets),
+              HorizontalCardList(products: _newProducts),
               const SizedBox(height: 12),
               const SectionHeader(title: 'Sản phẩm bán chạy'),
               const SizedBox(height: 8),
-              HorizontalCardList(assets: _newProductAssets),
+              HorizontalCardList(products: _newProducts),
               const SizedBox(height: 24),
             ],
           ),

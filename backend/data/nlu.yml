@@ -1,97 +1,224 @@
 version: "3.1"
 
 nlu:
+
+# --- regex cho số lượng (dạng chữ số & chữ) ---
+- regex: NUMBER
+  examples: |
+    - \d+
+    - một
+    - hai
+    - ba
+    - bốn
+    - năm
+    - sáu
+    - bảy
+    - tám
+    - chín
+    - mười
+    - mười một
+    - mười hai
+    - mười ba
+    - mười bốn
+    - mười lăm
+    - mười sáu
+    - mười bảy
+    - mười tám  
+    - mười chín
+    - hai mươi
+
+# --- lookup table cho đơn vị thường gặp (giúp model học) ---
+- lookup: quantity_unit
+  examples: |
+    - phần
+    - cái
+    - ly
+    - cốc
+    - bát
+    - hộp
+    - đĩa
+    - suất
+    - chai
+    - lon
+    - tô
+
+# --- CHÀO HỎI ---
 - intent: greet
   examples: |
-    - hey
-    - hello
-    - hi
-    - hello there
-    - good morning
-    - good evening
-    - moin
-    - hey there
-    - let's go
-    - hey dude
-    - goodmorning
-    - goodevening
-    - good afternoon
+    - Xin chào
+    - Chào bạn
+    - Chào
+    - Hi
+    - Hello
+    - Hey
+    - Ê bot
+    - Chào buổi sáng
+    - Chào buổi trưa
+    - Chào buổi tối
+    - Có ai ở đó không?
+    - Are you there?
+    - Hey there
+    - Good morning
+    - Good afternoon
+    - Good evening
 
+# --- TẠM BIỆT ---
 - intent: goodbye
   examples: |
-    - cu
-    - good by
-    - cee you later
-    - good night
-    - bye
-    - goodbye
-    - have a nice day
-    - see you around
-    - bye bye
-    - see you later
+    - Tạm biệt
+    - Hẹn gặp lại
+    - Bye
+    - Goodbye
+    - See you
+    - Gặp lại sau nhé
+    - Tôi đi đây
+    - Cảm ơn, tạm biệt
+    - Thanks, bye!
 
-- intent: affirm
+# --- CẢM ƠN ---
+- intent: thank
   examples: |
-    - yes
-    - y
-    - indeed
-    - of course
-    - that sounds good
-    - correct
+    - Cảm ơn
+    - Cảm ơn nhiều
+    - Cảm ơn bạn nhé
+    - Thanks
+    - Thank you
+    - Appreciate it
+    - Great, thanks!
+    - Ok, cảm ơn
+    - Cảm ơn nha
 
+# --- ĐẶT MÓN ĂN ---
+- intent: order_food
+  examples: |
+    - Tôi muốn đặt [1](quantity) phần [mì ý](food)
+    - Cho tôi [3](quantity) phần [mì ý sốt bò băm](food)
+    - Mình muốn gọi [2](quantity) ly [trà sữa trân châu](food)
+    - Làm ơn cho [1](quantity) phần [cơm gà xối mỡ](food)
+    - Cho [5](quantity) phần [gà rán](food)
+    - Tôi muốn đặt [2](quantity) ly [cà phê sữa](food)
+    - Tôi muốn [1](quantity) phần [pizza hải sản](food)
+    - Đặt giúp tôi [1](quantity) phần [bánh mì trứng](food)
+    - Gọi [3](quantity) ly [sinh tố xoài](food)
+    - Đặt [2](quantity) cái [hamburger](food)
+    - Cho tôi [2](quantity) phần [pizza phô mai](food)
+    - Cho mình [4](quantity) ly [nước cam](food)
+    - Tôi muốn order [1](quantity) [burger](food)
+    - I'd like to order [1](quantity) portion of [spaghetti](food)
+    - Please give me [2](quantity) [fried chickens](food)
+    - I want to order [3](quantity) [cups of milk tea](food)
+    - Give me [1](quantity) [bowl of noodles](food)
+    - Let me have [2](quantity) [burgers](food)
+    - I’ll take [4](quantity) [fries](food)
+    - Cho tôi [1](quantity) ly [cà phê đen](food)
+    - Tôi muốn gọi [2](quantity) ly [trà đào](food)
+    - Đặt giúp tôi [3](quantity) phần [gà rán giòn](food)
+    - Mình muốn gọi [1](quantity) phần [bánh mì thịt](food)
+    - Làm ơn cho [2](quantity) ly [sinh tố dâu](food)
+    - Tôi muốn order [1](quantity) phần [cơm tấm](food)
+    - I'd like to order [2](quantity) [cups of coffee](food)
+    - Please give me [3](quantity) [plates of fried rice](food)
+    - I want to order [1](quantity) [pizza](food)
+    - Give me [2](quantity) [bowls of soup](food)
+    - Let me have [3](quantity) [sandwiches](food)
+    - I’ll take [1](quantity) [milk tea](food)
+
+# --- HỎI MENU ---
+- intent: ask_menu
+  examples: |
+    - Menu hôm nay có gì?
+    - Cho tôi xem menu
+    - Có những món gì vậy?
+    - Các món ăn hiện có là gì?
+    - Có món [trà sữa](food) không?
+    - Hiện tại còn [pizza](food) không?
+    - What’s on the menu?
+    - Show me the menu
+    - What food do you have?
+    - Can I see the food list?
+    - What drinks do you have?
+    - Tell me what I can order
+    - Do you have [coffee](food)?
+    - Có món nước nào không?
+    - Có món ăn vặt không?
+
+# --- HỎI GIÁ ---
+- intent: ask_price
+  examples: |
+    - [Pizza](food) bao nhiêu tiền?
+    - [Trà sữa](food) giá bao nhiêu?
+    - Giá của [hamburger](food) là bao nhiêu?
+    - Một phần [cơm gà](food) bao nhiêu?
+    - How much is the [pizza](food)?
+    - What’s the price of [fried chicken](food)?
+    - How much does a [burger](food) cost?
+    - Tell me the price of [milk tea](food)
+    - Giá của [khoai tây chiên](food) là bao nhiêu vậy?
+
+
+# --- PHỦ ĐỊNH ---
 - intent: deny
   examples: |
-    - no
-    - n
-    - never
-    - I don't think so
-    - don't like that
-    - no way
-    - not really
+    - Không
+    - Không phải
+    - Sai rồi
+    - Không đúng
+    - No
+    - Nope
+    - Not really
+    - I don’t think so
+    - Never mind
 
-- intent: mood_great
+# --- XÁC NHẬN ĐƠN HÀNG ---
+- intent: confirm_order
   examples: |
-    - perfect
-    - great
-    - amazing
-    - feeling like a king
-    - wonderful
-    - I am feeling very good
-    - I am great
-    - I am amazing
-    - I am going to save the world
-    - super stoked
-    - extremely good
-    - so so perfect
-    - so good
-    - so perfect
+    - Xác nhận đơn hàng giúp tôi
+    - Tôi muốn xác nhận đặt món
+    - Confirm my order
+    - Please confirm my food order
+    - Xong rồi, xác nhận nhé
+    - Đặt món này nhé
+    - Ok, chốt đơn này
+    - Xác nhận luôn đi
+    - I'm ready to confirm
+    - Confirm please
 
-- intent: mood_unhappy
+# --- HUỶ ĐƠN ---
+- intent: cancel_order
   examples: |
-    - my day was horrible
-    - I am sad
-    - I don't feel very well
-    - I am disappointed
-    - super sad
-    - I'm so sad
-    - sad
-    - very sad
-    - unhappy
-    - not good
-    - not very good
-    - extremly sad
-    - so saad
-    - so sad
+    - Hủy đơn hàng
+    - Tôi muốn hủy đặt món
+    - Cancel my order
+    - Don’t order anymore
+    - I changed my mind
+    - Thôi không đặt nữa
+    - Bỏ qua đơn này đi
+    - Stop my order
 
-- intent: bot_challenge
+# --- HỎI GIỜ MỞ CỬA ---
+- intent: ask_opening_hours
   examples: |
-    - are you a bot?
-    - are you a human?
-    - am I talking to a bot?
-    - am I talking to a human?
+    - Quán mở cửa lúc mấy giờ?
+    - Giờ mở cửa thế nào?
+    - Bao giờ mở cửa?
+    - What are your opening hours?
+    - When do you open?
+    - What time do you close?
 
-- intent: show_menu
+# --- NGOẠI LỆ / KHÔNG HIỂU ---
+- intent: out_of_scope
   examples: |
-    - cho tôi xem menu
-    - có món gì hôm nay?
-    - tôi muốn xem thực đơn
+    - Hôm nay thời tiết thế nào?
+    - Mấy giờ rồi?
+    - Ai là tổng thống Mỹ?
+    - Bạn bao nhiêu tuổi?
+    - Sing me a song
+    - Tell me a joke
+    - Tôi muốn xem phim
+    - Mở nhạc cho tôi
+    - What’s your name?
+    - Do you love me?
+    - Kể chuyện cười đi
+    - Hôm nay là ngày mấy?
+    - Tôi bị đau đầu
+    - Bạn học trường nào?

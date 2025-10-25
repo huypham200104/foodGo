@@ -2,10 +2,10 @@
   "users": [
     {
       "id": "u1",
-      "name": "Nguyen Van A",
-      "email": "a@example.com",
+      "name": "Nguyễn Văn An",
+      "email": "an.nguyen@example.com",
       "phone": "+84900000001",
-      "avatarUrl": "assets/icons/google.png",
+      "avatarUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339581/user_avatar_1.jpg",
       "rewardPoints": 120,
       "defaultAddressId": "addr1",
       "createdAt": "2025-01-10T08:00:00Z",
@@ -14,10 +14,10 @@
     },
     {
       "id": "u2",
-      "name": "Tran Thi B",
-      "email": "b@example.com",
+      "name": "Trần Thị Bình",
+      "email": "binh.tran@example.com",
       "phone": "+84900000002",
-      "avatarUrl": "assets/icons/facebook.png",
+      "avatarUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339581/user_avatar_2.jpg",
       "rewardPoints": 450,
       "defaultAddressId": "addr3",
       "createdAt": "2025-02-05T09:30:00Z",
@@ -26,15 +26,39 @@
     },
     {
       "id": "u3",
-      "name": "Le Van C",
-      "email": "c@example.com",
+      "name": "Lê Văn Cường",
+      "email": "cuong.le@example.com",
       "phone": "+84900000003",
-      "avatarUrl": "assets/logo/logo_light.jpg",
+      "avatarUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339581/user_avatar_3.jpg",
       "rewardPoints": 0,
-      "defaultAddressId": "addr5",
+      "defaultAddressId": "addr4",
       "createdAt": "2025-03-01T07:00:00Z",
       "updatedAt": "2025-03-10T07:45:00Z",
       "isActive": false
+    },
+    {
+      "id": "u4",
+      "name": "Phạm Thị Dung",
+      "email": "dung.pham@example.com",
+      "phone": "+84900000004",
+      "avatarUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339581/user_avatar_4.jpg",
+      "rewardPoints": 280,
+      "defaultAddressId": "addr5",
+      "createdAt": "2025-02-15T14:20:00Z",
+      "updatedAt": "2025-03-08T16:30:00Z",
+      "isActive": true
+    },
+    {
+      "id": "u5",
+      "name": "Hoàng Văn Em",
+      "email": "em.hoang@example.com",
+      "phone": "+84900000005",
+      "avatarUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339581/user_avatar_5.jpg",
+      "rewardPoints": 75,
+      "defaultAddressId": "addr6",
+      "createdAt": "2025-03-05T11:45:00Z",
+      "updatedAt": "2025-03-12T09:15:00Z",
+      "isActive": true
     }
   ]
 }

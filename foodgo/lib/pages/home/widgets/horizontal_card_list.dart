@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'food_card.dart';
 
 class HorizontalCardList extends StatelessWidget {
-  final List<String> assets;
-  const HorizontalCardList({super.key, required this.assets});
+  final List<Map<String, dynamic>> products;
+  const HorizontalCardList({super.key, required this.products});
 
   @override
   Widget build(BuildContext context) {
@@ -12,9 +12,16 @@ class HorizontalCardList extends StatelessWidget {
       height: 130,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
-        itemCount: assets.length,
+        itemCount: products.length,
         separatorBuilder: (_, __) => const SizedBox(width: 12),
-        itemBuilder: (_, i) => FoodCard(asset: assets[i]),
+        itemBuilder: (_, i) {
+          final product = products[i];
+          return FoodCard(
+            imageUrl: product['imageUrl'] ?? '',
+            name: product['name'] ?? '',
+            price: product['price'] ?? '',
+          );
+        },
       ),
     );
   }

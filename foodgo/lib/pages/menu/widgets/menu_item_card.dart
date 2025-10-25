@@ -4,6 +4,8 @@ import '../../../providers/auth_provider.dart';
 import '../../../providers/cart_provider.dart';
 import '../../../models/menu_item_model.dart';
 import '../../../widgets/custom_login_form.dart';
+import '../../../widgets/network_image_with_fallback.dart';
+import '../../product/product_detail_page.dart';
 
 class MenuItemCard extends StatelessWidget {
   final Map<String, dynamic> data;
@@ -18,18 +20,28 @@ class MenuItemCard extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(8),
-            child: Image.asset(
-              imageUrl,
-              width: 120,
-              height: 120,
-              fit: BoxFit.cover,
+      child: InkWell(
+        onTap: () {
+          final menuItem = MenuItemModel.fromJson(data);
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => ProductDetailPage(product: menuItem),
             ),
-          ),
+          );
+        },
+        borderRadius: BorderRadius.circular(12),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: FoodImage(
+                imageUrl: imageUrl,
+                width: 120,
+                height: 120,
+                fit: BoxFit.cover,
+              ),
+            ),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
@@ -78,6 +90,7 @@ class MenuItemCard extends StatelessWidget {
             },
           )
         ],
+        ),
       ),
     );
   }

@@ -1,5 +1,10 @@
 # Ignore Python virtual environment
 .venv/
 backend/.venv/
-foodgo/.env
+foodgo/assets/.env
+foodgo/FLOW_DOCUMENTATION.md
+foodgo/note.txt
+foodgo/Sate.txt
 backend/firebase-key.json
+Bieumau/
+PhieuTienDo.docx

@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import '../../../widgets/network_image_with_fallback.dart';
 
 class BannerCarousel extends StatelessWidget {
-  final List<String> assets;
+  final List<String> imageUrls;
   final int currentIndex;
   final ValueChanged<int> onPageChanged;
 
-  const BannerCarousel({super.key, required this.assets, required this.currentIndex, required this.onPageChanged});
+  const BannerCarousel({super.key, required this.imageUrls, required this.currentIndex, required this.onPageChanged});
 
   @override
   Widget build(BuildContext context) {
@@ -20,12 +21,13 @@ class BannerCarousel extends StatelessWidget {
       child: Stack(
         children: [
           PageView.builder(
-            itemCount: assets.length,
+            itemCount: imageUrls.length,
             onPageChanged: onPageChanged,
-            itemBuilder: (_, i) => Image.asset(
-              assets[i],
+            itemBuilder: (_, i) => NetworkImageWithFallback(
+              imageUrl: imageUrls[i],
               fit: BoxFit.cover,
               width: double.infinity,
+              height: 160,
             ),
           ),
           Positioned(
@@ -35,7 +37,7 @@ class BannerCarousel extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: List.generate(
-                assets.length,
+                imageUrls.length,
                 (i) => AnimatedContainer(
                   duration: const Duration(milliseconds: 250),
                   margin: const EdgeInsets.symmetric(horizontal: 4),

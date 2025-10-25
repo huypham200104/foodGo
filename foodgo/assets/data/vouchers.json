@@ -7,6 +7,7 @@
       "discountValue": 30000,
       "freeShip": false,
       "expiryDate": "2025-12-31T23:59:59Z",
+      "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339581/voucher_donDauTien.jpg",
       "minOrderValue": 150000,
       "restaurantId": "r1",
       "usageLimit": 100,
@@ -19,10 +20,24 @@
       "discountValue": 0,
       "freeShip": true,
       "expiryDate": "2025-08-31T23:59:59Z",
+      "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339581/voucher_freeship.jpg",
       "minOrderValue": 0,
       "restaurantId": "",
       "usageLimit": 500,
       "usedCount": 120
+    },
+    {
+      "id": "v3",
+      "title": "Thứ 3 Hàng Tuần",
+      "description": "Giảm 20% thứ 3",
+      "discountValue": 0,
+      "freeShip": false,
+      "expiryDate": "2025-12-31T23:59:59Z",
+      "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339581/voucher_t3HangTuan.jpg",
+      "minOrderValue": 100000,
+      "restaurantId": "",
+      "usageLimit": 200,
+      "usedCount": 45
     }
   ]
 }

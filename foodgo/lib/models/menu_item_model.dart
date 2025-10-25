@@ -7,6 +7,8 @@ class MenuItemModel {
   final List<Map<String, dynamic>> toppings;
   final List<String> ingredients;
   final bool isAvailable;
+  final String restaurantId;
+  final String category;
 
   MenuItemModel({
     required this.id,
@@ -17,6 +19,8 @@ class MenuItemModel {
     this.toppings = const [],
     this.ingredients = const [],
     this.isAvailable = true,
+    required this.restaurantId,
+    required this.category,
   });
 
   factory MenuItemModel.fromJson(Map<String, dynamic> json) => MenuItemModel(
@@ -31,6 +35,8 @@ class MenuItemModel {
     (json['ingredients'] as List?)?.map((e) => e.toString()).toList() ??
         [],
     isAvailable: json['isAvailable'] ?? true,
+    restaurantId: json['restaurantId'] ?? '',
+    category: json['category'] ?? '',
   );
 
   Map<String, dynamic> toJson() => {
@@ -42,5 +48,7 @@ class MenuItemModel {
     'toppings': toppings,
     'ingredients': ingredients,
     'isAvailable': isAvailable,
+    'restaurantId': restaurantId,
+    'category': category,
   };
 }

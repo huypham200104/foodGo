@@ -2,39 +2,69 @@
   "addresses": [
     {
       "id": "addr1",
-      "label": "Nhà",
-      "detail": "123 Lê Lợi, P. Bến Nghé",
+      "label": "Nhà riêng",
+      "detail": "123 Lê Lợi, Phường Bến Nghé",
       "latitude": 10.776889,
       "longitude": 106.700806,
       "userId": "u1",
       "isDefault": true,
-      "city": "HCM",
-      "district": "Q1",
-      "ward": "Bến Nghé"
+      "city": "Thành phố Hồ Chí Minh",
+      "ward": "Phường Bến Nghé"
     },
     {
       "id": "addr2",
-      "label": "Cơ quan",
-      "detail": "45 Hai Bà Trưng, P. Bến Nghé",
+      "label": "Cơ quan làm việc",
+      "detail": "45 Hai Bà Trưng, Phường Bến Nghé",
       "latitude": 10.780321,
       "longitude": 106.701234,
       "userId": "u1",
       "isDefault": false,
-      "city": "HCM",
-      "district": "Q1",
-      "ward": "Bến Nghé"
+      "city": "Thành phố Hồ Chí Minh",
+      "ward": "Phường Bến Nghé"
     },
     {
       "id": "addr3",
-      "label": "Nhà",
-      "detail": "12 Nguyễn Huệ, P. Bến Nghé",
+      "label": "Nhà riêng",
+      "detail": "12 Nguyễn Huệ, Phường Bến Nghé",
       "latitude": 10.773211,
       "longitude": 106.704567,
       "userId": "u2",
       "isDefault": true,
-      "city": "HCM",
-      "district": "Q1",
-      "ward": "Bến Nghé"
+      "city": "Thành phố Hồ Chí Minh",
+      "ward": "Phường Bến Nghé"
+    },
+    {
+      "id": "addr4",
+      "label": "Nhà riêng",
+      "detail": "78 Lý Tự Trọng, Phường Bến Thành",
+      "latitude": 10.772000,
+      "longitude": 106.698000,
+      "userId": "u3",
+      "isDefault": true,
+      "city": "Thành phố Hồ Chí Minh",
+      "ward": "Phường Bến Thành"
+    },
+    {
+      "id": "addr5",
+      "label": "Công ty",
+      "detail": "156 Nguyễn Thị Minh Khai, Phường 6",
+      "latitude": 10.785000,
+      "longitude": 106.695000,
+      "userId": "u4",
+      "isDefault": false,
+      "city": "Thành phố Hồ Chí Minh",
+      "ward": "Phường 6"
+    },
+    {
+      "id": "addr6",
+      "label": "Nhà riêng",
+      "detail": "89 Điện Biên Phủ, Phường 15",
+      "latitude": 10.790000,
+      "longitude": 106.710000,
+      "userId": "u5",
+      "isDefault": true,
+      "city": "Thành phố Hồ Chí Minh",
+      "ward": "Phường 15"
     }
   ]
 }

@@ -4,6 +4,7 @@ import '../../core/theme/app_colors.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/theme_provider.dart';
 import '../../widgets/custom_confirm_button.dart';
+import '../../widgets/network_image_with_fallback.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -95,8 +96,8 @@ class _ProfilePageState extends State<ProfilePage> {
                       Positioned(
                         left: 0,
                         top: 0,
-                        child: Image.asset(
-                          'assets/doAn/pizza_HaiSan.png',
+                        child: FoodImage(
+                          imageUrl: 'https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339581/pizza_HaiSan.png',
                           width: 80,
                           height: 80,
                           fit: BoxFit.cover,
@@ -105,8 +106,8 @@ class _ProfilePageState extends State<ProfilePage> {
                       Positioned(
                         right: 0,
                         bottom: 0,
-                        child: Image.asset(
-                          'assets/doAn/kemLy.png',
+                        child: FoodImage(
+                          imageUrl: 'https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339581/kemLy.png',
                           width: 60,
                           height: 60,
                           fit: BoxFit.cover,
@@ -127,13 +128,9 @@ class _ProfilePageState extends State<ProfilePage> {
                                 border: Border.all(color: Colors.white, width: 3),
                               ),
                               child: authProvider.isLoggedIn
-                                  ? CircleAvatar(
-                                      backgroundImage: authProvider.currentUser?.avatarUrl != null
-                                          ? NetworkImage(authProvider.currentUser!.avatarUrl)
-                                          : null,
-                                      child: authProvider.currentUser?.avatarUrl == null
-                                          ? const Icon(Icons.person, size: 40, color: Colors.grey)
-                                          : null,
+                                  ? AvatarImage(
+                                      imageUrl: authProvider.currentUser?.avatarUrl ?? '',
+                                      size: 60,
                                     )
                                   : const Icon(Icons.person, size: 40, color: Colors.grey),
                             ),

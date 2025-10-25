@@ -4,6 +4,10 @@ class AddressModel {
   final String detail;
   final double latitude;
   final double longitude;
+  final String userId;
+  final bool isDefault;
+  final String city;
+  final String ward;
 
   AddressModel({
     required this.id,
@@ -11,6 +15,10 @@ class AddressModel {
     required this.detail,
     required this.latitude,
     required this.longitude,
+    required this.userId,
+    required this.isDefault,
+    required this.city,
+    required this.ward,
   });
 
   factory AddressModel.fromJson(Map<String, dynamic> json) => AddressModel(
@@ -19,6 +27,10 @@ class AddressModel {
     detail: json['detail'] ?? '',
     latitude: (json['latitude'] ?? 0).toDouble(),
     longitude: (json['longitude'] ?? 0).toDouble(),
+    userId: json['userId'] ?? '',
+    isDefault: json['isDefault'] ?? false,
+    city: json['city'] ?? '',
+    ward: json['ward'] ?? '',
   );
 
   Map<String, dynamic> toJson() => {
@@ -27,5 +39,9 @@ class AddressModel {
     'detail': detail,
     'latitude': latitude,
     'longitude': longitude,
+    'userId': userId,
+    'isDefault': isDefault,
+    'city': city,
+    'ward': ward,
   };
 }

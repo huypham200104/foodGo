@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:foodgo/pages/my_app.dart';
 import 'package:foodgo/upload_seed.dart';
-import 'core/firebase/firebase_options.dart'; // Tự động tạo bởi FlutterFire CLI
-import 'pages/my_app.dart';
+import 'core/firebase/firebase_options.dart';
+import 'core/routes/route_generator.dart'; // Import route generator
+import 'core/routes/app_routes.dart'; // Import app routes
 import 'services/cloudinary_service.dart';
 
 Future<void> _clearCollections(List<String> collectionNames) async {
@@ -38,21 +40,21 @@ Future<void> main() async {
 
   //Xóa dữ liệu cũ rồi seed lại
 
-  await _clearCollections([
-    'users',
-    'addresses',
-    'restaurants',
-    'menu_items',
-    'vouchers',
-    'rewards',
-    'cart_items',
-    'orders',
-    'reviews',
-    'complaints',
-  ]);
+  // await _clearCollections([
+  //   'users',
+  //   'addresses',
+  //   'restaurants',
+  //   'menu_items',
+  //   'vouchers',
+  //   'rewards',
+  //   'cart_items',
+  //   'orders',
+  //   'reviews',
+  //   'complaints',
+  // ]);
+  //
+  // await uploadAllSeeds();
 
-  await uploadAllSeeds();
-
-  // Chạy app
+  // Chạy app với routing system
   runApp(const MyApp());
 }

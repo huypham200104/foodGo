@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import '../../models/menu_item_model.dart';
+import '../../core/routes/app_routes.dart';
 
 import 'widgets/menu_category_tabs.dart';
 import 'widgets/menu_item_card.dart';
@@ -91,12 +93,25 @@ class _MenuList extends StatelessWidget {
         }
 
         return ListView.separated(
-          padding: const EdgeInsets.symmetric(vertical: 8),
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
           itemBuilder: (context, index) {
             final data = docs[index].data();
-            return MenuItemCard(data: data);
+            data['id'] = docs[index].id; // Thêm ID vào data
+            
+            // Tạo MenuItemModel từ data
+            final menuItem = MenuItemModel.fromJson(data);
+            
+            return MenuItemCard(
+              item: menuItem, // Truyền MenuItemModel thay vì Map
+              onTap: () {
+                Navigator.of(context).pushNamed(
+                  AppRoutes.productDetail,
+                  arguments: menuItem,
+                );
+              },
+            );
           },
-          separatorBuilder: (_, __) => const Divider(height: 1),
+          separatorBuilder: (_, __) => const SizedBox(height: 8),
           itemCount: docs.length,
         );
       },

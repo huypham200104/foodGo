@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../providers/theme_provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../models/voucher_model.dart';
+import '../../core/routes/app_routes.dart'; // Thêm import này
 import 'widgets/top_bar.dart';
 import 'widgets/search_field.dart';
 import 'widgets/banner_carousel.dart';
@@ -15,7 +16,7 @@ import '../menu/menu_page.dart';
 import '../notification/notification_page.dart';
 import '../cart/cart_page.dart';
 import '../profile/profile_page.dart';
-import '../../widgets/custom_login_form.dart';
+// import '../../widgets/custom_login_form.dart'; // Comment lại vì không dùng nữa
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -111,18 +112,20 @@ class _HomePageState extends State<HomePage> {
             onTap: (i) {
               setState(() => _currentTab = i);
               if (i == 1) {
-                Navigator.of(context).push(MaterialPageRoute(builder: (_) => const NotificationPage()));
+                Navigator.of(context).pushNamed(AppRoutes.notification); // Sử dụng routing system
               } else if (i == 2) {
                 if (authProvider.isLoggedIn) {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (_) => const CartPage()));
+                  Navigator.of(context).pushNamed(AppRoutes.cart); // Sử dụng routing system
                 } else {
-                  _showCustomLoginForm(context, 'Giỏ hàng', 'Vui lòng đăng nhập để xem giỏ hàng của bạn');
+                  // Chuyển đến LoginPage thay vì hiển thị CustomLoginForm
+                  Navigator.of(context).pushNamed(AppRoutes.login);
                 }
               } else if (i == 3) {
                 if (authProvider.isLoggedIn) {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (_) => const ProfilePage()));
+                  Navigator.of(context).pushNamed(AppRoutes.profile); // Sử dụng routing system
                 } else {
-                  _showCustomLoginForm(context, 'Tài khoản', 'Vui lòng đăng nhập để quản lý tài khoản của bạn');
+                  // Chuyển đến LoginPage thay vì hiển thị CustomLoginForm
+                  Navigator.of(context).pushNamed(AppRoutes.login);
                 }
               }
             },
@@ -141,9 +144,7 @@ class _HomePageState extends State<HomePage> {
       floatingActionButton: FloatingActionButton(
         heroTag: 'menu_fab',
         onPressed: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(builder: (_) => const MenuPage()),
-          );
+          Navigator.of(context).pushNamed(AppRoutes.menu); // Sử dụng routing system
         },
         child: const Icon(Icons.restaurant_menu_rounded),
       ),
@@ -151,23 +152,5 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void _showCustomLoginForm(BuildContext context, String title, String message) {
-    showDialog(
-      context: context,
-      barrierDismissible: true,
-      builder: (BuildContext context) {
-        return CustomLoginForm(
-          title: title,
-          message: message,
-          onSuccess: () {
-            if (title == 'Giỏ hàng') {
-              Navigator.of(context).push(MaterialPageRoute(builder: (_) => const CartPage()));
-            } else if (title == 'Tài khoản') {
-              Navigator.of(context).push(MaterialPageRoute(builder: (_) => const ProfilePage()));
-            }
-          },
-        );
-      },
-    );
-  }
+  // Xóa hàm _showCustomLoginForm vì không dùng nữa
 }

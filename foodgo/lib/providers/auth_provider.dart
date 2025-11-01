@@ -194,4 +194,10 @@ class AuthProvider extends ChangeNotifier {
         return 'Lỗi xác thực: $errorCode';
     }
   }
+
+  // Khi đăng nhập thành công
+  Future<void> _setCurrentUser(User firebaseUser) async {
+    _currentUser = UserModel.fromFirebaseUser(firebaseUser);
+    notifyListeners();
+  }
 }

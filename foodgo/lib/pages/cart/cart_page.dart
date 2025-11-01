@@ -4,7 +4,9 @@ import 'package:provider/provider.dart';
 import '../../providers/cart_provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../models/cart_item_model.dart';
-import '../../pages/auth/login_page.dart';
+import '../../core/routes/app_routes.dart';
+import '../../core/theme/app_colors.dart';
+import '../../widgets/network_image_with_fallback.dart';
 
 class CartPage extends StatefulWidget {
   const CartPage({super.key});
@@ -21,7 +23,7 @@ class _CartPageState extends State<CartPage> {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
       if (authProvider.isLoggedIn) {
         final cartProvider = Provider.of<CartProvider>(context, listen: false);
-        cartProvider.loadCartItems(authProvider.currentUser!.id);
+        cartProvider.loadCartItems(authProvider.currentUser?.id ?? '');
       }
     });
   }
@@ -29,7 +31,10 @@ class _CartPageState extends State<CartPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Giỏ hàng')),
+      appBar: AppBar(
+        title: const Text('Giỏ hàng'),
+        centerTitle: true,
+      ),
       body: Consumer2<AuthProvider, CartProvider>(
         builder: (context, authProvider, cartProvider, child) {
           // Check if user is logged in
@@ -41,7 +46,7 @@ class _CartPageState extends State<CartPage> {
             return const Center(child: CircularProgressIndicator());
           }
 
-          if (cartProvider.cartItems.isEmpty) {
+          if (cartProvider.items.isEmpty) { // Sửa từ cartItems thành items
             return const _EmptyCart();
           }
 
@@ -49,10 +54,10 @@ class _CartPageState extends State<CartPage> {
             children: [
               Expanded(
                 child: ListView.separated(
-                  itemCount: cartProvider.cartItems.length,
+                  itemCount: cartProvider.items.length, // Sửa từ cartItems thành items
                   separatorBuilder: (_, __) => const Divider(height: 1),
                   itemBuilder: (context, index) {
-                    final cartItem = cartProvider.cartItems[index];
+                    final cartItem = cartProvider.items[index]; // Sửa từ cartItems thành items
                     return _CartItemTile(
                       cartItem: cartItem,
                       onQuantityChanged: (newQuantity) {
@@ -95,9 +100,7 @@ class _CartPageState extends State<CartPage> {
           const SizedBox(height: 24),
           ElevatedButton(
             onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const LoginPage()),
-              );
+              Navigator.of(context).pushNamed(AppRoutes.login); // Sử dụng routing system
             },
             child: const Text('Đăng nhập'),
           ),
@@ -109,17 +112,39 @@ class _CartPageState extends State<CartPage> {
 
 class _EmptyCart extends StatelessWidget {
   const _EmptyCart();
+  
   @override
   Widget build(BuildContext context) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(Icons.shopping_bag_outlined, size: 96),
+          const Icon(Icons.shopping_bag_outlined, size: 96, color: Colors.grey),
           const SizedBox(height: 12),
-          Text('Giỏ hàng trống', style: Theme.of(context).textTheme.titleMedium),
+          Text(
+            'Giỏ hàng trống',
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              color: Colors.grey[600],
+            ),
+          ),
           const SizedBox(height: 8),
-          Text('Hãy thêm món để tiếp tục.', style: Theme.of(context).textTheme.bodyMedium),
+          Text(
+            'Hãy thêm món để tiếp tục.',
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: Colors.grey[500],
+            ),
+          ),
+          const SizedBox(height: 24),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).pushNamed(AppRoutes.menu);
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.primary,
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('Xem thực đơn'),
+          ),
         ],
       ),
     );
@@ -138,7 +163,11 @@ class _CartTotal extends StatelessWidget {
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 12, offset: const Offset(0, -2)),
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 12,
+            offset: const Offset(0, -2),
+          ),
         ],
       ),
       child: SafeArea(
@@ -149,17 +178,48 @@ class _CartTotal extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Tổng cộng', style: Theme.of(context).textTheme.labelMedium),
+                  Text(
+                    'Tổng cộng',
+                    style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                      color: Colors.grey[600],
+                    ),
+                  ),
                   const SizedBox(height: 4),
-                  Text(_formatVnd(total), style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800)),
+                  Text(
+                    _formatVnd(total),
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.w800,
+                      color: AppColors.primary,
+                    ),
+                  ),
                 ],
               ),
             ),
             SizedBox(
               width: 160,
-              child: ElevatedButton(
-                onPressed: onCheckout,
-                child: const Text('Đặt hàng'),
+              child: Container(
+                height: 48,
+                decoration: BoxDecoration(
+                  gradient: AppColors.buttonGradient,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: ElevatedButton(
+                  onPressed: onCheckout,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.transparent,
+                    shadowColor: Colors.transparent,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: const Text(
+                    'Đặt hàng',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
               ),
             ),
           ],
@@ -193,33 +253,121 @@ class _CartItemTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      leading: ClipRRect(
-        borderRadius: BorderRadius.circular(8),
-        child: Image.asset(
-          cartItem.item.imageUrl,
-          width: 56,
-          height: 56,
-          fit: BoxFit.cover,
-        ),
-      ),
-      title: Text(
-        cartItem.item.name,
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-      ),
-      subtitle: Text(_formatVnd(cartItem.item.price)),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
+    return Container(
+      padding: const EdgeInsets.all(16),
+      child: Row(
         children: [
-          IconButton(
-            icon: const Icon(Icons.remove_circle_outline),
-            onPressed: () => onQuantityChanged(cartItem.quantity - 1),
+          // Hình ảnh sản phẩm
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: NetworkImageWithFallback(
+              imageUrl: cartItem.item.imageUrl,
+              width: 60,
+              height: 60,
+              fit: BoxFit.cover,
+            ),
           ),
-          Text('${cartItem.quantity}'),
-          IconButton(
-            icon: const Icon(Icons.add_circle_outline),
-            onPressed: () => onQuantityChanged(cartItem.quantity + 1),
+          const SizedBox(width: 12),
+
+          // Thông tin sản phẩm
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  cartItem.item.name,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  _formatVnd(cartItem.item.price),
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.grey[600],
+                  ),
+                ),
+                if (cartItem.note.isNotEmpty) ...[
+                  const SizedBox(height: 4),
+                  Text(
+                    'Ghi chú: ${cartItem.note}',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey[500],
+                      fontStyle: FontStyle.italic,
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+
+          // Điều khiển số lượng
+          Column(
+            children: [
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.remove_circle_outline),
+                    onPressed: cartItem.quantity > 1 
+                        ? () => onQuantityChanged(cartItem.quantity - 1)
+                        : null,
+                    iconSize: 20,
+                    constraints: const BoxConstraints(
+                      minWidth: 32,
+                      minHeight: 32,
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey[300]!),
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    child: Text(
+                      '${cartItem.quantity}',
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.add_circle_outline),
+                    onPressed: () => onQuantityChanged(cartItem.quantity + 1),
+                    iconSize: 20,
+                    constraints: const BoxConstraints(
+                      minWidth: 32,
+                      minHeight: 32,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              GestureDetector(
+                onTap: onRemove,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: Colors.red[50],
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: Text(
+                    'Xóa',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.red[600],
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -236,4 +384,5 @@ class _CartItemTile extends StatelessWidget {
     }
     return '${buf.toString()} đ';
   }
+
 }

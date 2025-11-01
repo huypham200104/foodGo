@@ -1,43 +1,77 @@
 import 'package:flutter/material.dart';
-import 'package:foodgo/core/theme/app_colors.dart';
+import '../../../core/theme/app_colors.dart';
 
-class InputField extends StatelessWidget {
+class InputField extends StatefulWidget {
+  final String hintText;
+  final TextInputType? keyboardType;
+  final bool obscureText;
+  final IconData? icon;
+  final TextEditingController? controller;
+
   const InputField({
     super.key,
     required this.hintText,
     this.keyboardType,
     this.obscureText = false,
-    this.icon, // ✅ thêm icon
+    this.icon,
+    this.controller,
   });
 
-  final String hintText;
-  final TextInputType? keyboardType;
-  final bool obscureText;
-  final IconData? icon; // ✅ thêm dòng này
+  @override
+  State<InputField> createState() => _InputFieldState();
+}
+
+class _InputFieldState extends State<InputField> {
+  bool _isObscured = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _isObscured = widget.obscureText;
+  }
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      keyboardType: keyboardType,
-      obscureText: obscureText,
-      style: const TextStyle(fontFamily: 'Nunito'),
-      decoration: InputDecoration(
-        prefixIcon: icon != null
-            ? Icon(icon, color: AppColors.primary)
-            : null, // ✅ thêm icon ở đây
-        hintText: hintText,
-        hintStyle: const TextStyle(fontFamily: 'Nunito'),
-        filled: true,
-        fillColor: AppColors.inputFill,
-        contentPadding:
-        const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: const BorderSide(color: Colors.transparent),
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.grey[50],
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.grey[200]!),
+      ),
+      child: TextField(
+        controller: widget.controller,
+        keyboardType: widget.keyboardType,
+        obscureText: widget.obscureText ? _isObscured : false,
+        style: const TextStyle(
+          fontFamily: 'Nunito',
+          fontSize: 16,
+          fontWeight: FontWeight.w500,
         ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: const BorderSide(color: AppColors.primary),
+        decoration: InputDecoration(
+          hintText: widget.hintText,
+          hintStyle: TextStyle(
+            fontFamily: 'Nunito',
+            color: Colors.grey[400],
+            fontSize: 16,
+          ),
+          prefixIcon: widget.icon != null 
+              ? Icon(widget.icon, color: Colors.grey[400]) 
+              : null,
+          suffixIcon: widget.obscureText
+              ? IconButton(
+                  icon: Icon(
+                    _isObscured ? Icons.visibility_off : Icons.visibility,
+                    color: Colors.grey[400],
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      _isObscured = !_isObscured;
+                    });
+                  },
+                )
+              : null,
+          border: InputBorder.none,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         ),
       ),
     );

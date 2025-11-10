@@ -4,37 +4,18 @@ import 'package:provider/provider.dart';
 import 'app_routes.dart';
 import '../../pages/home/home_page.dart';
 import '../../pages/auth/login_page.dart';
-import '../../pages/auth/signup_page.dart'; // Sửa từ register_page.dart thành signup_page.dart
-// import '../../pages/auth/forgot_password_page.dart'; // Comment lại vì chưa có file này
+import '../../pages/auth/signup_page.dart';
 import '../../pages/menu/menu_page.dart';
-// import '../../pages/menu/menu_category_page.dart'; // Comment lại vì chưa có file này
-import '../../pages/product/product_detail_page.dart'; // Sửa đường dẫn từ menu/product_detail_page.dart
-// import '../../pages/menu/search_page.dart'; // Comment lại vì chưa có file này
+import '../../pages/product/product_detail_page.dart';
 import '../../pages/cart/cart_page.dart';
-// import '../../pages/cart/checkout_page.dart'; // Comment lại vì chưa có file này
+import '../../pages/checkout/checkout_page.dart';
 import '../../pages/profile/profile_page.dart';
-// import '../../pages/profile/edit_profile_page.dart'; // Comment lại vì chưa có file này
-// import '../../pages/profile/addresses_page.dart'; // Comment lại vì chưa có file này
-// import '../../pages/profile/add_address_page.dart'; // Comment lại vì chưa có file này
-// import '../../pages/profile/edit_address_page.dart'; // Comment lại vì chưa có file này
-// import '../../pages/profile/settings_page.dart'; // Comment lại vì chưa có file này
-// import '../../pages/profile/change_password_page.dart'; // Comment lại vì chưa có file này
-// import '../../pages/order/order_history_page.dart'; // Comment lại vì chưa có file này
-// import '../../pages/order/order_detail_page.dart'; // Comment lại vì chưa có file này
-// import '../../pages/order/order_tracking_page.dart'; // Comment lại vì chưa có file này
 import '../../pages/notification/notification_page.dart';
-// import '../../pages/voucher/vouchers_page.dart'; // Comment lại vì chưa có file này
-// import '../../pages/review/reviews_page.dart'; // Comment lại vì chưa có file này
-// import '../../pages/review/write_review_page.dart'; // Comment lại vì chưa có file này
-// import '../../pages/other/help_page.dart'; // Comment lại vì chưa có file này
-// import '../../pages/other/about_page.dart'; // Comment lại vì chưa có file này
-// import '../../pages/other/terms_of_service_page.dart'; // Comment lại vì chưa có file này
-// import '../../pages/other/privacy_policy_page.dart'; // Comment lại vì chưa có file này
+import '../../pages/orders/order_history_page.dart'; // Thêm import này
 import '../../pages/error/not_found_page.dart';
 import '../../providers/auth_provider.dart';
 import '../../models/menu_item_model.dart';
-// import '../../models/order_model.dart'; // Comment lại vì chưa dùng
-// import '../../models/address_model.dart'; // Comment lại vì chưa dùng
+import '../../pages/address/address_list_page.dart'; // Thêm import
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -46,10 +27,7 @@ class RouteGenerator {
         return _createRoute(const LoginPage());
       
       case AppRoutes.register:
-        return _createRoute(const SignupPage()); // Sửa từ RegisterPage thành SignupPage
-      
-      // case AppRoutes.forgotPassword:
-      //   return _createRoute(const ForgotPasswordPage());
+        return _createRoute(const SignupPage());
 
       // Main navigation routes
       case AppRoutes.home:
@@ -68,90 +46,40 @@ class RouteGenerator {
         return _createRoute(const NotificationPage());
 
       // Menu & Product routes
-      // case AppRoutes.menuCategory:
-      //   if (args is String) {
-      //     return _createRoute(MenuCategoryPage(category: args));
-      //   }
-      //   return _errorRoute('Menu category argument is required');
-      
       case AppRoutes.productDetail:
         if (args is MenuItemModel) {
           return _createRoute(ProductDetailPage(product: args));
         }
         return _errorRoute('Product detail argument is required');
-      
-      // case AppRoutes.search:
-      //   final searchQuery = args as String?;
-      //   return _createRoute(SearchPage(initialQuery: searchQuery));
 
-      // Order routes - Comment lại vì chưa có files
-      // case AppRoutes.checkout:
-      //   return _protectedRoute(const CheckoutPage());
+      // Order routes
+      case AppRoutes.checkout:
+        return _protectedRoute(const CheckoutPage());
       
-      // case AppRoutes.orderHistory:
-      //   return _protectedRoute(const OrderHistoryPage());
+      case AppRoutes.orderHistory: // Thêm route này
+        return _protectedRoute(const OrderHistoryPage());
       
-      // case AppRoutes.orderDetail:
-      //   if (args is String) {
-      //     return _protectedRoute(OrderDetailPage(orderId: args));
-      //   }
-      //   return _errorRoute('Order ID is required');
+      // Temporary routes cho các trang chưa có (để tránh crash)
+      case AppRoutes.addresses:
+        return _protectedRoute(const AddressListPage());
       
-      // case AppRoutes.orderTracking:
-      //   if (args is String) {
-      //     return _protectedRoute(OrderTrackingPage(orderId: args));
-      //   }
-      //   return _errorRoute('Order ID is required');
-
-      // Profile routes - Comment lại vì chưa có files
-      // case AppRoutes.editProfile:
-      //   return _protectedRoute(const EditProfilePage());
+      case AppRoutes.paymentMethods:
+        return _temporaryRoute('Phương thức thanh toán', 'Tính năng đang phát triển');
       
-      // case AppRoutes.addresses:
-      //   return _protectedRoute(const AddressesPage());
+      case AppRoutes.favorites:
+        return _temporaryRoute('Yêu thích', 'Tính năng đang phát triển');
       
-      // case AppRoutes.addAddress:
-      //   return _protectedRoute(const AddAddressPage());
+      case AppRoutes.notifications:
+        return _temporaryRoute('Cài đặt thông báo', 'Tính năng đang phát triển');
       
-      // case AppRoutes.editAddress:
-      //   if (args is AddressModel) {
-      //     return _protectedRoute(EditAddressPage(address: args));
-      //   }
-      //   return _errorRoute('Address argument is required');
+      case AppRoutes.help:
+        return _temporaryRoute('Trợ giúp & Hỗ trợ', 'Tính năng đang phát triển');
       
-      // case AppRoutes.settings:
-      //   return _protectedRoute(const SettingsPage());
+      case AppRoutes.about:
+        return _temporaryRoute('Về ứng dụng', 'Thông tin về FoodGo App');
       
-      // case AppRoutes.changePassword:
-      //   return _protectedRoute(const ChangePasswordPage());
-
-      // Other routes - Comment lại vì chưa có files
-      // case AppRoutes.vouchers:
-      //   return _protectedRoute(const VouchersPage());
-      
-      // case AppRoutes.reviews:
-      //   if (args is String) {
-      //     return _createRoute(ReviewsPage(productId: args));
-      //   }
-      //   return _errorRoute('Product ID is required');
-      
-      // case AppRoutes.writeReview:
-      //   if (args is String) {
-      //     return _protectedRoute(WriteReviewPage(productId: args));
-      //   }
-      //   return _errorRoute('Product ID is required');
-      
-      // case AppRoutes.help:
-      //   return _createRoute(const HelpPage());
-      
-      // case AppRoutes.about:
-      //   return _createRoute(const AboutPage());
-      
-      // case AppRoutes.termsOfService:
-      //   return _createRoute(const TermsOfServicePage());
-      
-      // case AppRoutes.privacyPolicy:
-      //   return _createRoute(const PrivacyPolicyPage());
+      case AppRoutes.orderDetail:
+        return _temporaryRoute('Chi tiết đơn hàng', 'Tính năng đang phát triển');
 
       // Default case
       default:
@@ -215,6 +143,96 @@ class RouteGenerator {
         );
       },
       transitionDuration: const Duration(milliseconds: 300),
+    );
+  }
+
+  // Route tạm thời cho các trang chưa implement
+  static PageRouteBuilder _temporaryRoute(String title, String message) {
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => Scaffold(
+        backgroundColor: const Color(0xFFF8F9FA),
+        appBar: AppBar(
+          title: Text(
+            title,
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+              color: Color(0xFF1A1A1A),
+            ),
+          ),
+          backgroundColor: Colors.white,
+          elevation: 0,
+          centerTitle: true,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Color(0xFF1A1A1A)),
+            onPressed: () => Navigator.pop(context),
+          ),
+        ),
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(32.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  width: 80,
+                  height: 80,
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFFFF6B6B), Color(0xFFFF8E8E)],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.construction,
+                    color: Colors.white,
+                    size: 40,
+                  ),
+                ),
+                const SizedBox(height: 24),
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xFF1A1A1A),
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  message,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    color: Color(0xFF6B7280),
+                    height: 1.4,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 32),
+                ElevatedButton.icon(
+                  onPressed: () => Navigator.pop(context),
+                  icon: const Icon(Icons.arrow_back),
+                  label: const Text('Quay lại'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFFFF6B6B),
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        return FadeTransition(opacity: animation, child: child);
+      },
     );
   }
 

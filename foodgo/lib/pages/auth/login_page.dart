@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:foodgo/core/theme/app_colors.dart';
-import 'package:foodgo/pages/auth/widgets/input_field.dart';
-import 'package:foodgo/pages/auth/otp_verification_page.dart';
 import 'package:foodgo/core/routes/app_routes.dart';
+import 'package:foodgo/services/screen_service.dart';
+import 'package:foodgo/pages/auth/otp_verification_page.dart';
+import 'package:foodgo/pages/auth/widgets/login_header.dart';
+import 'package:foodgo/pages/auth/widgets/login_tab_bar.dart';
+import 'package:foodgo/pages/auth/widgets/email_login_form.dart';
+import 'package:foodgo/pages/auth/widgets/phone_login_form.dart';
+import 'package:foodgo/pages/auth/widgets/login_divider.dart';
+import 'package:foodgo/pages/auth/widgets/register_button.dart';
+import 'package:foodgo/pages/auth/widgets/back_to_home_button.dart'; // ← Import BackToHomeButton
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -16,11 +22,9 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
   late TabController _tabController;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   
-  // Email/Password controllers
+  // Controllers
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  
-  // Phone controllers
   final TextEditingController _phoneController = TextEditingController();
   
   bool _isLoading = false;
@@ -40,6 +44,76 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
     super.dispose();
   }
 
+  @override
+  Widget build(BuildContext context) {
+    ScreenService.init(context);
+    
+    return Scaffold(
+      backgroundColor: Colors.white,
+      resizeToAvoidBottomInset: true,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: EdgeInsets.symmetric(horizontal: ScreenService.smallSpacing + 8),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              // Header với logo và tiêu đề
+              const LoginHeader(),
+              
+              // Tab selector
+              LoginTabBar(tabController: _tabController),
+              SizedBox(height: ScreenService.sectionSpacing + 8),
+              
+              // Tab content
+              Container(
+                height: _calculateTabContentHeight(),
+                child: TabBarView(
+                  controller: _tabController,
+                  physics: const NeverScrollableScrollPhysics(),
+                  children: [
+                    EmailLoginForm(
+                      emailController: _emailController,
+                      passwordController: _passwordController,
+                      onSignIn: _signInWithEmailPassword,
+                      isLoading: _isLoading,
+                    ),
+                    PhoneLoginForm(
+                      phoneController: _phoneController,
+                      onSendOTP: _signInWithPhone,
+                      isLoading: _isLoading,
+                    ),
+                  ],
+                ),
+              ),
+              
+              SizedBox(height: ScreenService.sectionSpacing),
+              
+              // Divider
+              const LoginDivider(),
+              SizedBox(height: ScreenService.sectionSpacing),
+
+              // Register button
+              const RegisterButton(),
+              SizedBox(height: ScreenService.mediumSpacing), // ← Giảm khoảng cách
+              
+              // Back to Home button - THÊM MỚI
+              const BackToHomeButton(),
+              SizedBox(height: ScreenService.largeSpacing + 8),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // Tính toán chiều cao TabBarView
+  double _calculateTabContentHeight() {
+    double emailFormHeight = 56 + ScreenService.formSpacing + 56 + ScreenService.sectionSpacing + 56 + 8;
+    double phoneFormHeight = 56 + ScreenService.formSpacing + 40 + ScreenService.sectionSpacing + 56 + 8;
+    return emailFormHeight > phoneFormHeight ? emailFormHeight : phoneFormHeight;
+  }
+
+  // Auth methods
   Future<void> _signInWithEmailPassword() async {
     if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
       _showErrorSnackBar('Vui lòng nhập đầy đủ thông tin');
@@ -58,21 +132,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
         Navigator.of(context).pushReplacementNamed(AppRoutes.home);
       }
     } on FirebaseAuthException catch (e) {
-      String message = 'Đăng nhập thất bại';
-      switch (e.code) {
-        case 'user-not-found':
-          message = 'Không tìm thấy tài khoản với email này';
-          break;
-        case 'wrong-password':
-          message = 'Mật khẩu không chính xác';
-          break;
-        case 'invalid-email':
-          message = 'Email không hợp lệ';
-          break;
-        case 'user-disabled':
-          message = 'Tài khoản đã bị vô hiệu hóa';
-          break;
-      }
+      String message = _getFirebaseErrorMessage(e);
       _showErrorSnackBar(message);
     } catch (e) {
       _showErrorSnackBar('Có lỗi xảy ra. Vui lòng thử lại');
@@ -87,56 +147,76 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
       return;
     }
 
-    String phoneNumber = _phoneController.text.trim();
-    if (!phoneNumber.startsWith('+84')) {
-      phoneNumber = '+84${phoneNumber.substring(1)}';
-    }
-
+    String phoneNumber = _formatPhoneNumber(_phoneController.text.trim());
     setState(() => _isLoading = true);
 
     try {
       await _auth.verifyPhoneNumber(
         phoneNumber: phoneNumber,
-        verificationCompleted: (PhoneAuthCredential credential) async {
-          await _auth.signInWithCredential(credential);
-          if (mounted) {
-            Navigator.of(context).pushReplacementNamed(AppRoutes.home);
-          }
-        },
-        verificationFailed: (FirebaseAuthException e) {
-          String message = 'Xác thực số điện thoại thất bại';
-          if (e.code == 'billing-not-enabled') {
-            message = 'Dịch vụ OTP chưa được kích hoạt. Vui lòng sử dụng email để đăng nhập.';
-          } else {
-            switch (e.code) {
-              case 'invalid-phone-number':
-                message = 'Số điện thoại không hợp lệ';
-                break;
-              case 'too-many-requests':
-                message = 'Quá nhiều yêu cầu. Vui lòng thử lại sau';
-                break;
-            }
-          }
-          _showErrorSnackBar(message);
-          setState(() => _isLoading = false);
-        },
-        codeSent: (String verificationId, int? resendToken) {
-          setState(() => _isLoading = false);
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => OtpVerificationPage(
-                verificationId: verificationId,
-                phoneNumber: phoneNumber,
-              ),
-            ),
-          );
-        },
+        verificationCompleted: _onVerificationCompleted,
+        verificationFailed: _onVerificationFailed,
+        codeSent: _onCodeSent,
         codeAutoRetrievalTimeout: (String verificationId) {},
       );
     } catch (e) {
       _showErrorSnackBar('Có lỗi xảy ra. Vui lòng thử lại');
       setState(() => _isLoading = false);
     }
+  }
+
+  // Helper methods
+  String _formatPhoneNumber(String phoneNumber) {
+    if (!phoneNumber.startsWith('+84')) {
+      return '+84${phoneNumber.substring(1)}';
+    }
+    return phoneNumber;
+  }
+
+  String _getFirebaseErrorMessage(FirebaseAuthException e) {
+    switch (e.code) {
+      case 'user-not-found':
+        return 'Không tìm thấy tài khoản với email này';
+      case 'wrong-password':
+        return 'Mật khẩu không chính xác';
+      case 'invalid-email':
+        return 'Email không hợp lệ';
+      case 'user-disabled':
+        return 'Tài khoản đã bị vô hiệu hóa';
+      default:
+        return 'Đăng nhập thất bại';
+    }
+  }
+
+  void _onVerificationCompleted(PhoneAuthCredential credential) async {
+    await _auth.signInWithCredential(credential);
+    if (mounted) {
+      Navigator.of(context).pushReplacementNamed(AppRoutes.home);
+    }
+  }
+
+  void _onVerificationFailed(FirebaseAuthException e) {
+    String message = 'Xác thực số điện thoại thất bại';
+    if (e.code == 'billing-not-enabled') {
+      message = 'Dịch vụ OTP chưa được kích hoạt. Vui lòng sử dụng email để đăng nhập.';
+    } else if (e.code == 'invalid-phone-number') {
+      message = 'Số điện thoại không hợp lệ';
+    } else if (e.code == 'too-many-requests') {
+      message = 'Quá nhiều yêu cầu. Vui lòng thử lại sau';
+    }
+    _showErrorSnackBar(message);
+    setState(() => _isLoading = false);
+  }
+
+  void _onCodeSent(String verificationId, int? resendToken) {
+    setState(() => _isLoading = false);
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => OtpVerificationPage(
+          verificationId: verificationId,
+          phoneNumber: _formatPhoneNumber(_phoneController.text.trim()),
+        ),
+      ),
+    );
   }
 
   void _showErrorSnackBar(String message) {
@@ -146,249 +226,6 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
         backgroundColor: Colors.red,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const SizedBox(height: 40),
-              
-              // Logo và tiêu đề
-              Container(
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: AppColors.primary.withOpacity(0.1),
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(
-                  Icons.restaurant_menu,
-                  size: 60,
-                  color: AppColors.primary,
-                ),
-              ),
-              const SizedBox(height: 24),
-              
-              const Text(
-                'Chào mừng trở lại!',
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
-                ),
-              ),
-              const SizedBox(height: 8),
-              
-              Text(
-                'Đăng nhập để tiếp tục sử dụng FoodGo',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.grey[600],
-                ),
-              ),
-              const SizedBox(height: 40),
-
-              // Tab selector
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.grey[100],
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: TabBar(
-                  controller: _tabController,
-                  dividerColor: Colors.transparent,
-                  indicator: BoxDecoration(
-                    color: AppColors.primary,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  indicatorSize: TabBarIndicatorSize.tab,
-                  labelColor: Colors.white,
-                  unselectedLabelColor: Colors.grey[600],
-                  labelStyle: const TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 16,
-                  ),
-                  unselectedLabelStyle: const TextStyle(
-                    fontWeight: FontWeight.w500,
-                    fontSize: 16,
-                  ),
-                  tabs: const [
-                    Tab(
-                      height: 50,
-                      text: 'Email',
-                    ),
-                    Tab(
-                      height: 50,
-                      text: 'Số điện thoại',
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 32),
-              
-              // Tab content với chiều cao cố định
-              SizedBox(
-                height: 200,
-                child: TabBarView(
-                  controller: _tabController,
-                  children: [
-                    _buildEmailForm(),
-                    _buildPhoneForm(),
-                  ],
-                ),
-              ),
-              
-              const SizedBox(height: 32),
-              
-              // Divider
-              Row(
-                children: [
-                  Expanded(child: Divider(color: Colors.grey[300])),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Text(
-                      'hoặc',
-                      style: TextStyle(
-                        color: Colors.grey[600],
-                        fontSize: 14,
-                      ),
-                    ),
-                  ),
-                  Expanded(child: Divider(color: Colors.grey[300])),
-                ],
-              ),
-              const SizedBox(height: 32),
-
-              // Đăng ký button
-              Container(
-                width: double.infinity,
-                height: 56,
-                decoration: BoxDecoration(
-                  border: Border.all(color: AppColors.primary, width: 2),
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pushNamed(AppRoutes.register);
-                  },
-                  style: TextButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                  ),
-                  child: const Text(
-                    'Tạo tài khoản mới',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.primary,
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 40),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildEmailForm() {
-    return Column(
-      children: [
-        InputField(
-          controller: _emailController,
-          hintText: 'Email',
-          keyboardType: TextInputType.emailAddress,
-          icon: Icons.email_outlined,
-        ),
-        const SizedBox(height: 16),
-        InputField(
-          controller: _passwordController,
-          hintText: 'Mật khẩu',
-          obscureText: true,
-          icon: Icons.lock_outline,
-        ),
-        const SizedBox(height: 24),
-        _buildLoginButton('Đăng nhập', _signInWithEmailPassword),
-      ],
-    );
-  }
-
-  Widget _buildPhoneForm() {
-    return Column(
-      children: [
-        InputField(
-          controller: _phoneController,
-          hintText: 'Số điện thoại (VD: 0912345678)',
-          keyboardType: TextInputType.phone,
-          icon: Icons.phone_outlined,
-        ),
-        const SizedBox(height: 16),
-        Text(
-          'Chúng tôi sẽ gửi mã OTP đến số điện thoại của bạn',
-          style: TextStyle(
-            color: Colors.grey[600],
-            fontSize: 13,
-          ),
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(height: 24),
-        _buildLoginButton('Gửi mã OTP', _signInWithPhone),
-      ],
-    );
-  }
-
-  Widget _buildLoginButton(String text, VoidCallback onPressed) {
-    return Container(
-      width: double.infinity,
-      height: 56,
-      decoration: BoxDecoration(
-        gradient: AppColors.buttonGradient, // Sử dụng gradient đã định nghĩa sẵn
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.primary.withOpacity(0.3),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: ElevatedButton(
-        onPressed: _isLoading ? null : onPressed,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.transparent,
-          shadowColor: Colors.transparent,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-        ),
-        child: _isLoading
-            ? const SizedBox(
-                height: 20,
-                width: 20,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                ),
-              )
-            : Text(
-                text,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white,
-                ),
-              ),
       ),
     );
   }

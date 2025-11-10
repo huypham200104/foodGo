@@ -1,67 +1,49 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import '../models/user_model.dart';
+import 'package:foodgo/models/user_model.dart';
+import 'package:foodgo/services/user_service.dart';
 
 class AuthProvider extends ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  
   UserModel? _currentUser;
   bool _isLoading = false;
-  String? _errorMessage;
 
   UserModel? get currentUser => _currentUser;
   bool get isLoggedIn => _currentUser != null;
   bool get isLoading => _isLoading;
-  String? get errorMessage => _errorMessage;
 
   AuthProvider() {
-    _init();
+    // Listen to auth state changes
+    _auth.authStateChanges().listen(_onAuthStateChanged);
   }
 
-  void _init() {
-    _auth.authStateChanges().listen((User? user) async {
-      if (user != null) {
-        await _loadUserData(user.uid);
-      } else {
-        _currentUser = null;
-        notifyListeners();
-      }
-    });
-  }
-
-  Future<void> _loadUserData(String uid) async {
-    try {
-      _isLoading = true;
+  /// Handle auth state changes
+  Future<void> _onAuthStateChanged(User? firebaseUser) async {
+    if (firebaseUser != null) {
+      // Set interim user immediately so isLoggedIn becomes true without waiting
+      _currentUser = UserModel.fromFirebaseUser(firebaseUser);
       notifyListeners();
 
-      final doc = await _firestore.collection('users').doc(uid).get();
-      if (doc.exists) {
-        _currentUser = UserModel.fromJson(doc.data()!);
-      } else {
-        // Create user document if it doesn't exist
-        _currentUser = UserModel(
-          id: uid,
-          name: _auth.currentUser?.displayName ?? 'User',
-          email: _auth.currentUser?.email ?? '',
-          phone: _auth.currentUser?.phoneNumber ?? '',
-          avatarUrl: _auth.currentUser?.photoURL ?? '',
-        );
-        await _firestore.collection('users').doc(uid).set(_currentUser!.toJson());
+      // Then merge with Firestore data when available
+      try {
+        final mergedUser = await UserService.getCurrentUser();
+        if (mergedUser != null) {
+          _currentUser = mergedUser;
+          notifyListeners();
+        }
+      } catch (_) {
+        // Keep interim user on failure
       }
-    } catch (e) {
-      _errorMessage = 'Lỗi khi tải thông tin người dùng: $e';
-    } finally {
-      _isLoading = false;
+    } else {
+      _currentUser = null;
       notifyListeners();
     }
   }
 
-  Future<bool> login(String email, String password) async {
+  /// Sign in with email and password
+  Future<UserModel?> signInWithEmailPassword(String email, String password) async {
     try {
       _isLoading = true;
-      _errorMessage = null;
       notifyListeners();
 
       final credential = await _auth.signInWithEmailAndPassword(
@@ -70,26 +52,24 @@ class AuthProvider extends ChangeNotifier {
       );
 
       if (credential.user != null) {
-        await _loadUserData(credential.user!.uid);
-        return true;
+        _currentUser = await UserService.getCurrentUser();
+        notifyListeners();
+        return _currentUser;
       }
-      return false;
-    } on FirebaseAuthException catch (e) {
-      _errorMessage = _getAuthErrorMessage(e.code);
-      return false;
+      return null;
     } catch (e) {
-      _errorMessage = 'Lỗi không xác định: $e';
-      return false;
+      print('Sign in error: $e');
+      rethrow;
     } finally {
       _isLoading = false;
       notifyListeners();
     }
   }
 
-  Future<bool> register(String email, String password, String name) async {
+  /// Sign up with email and password
+  Future<UserModel?> signUpWithEmailPassword(String email, String password, String name) async {
     try {
       _isLoading = true;
-      _errorMessage = null;
       notifyListeners();
 
       final credential = await _auth.createUserWithEmailAndPassword(
@@ -101,103 +81,112 @@ class AuthProvider extends ChangeNotifier {
         // Update display name
         await credential.user!.updateDisplayName(name);
         
-        // Create user document
-        _currentUser = UserModel(
-          id: credential.user!.uid,
-          name: name,
-          email: email,
-          phone: '',
-          avatarUrl: '',
-        );
+        // Create user profile
+        final newUser = UserModel.fromFirebaseUser(credential.user!);
+        await UserService.createUserProfile(newUser);
         
-        await _firestore.collection('users').doc(credential.user!.uid).set(_currentUser!.toJson());
-        return true;
+        _currentUser = newUser;
+        notifyListeners();
+        return _currentUser;
       }
-      return false;
-    } on FirebaseAuthException catch (e) {
-      _errorMessage = _getAuthErrorMessage(e.code);
-      return false;
+      return null;
     } catch (e) {
-      _errorMessage = 'Lỗi không xác định: $e';
-      return false;
+      print('Sign up error: $e');
+      rethrow;
     } finally {
       _isLoading = false;
       notifyListeners();
     }
   }
 
-  Future<void> logout() async {
+  /// Sign out
+  Future<void> signOut() async {
     try {
       await _auth.signOut();
       _currentUser = null;
-      _errorMessage = null;
       notifyListeners();
     } catch (e) {
-      _errorMessage = 'Lỗi khi đăng xuất: $e';
-      notifyListeners();
+      print('Sign out error: $e');
+      rethrow;
     }
   }
 
-  Future<void> updateProfile({
-    String? name,
-    String? phone,
-    String? avatarUrl,
-  }) async {
-    if (_currentUser == null) return;
+  /// Logout (alias cho signOut để tương thích)
+  Future<void> logout() async {
+    await signOut();
+  }
 
+  /// Update user profile
+  Future<void> updateProfile(UserModel updatedUser) async {
+    try {
+      await UserService.updateUserProfile(updatedUser);
+      _currentUser = updatedUser;
+      notifyListeners();
+    } catch (e) {
+      print('Update profile error: $e');
+      rethrow;
+    }
+  }
+
+  /// Update user info in memory and optionally in database
+  void updateUserInfo(UserModel updatedUser) {
+    _currentUser = updatedUser;
+    notifyListeners();
+  }
+
+  /// Update user info and save to database
+  Future<void> updateUserInfoAndSave(UserModel updatedUser) async {
     try {
       _isLoading = true;
       notifyListeners();
 
-      final updatedUser = UserModel(
-        id: _currentUser!.id,
-        name: name ?? _currentUser!.name,
-        email: _currentUser!.email,
-        phone: phone ?? _currentUser!.phone,
-        avatarUrl: avatarUrl ?? _currentUser!.avatarUrl,
-        rewardPoints: _currentUser!.rewardPoints,
-        addresses: _currentUser!.addresses,
-      );
-
-      await _firestore.collection('users').doc(_currentUser!.id).update(updatedUser.toJson());
+      await UserService.updateUserProfile(updatedUser);
       _currentUser = updatedUser;
+      notifyListeners();
     } catch (e) {
-      _errorMessage = 'Lỗi khi cập nhật thông tin: $e';
+      print('Update user info and save error: $e');
+      rethrow;
     } finally {
       _isLoading = false;
       notifyListeners();
     }
   }
 
-  void clearError() {
-    _errorMessage = null;
-    notifyListeners();
-  }
-
-  String _getAuthErrorMessage(String errorCode) {
-    switch (errorCode) {
-      case 'user-not-found':
-        return 'Không tìm thấy tài khoản với email này';
-      case 'wrong-password':
-        return 'Mật khẩu không đúng';
-      case 'email-already-in-use':
-        return 'Email này đã được sử dụng';
-      case 'weak-password':
-        return 'Mật khẩu quá yếu';
-      case 'invalid-email':
-        return 'Email không hợp lệ';
-      case 'user-disabled':
-        return 'Tài khoản đã bị vô hiệu hóa';
-      case 'too-many-requests':
-        return 'Quá nhiều yêu cầu. Vui lòng thử lại sau';
-      default:
-        return 'Lỗi xác thực: $errorCode';
+  /// Refresh current user data
+  Future<void> refreshUser() async {
+    try {
+      _currentUser = await UserService.getCurrentUser();
+      notifyListeners();
+    } catch (e) {
+      print('Refresh user error: $e');
     }
   }
 
-  // Khi đăng nhập thành công
-  Future<void> _setCurrentUser(User firebaseUser) async {
-    _currentUser = UserModel.fromFirebaseUser(firebaseUser);
-    notifyListeners();
+  /// Delete account
+  Future<void> deleteAccount() async {
+    try {
+      _isLoading = true;
+      notifyListeners();
+
+      await UserService.deleteUserAccount();
+      _currentUser = null;
+      notifyListeners();
+    } catch (e) {
+      print('Delete account error: $e');
+      rethrow;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  /// Reset password
+  Future<void> resetPassword(String email) async {
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+    } catch (e) {
+      print('Reset password error: $e');
+      rethrow;
+    }
   }
 }

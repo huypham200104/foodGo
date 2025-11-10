@@ -1,60 +1,65 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:foodgo/pages/my_app.dart';
-import 'package:foodgo/upload_seed.dart';
-import 'core/firebase/firebase_options.dart';
-import 'core/routes/route_generator.dart'; // Import route generator
-import 'core/routes/app_routes.dart'; // Import app routes
-import 'services/cloudinary_service.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'core/routes/app_router.dart';    // 👈 Import AppRouter
+import 'core/routes/app_routes.dart';
+import 'core/theme/app_theme.dart';
+import 'firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+import 'pages/my_app.dart';
+import 'upload_seed.dart' as upload_seed;
 
-Future<void> _clearCollections(List<String> collectionNames) async {
-  final firestore = FirebaseFirestore.instance;
-  for (final name in collectionNames) {
-    final snap = await firestore.collection(name).get();
-    if (snap.docs.isEmpty) continue;
-    final batch = firestore.batch();
-    for (final d in snap.docs) {
-      batch.delete(d.reference);
-    }
-    await batch.commit();
-  }
-}
+// Flag để bật/tắt upload seed data
+const bool shouldUploadSeed = false; // Đặt false sau khi upload xong
+const bool uploadAllData = false;
 
-Future<void> main() async {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Load biến môi trường
-  await dotenv.load(fileName: "assets/.env");
+  // Đảm bảo hỗ trợ input method cho tiếng Việt
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+    ),
+  );
 
-  // Khởi tạo Cloudinary
-  CloudinaryService.init();
+  // Khởi tạo Firebase
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
-  // 🔥 Khởi tạo Firebase
-  if (Firebase.apps.isEmpty) {
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
+  // Upload seed data nếu cần
+  if (shouldUploadSeed) {
+    try {
+      print('🔄 Bắt đầu upload seed data...');
+      if (uploadAllData) {
+        await upload_seed.uploadAllSeeds();
+        print('✅ Đã upload tất cả seed data thành công!');
+      } else {
+        await upload_seed.uploadMenuItems();
+        print('✅ Đã upload menu items thành công!');
+      }
+    } catch (e) {
+      print('❌ Lỗi khi upload seed data: $e');
+    }
   }
 
-  //Xóa dữ liệu cũ rồi seed lại
-
-  // await _clearCollections([
-  //   'users',
-  //   'addresses',
-  //   'restaurants',
-  //   'menu_items',
-  //   'vouchers',
-  //   'rewards',
-  //   'cart_items',
-  //   'orders',
-  //   'reviews',
-  //   'complaints',
-  // ]);
-  //
-  // await uploadAllSeeds();
-
-  // Chạy app với routing system
+  // Khởi chạy app
   runApp(const MyApp());
 }
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'FoodGo',
+      theme: AppTheme.lightTheme,
+      initialRoute: AppRoutes.home,
+      onGenerateRoute: AppRouter.generateRoute,  // 👈 Sử dụng AppRouter
+      debugShowCheckedModeBanner: false,
+    );
+  }
+}
+

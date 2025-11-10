@@ -1,37 +1,28 @@
 import 'package:flutter/material.dart';
+import '../core/theme/app_theme.dart'; // Import AppTheme
 
 class ThemeProvider extends ChangeNotifier {
   bool _isDarkMode = false;
-
+  
   bool get isDarkMode => _isDarkMode;
+  
+  // Sửa getter name
+  ThemeData get themeData => _isDarkMode ? AppTheme.darkTheme : AppTheme.lightTheme;
 
-  ThemeData get theme => _isDarkMode ? _darkTheme : _lightTheme;
-  ThemeData get currentTheme => theme; // Alias cho theme
-
-  static final ThemeData _lightTheme = ThemeData(
-    brightness: Brightness.light,
-    primarySwatch: Colors.blue,
-    // Thêm các thuộc tính theme khác
-  );
-
-  static final ThemeData _darkTheme = ThemeData(
-    brightness: Brightness.dark,
-    primarySwatch: Colors.blue,
-    // Thêm các thuộc tính theme khác
-  );
-
+  get theme => null;
+  
   void toggleTheme() {
     _isDarkMode = !_isDarkMode;
     notifyListeners();
   }
-
-  void setLightTheme() {
-    _isDarkMode = false;
+  
+  void setDarkMode(bool isDark) {
+    _isDarkMode = isDark;
     notifyListeners();
   }
-
-  void setDarkTheme() {
-    _isDarkMode = true;
+  
+  void setLightMode() {
+    _isDarkMode = false;
     notifyListeners();
   }
 }

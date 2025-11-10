@@ -2,7 +2,10 @@ class AppRoutes {
   // Auth routes
   static const String login = '/login';
   static const String register = '/register';
-  static const String forgotPassword = '/forgot-password';
+  
+  // Address routes
+  static const String addressList = '/address-list';         // 👈 AddressListPage
+  static const String addressManagement = '/address-management';  // 👈 AddressManagementPage
   
   // Main navigation routes
   static const String home = '/';
@@ -29,6 +32,9 @@ class AppRoutes {
   static const String editAddress = '/edit-address';
   static const String settings = '/settings';
   static const String changePassword = '/change-password';
+  static const String paymentMethods = '/payment-methods';
+  static const String favorites = '/favorites';
+  static const String notifications = '/notifications';
   
   // Other routes
   static const String vouchers = '/vouchers';
@@ -41,4 +47,41 @@ class AppRoutes {
   
   // Error routes
   static const String notFound = '/404';
+  
+  /// Get all route names for validation
+  static List<String> get allRoutes => [
+    login,
+    register,
+    addressList,
+    addressManagement,
+    home,
+    menu,
+    cart,
+    profile,
+    notification,
+    menuCategory,
+    productDetail,
+    search,
+    checkout,
+    orderHistory,
+    orderDetail,
+    orderTracking,
+    editProfile,
+    addresses,
+    addAddress,
+    editAddress,
+    settings,
+    changePassword,
+    paymentMethods,
+    favorites,
+    notifications,
+    vouchers,
+    reviews,
+    writeReview,
+    help,
+    about,
+    termsOfService,
+    privacyPolicy,
+    notFound,
+  ];
 }

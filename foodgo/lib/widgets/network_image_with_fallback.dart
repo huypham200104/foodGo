@@ -1,44 +1,26 @@
 import 'package:flutter/material.dart';
+import '../core/theme/app_colors.dart';
 
 class NetworkImageWithFallback extends StatelessWidget {
   final String imageUrl;
-  final double? width;
-  final double? height;
+  final double width;
+  final double height;
   final BoxFit fit;
-  final String fallbackAsset;
-  final Widget? placeholder;
-  final Widget? errorWidget;
 
   const NetworkImageWithFallback({
-    super.key,
+    Key? key,
     required this.imageUrl,
-    this.width,
-    this.height,
+    required this.width,
+    required this.height,
     this.fit = BoxFit.cover,
-    this.fallbackAsset = 'assets/other/no_image.png',
-    this.placeholder,
-    this.errorWidget,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    // If imageUrl is empty or null, show fallback immediately
     if (imageUrl.isEmpty) {
-      return _buildFallbackImage();
+      return _buildFallback();
     }
 
-    // If it's a local asset path, use Image.asset
-    if (imageUrl.startsWith('assets/')) {
-      return Image.asset(
-        imageUrl,
-        width: width,
-        height: height,
-        fit: fit,
-        errorBuilder: (context, error, stackTrace) => _buildFallbackImage(),
-      );
-    }
-
-    // If it's a network URL, use Image.network with fallback
     return Image.network(
       imageUrl,
       width: width,
@@ -46,30 +28,47 @@ class NetworkImageWithFallback extends StatelessWidget {
       fit: fit,
       loadingBuilder: (context, child, loadingProgress) {
         if (loadingProgress == null) return child;
-        return placeholder ?? _buildLoadingPlaceholder();
+        return _buildLoading();
       },
       errorBuilder: (context, error, stackTrace) {
-        return errorWidget ?? _buildFallbackImage();
+        return _buildFallback();
       },
     );
   }
 
-  Widget _buildFallbackImage() {
-    return Image.asset(
-      fallbackAsset,
-      width: width,
-      height: height,
-      fit: fit,
-    );
-  }
-
-  Widget _buildLoadingPlaceholder() {
+  Widget _buildFallback() {
     return Container(
       width: width,
       height: height,
-      color: Colors.grey[300],
-      child: const Center(
-        child: CircularProgressIndicator(),
+      decoration: BoxDecoration(
+        color: AppColors.background,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Icon(
+        Icons.fastfood,
+        size: width * 0.4,
+        color: AppColors.textLight,
+      ),
+    );
+  }
+
+  Widget _buildLoading() {
+    return Container(
+      width: width,
+      height: height,
+      decoration: BoxDecoration(
+        color: AppColors.background,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Center(
+        child: SizedBox(
+          width: 20,
+          height: 20,
+          child: CircularProgressIndicator(
+            strokeWidth: 2,
+            valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
+          ),
+        ),
       ),
     );
   }
@@ -94,8 +93,8 @@ class FoodImage extends StatelessWidget {
   Widget build(BuildContext context) {
     return NetworkImageWithFallback(
       imageUrl: imageUrl,
-      width: width,
-      height: height,
+      width: width ?? 100, // Provide default values
+      height: height ?? 100, // Provide default values
       fit: fit,
     );
   }
@@ -115,11 +114,12 @@ class AvatarImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final avatarSize = size ?? 50; // Provide default size
     return ClipOval(
       child: NetworkImageWithFallback(
         imageUrl: imageUrl,
-        width: size,
-        height: size,
+        width: avatarSize,
+        height: avatarSize,
         fit: fit,
       ),
     );
@@ -146,8 +146,8 @@ class RestaurantImage extends StatelessWidget {
       borderRadius: BorderRadius.circular(8),
       child: NetworkImageWithFallback(
         imageUrl: imageUrl,
-        width: width,
-        height: height,
+        width: width ?? 200, // Provide default values
+        height: height ?? 150, // Provide default values
         fit: fit,
       ),
     );

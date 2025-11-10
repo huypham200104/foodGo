@@ -34,7 +34,7 @@ class FirebaseService {
       QuerySnapshot snapshot = await _firestore.collection('menu_items').get();
       return snapshot.docs.map((doc) {
         Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-        return MenuItemModel.fromJson(data);
+        return MenuItemModel.fromJson(convertFirestoreData(data));
       }).toList();
     } catch (e) {
       print('❌ Error getting menu items: $e');
@@ -58,5 +58,18 @@ class FirebaseService {
       print('❌ Error clearing menu items: $e');
       rethrow;
     }
+  }
+  
+  // Chuyển thành static method
+  static Map<String, dynamic> convertFirestoreData(Map<String, dynamic> data) {
+    Map<String, dynamic> converted = {};
+    data.forEach((key, value) {
+      if (value is Timestamp) {
+        converted[key] = value.toDate().toIso8601String(); // Convert to String
+      } else {
+        converted[key] = value;
+      }
+    });
+    return converted;
   }
 }

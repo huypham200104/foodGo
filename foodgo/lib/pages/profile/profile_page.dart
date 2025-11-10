@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../core/theme/app_colors.dart';
+import '../../core/routes/app_routes.dart'; // Import AppRoutes
+import '../../services/screen_service.dart' as screen;
 import '../../providers/auth_provider.dart';
-import '../../providers/theme_provider.dart';
-import '../../widgets/custom_confirm_button.dart';
-import '../../widgets/network_image_with_fallback.dart';
+import '../../models/user_model.dart';
+import 'widgets/profile_info_widget.dart';
+import 'widgets/profile_menu_item.dart';
+import 'widgets/profile_edit_dialog.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -14,354 +17,131 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  bool _isVietnamese = true;
+  bool _isScreenServiceInitialized = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_isScreenServiceInitialized) {
+      screen.ScreenService.init(context);
+      _isScreenServiceInitialized = true;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        backgroundColor: AppColors.primary,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: const Text(
-          'Tài Khoản',
+        title: Text(
+          'Hồ sơ',
           style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-            fontSize: 18,
+            fontSize: screen.ScreenService.largeText,
+            fontWeight: FontWeight.w600,
+            color: AppColors.textPrimary,
           ),
         ),
+        backgroundColor: AppColors.surface,
+        elevation: 0,
         centerTitle: true,
-        actions: [
-          Stack(
-            children: [
-              IconButton(
-                icon: const Icon(Icons.notifications, color: Colors.white),
-                onPressed: () {},
-              ),
-              Positioned(
-                right: 8,
-                top: 8,
-                child: Container(
-                  padding: const EdgeInsets.all(2),
-                  decoration: const BoxDecoration(
-                    color: Colors.red,
-                    shape: BoxShape.circle,
-                  ),
-                  constraints: const BoxConstraints(
-                    minWidth: 16,
-                    minHeight: 16,
-                  ),
-                  child: const Text(
-                    '0',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 10,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
       ),
       body: Consumer<AuthProvider>(
         builder: (context, authProvider, child) {
-          return SingleChildScrollView(
-            child: Column(
-              children: [
-                // Header với background gradient
-                Container(
-                  width: double.infinity,
-                  height: 200,
-                  decoration: const BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        Color(0xFF1E3A8A),
-                        Color(0xFF3B82F6),
-                      ],
+          final user = authProvider.currentUser;
+          
+          if (user == null) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.person_off,
+                    size: 64,
+                    color: AppColors.textLight,
+                  ),
+                  SizedBox(height: screen.ScreenService.mediumSpacing),
+                  Text(
+                    'Chưa đăng nhập',
+                    style: TextStyle(
+                      fontSize: screen.ScreenService.mediumText,
+                      color: AppColors.textSecondary,
                     ),
                   ),
-                  child: Stack(
-                    children: [
-                      // Background images
-                      Positioned(
-                        left: 0,
-                        top: 0,
-                        child: FoodImage(
-                          imageUrl: 'https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339581/pizza_HaiSan.png',
-                          width: 80,
-                          height: 80,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      Positioned(
-                        right: 0,
-                        bottom: 0,
-                        child: FoodImage(
-                          imageUrl: 'https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339581/kemLy.png',
-                          width: 60,
-                          height: 60,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      // User info
-                      Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            // Avatar
-                            Container(
-                              width: 80,
-                              height: 80,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.white,
-                                border: Border.all(color: Colors.white, width: 3),
-                              ),
-                              child: authProvider.isLoggedIn
-                                  ? AvatarImage(
-                                      imageUrl: authProvider.currentUser?.avatarUrl ?? '',
-                                      size: 60,
-                                    )
-                                  : const Icon(Icons.person, size: 40, color: Colors.grey),
-                            ),
-                            const SizedBox(height: 12),
-                            Text(
-                              authProvider.isLoggedIn 
-                                  ? (authProvider.currentUser?.name ?? 'User')
-                                  : 'Guest User',
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              authProvider.isLoggedIn 
-                                  ? 'Member | ${authProvider.currentUser?.rewardPoints ?? 0} Điểm'
-                                  : 'Guest | 0 Điểm',
-                              style: const TextStyle(
-                                color: Colors.white70,
-                                fontSize: 14,
-                              ),
-                            ),
-                            const SizedBox(height: 16),
-                            // Barcode
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                              decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.2),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: const Text(
-                                '3 1117 01320 6375',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
+                ],
+              ),
+            );
+          }
+
+          return SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Profile Info Section
+                ProfileInfoWidget(
+                  user: user,
+                  onTap: () => _showEditProfileDialog(user),
                 ),
                 
-                // Account options
-                Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Tài khoản của tôi',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.textPrimary,
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      _buildMenuItem(
-                        icon: Icons.person_outline,
-                        title: 'Thông Tin Cá Nhân',
-                        onTap: () {},
-                      ),
-                      _buildMenuItem(
-                        icon: Icons.card_giftcard_outlined,
-                        title: 'Phần Thưởng',
-                        onTap: () {},
-                      ),
-                      _buildMenuItem(
-                        icon: Icons.location_on_outlined,
-                        title: 'Sổ Địa Chỉ',
-                        onTap: () {},
-                      ),
-                      _buildMenuItem(
-                        icon: Icons.history,
-                        title: 'Lịch Sử Đơn Hàng',
-                        onTap: () {},
-                      ),
-                      _buildMenuItem(
-                        icon: Icons.favorite_outline,
-                        title: 'Món Yêu Thích',
-                        onTap: () {},
-                      ),
-                    ],
-                  ),
+                SizedBox(height: screen.ScreenService.smallSpacing),
+                
+                // Menu Items
+                ProfileMenuItem(
+                  icon: Icons.shopping_bag,
+                  title: 'Đơn hàng của tôi',
+                  subtitle: 'Xem lịch sử đặt hàng',
+                  onTap: () => Navigator.pushNamed(context, AppRoutes.orderHistory),
                 ),
                 
-                // General information section
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Thông tin chung',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.textPrimary,
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      _buildMenuItem(
-                        icon: Icons.store_outlined,
-                        title: 'Danh Sách Cửa Hàng',
-                        onTap: () {},
-                      ),
-                      _buildMenuItem(
-                        icon: Icons.newspaper_outlined,
-                        title: 'Tin Tức',
-                        onTap: () {},
-                      ),
-                      _buildMenuItem(
-                        icon: Icons.policy_outlined,
-                        title: 'Chính Sách',
-                        onTap: () {},
-                      ),
-                      
-                      // Language selector
-                      Container(
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text(
-                              'Ngôn Ngữ',
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: AppColors.textPrimary,
-                              ),
-                            ),
-                            Row(
-                              children: [
-                                GestureDetector(
-                                  onTap: () => setState(() => _isVietnamese = true),
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                                    decoration: BoxDecoration(
-                                      color: _isVietnamese ? AppColors.primary : Colors.grey[200],
-                                      borderRadius: BorderRadius.circular(16),
-                                    ),
-                                    child: Text(
-                                      'VN',
-                                      style: TextStyle(
-                                        color: _isVietnamese ? Colors.white : Colors.grey[600],
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(width: 8),
-                                GestureDetector(
-                                  onTap: () => setState(() => _isVietnamese = false),
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                                    decoration: BoxDecoration(
-                                      color: !_isVietnamese ? AppColors.primary : Colors.grey[200],
-                                      borderRadius: BorderRadius.circular(16),
-                                    ),
-                                    child: Text(
-                                      'EN',
-                                      style: TextStyle(
-                                        color: !_isVietnamese ? Colors.white : Colors.grey[600],
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                      
-                      const Divider(),
-                      
-                      // Action buttons
-                      _buildActionButton(
-                        'Đổi Mật Khẩu',
-                        onTap: () {
-                          _showChangePasswordDialog(context);
-                        },
-                      ),
-                      _buildActionButton(
-                        'Xóa Tài Khoản',
-                        onTap: () {
-                          _showDeleteAccountDialog(context);
-                        },
-                        isDestructive: true,
-                      ),
-                      _buildActionButton(
-                        'Đăng Xuất',
-                        onTap: () {
-                          if (authProvider.isLoggedIn) {
-                            _showLogoutDialog(context);
-                          }
-                        },
-                        isDestructive: true,
-                      ),
-                    ],
-                  ),
+                ProfileMenuItem(
+                  icon: Icons.location_on,
+                  title: 'Địa chỉ giao hàng',
+                  subtitle: 'Quản lý địa chỉ giao hàng',
+                  onTap: () => Navigator.pushNamed(context, AppRoutes.addresses),
                 ),
                 
-                const SizedBox(height: 20),
-                
-                // Branding section
-                Container(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    children: [
-                      Image.asset(
-                        'assets/logo/logo_light.jpg',
-                        height: 40,
-                      ),
-                      const SizedBox(height: 8),
-                      const Text(
-                        '15 Lê Thánh Tôn, Phường Bến Nghé, Quận 1, TP. Hồ Chí Minh, Việt Nam',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: AppColors.textSecondary,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
+                ProfileMenuItem(
+                  icon: Icons.payment,
+                  title: 'Phương thức thanh toán',
+                  subtitle: 'Thêm/sửa thông tin thanh toán',
+                  onTap: () => Navigator.pushNamed(context, AppRoutes.paymentMethods),
                 ),
+                
+                ProfileMenuItem(
+                  icon: Icons.favorite,
+                  title: 'Yêu thích',
+                  subtitle: 'Món ăn yêu thích của bạn',
+                  onTap: () => Navigator.pushNamed(context, AppRoutes.favorites),
+                ),
+                
+                ProfileMenuItem(
+                  icon: Icons.notifications,
+                  title: 'Thông báo',
+                  subtitle: 'Cài đặt thông báo',
+                  onTap: () => Navigator.pushNamed(context, AppRoutes.notifications),
+                ),
+                
+                ProfileMenuItem(
+                  icon: Icons.help,
+                  title: 'Trợ giúp & Hỗ trợ',
+                  subtitle: 'FAQ, liên hệ hỗ trợ',
+                  onTap: () => Navigator.pushNamed(context, AppRoutes.help),
+                ),
+                
+                ProfileMenuItem(
+                  icon: Icons.info,
+                  title: 'Về ứng dụng',
+                  subtitle: 'Thông tin phiên bản, điều khoản',
+                  onTap: () => Navigator.pushNamed(context, AppRoutes.about),
+                ),
+                
+                ProfileMenuItem(
+                  icon: Icons.logout,
+                  title: 'Đăng xuất',
+                  iconColor: AppColors.error,
+                  onTap: () => _showLogoutDialog(),
+                ),
+                
+                SizedBox(height: screen.ScreenService.largeSpacing),
               ],
             ),
           );
@@ -370,126 +150,60 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget _buildMenuItem({
-    required IconData icon,
-    required String title,
-    required VoidCallback onTap,
-  }) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 8),
-      child: ListTile(
-        leading: Icon(icon, color: AppColors.primary),
-        title: Text(
-          title,
-          style: const TextStyle(
-            fontSize: 16,
-            color: AppColors.textPrimary,
-          ),
-        ),
-        trailing: const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
-        onTap: onTap,
-        contentPadding: EdgeInsets.zero,
+  void _showEditProfileDialog(UserModel user) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => ProfileEditDialog(
+        user: user,
+        onSaved: _updateUserProfile,
       ),
     );
   }
 
-  Widget _buildActionButton(String title, {required VoidCallback onTap, bool isDestructive = false}) {
-    return Container(
-      width: double.infinity,
-      margin: const EdgeInsets.only(bottom: 8),
-      child: TextButton(
-        onPressed: onTap,
-        style: TextButton.styleFrom(
-          padding: const EdgeInsets.symmetric(vertical: 12),
-          alignment: Alignment.centerLeft,
-        ),
-        child: Text(
-          title,
-          style: TextStyle(
-            fontSize: 16,
-            color: isDestructive ? Colors.red : AppColors.primary,
-            fontWeight: FontWeight.w500,
+  Future<void> _updateUserProfile(UserModel updatedUser) async {
+    try {
+      await Provider.of<AuthProvider>(context, listen: false)
+          .updateUserInfoAndSave(updatedUser);
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Lỗi khi cập nhật thông tin: $e'),
+            backgroundColor: AppColors.error,
           ),
-        ),
+        );
+      }
+    }
+  }
+
+  void _showLogoutDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Đăng xuất'),
+        content: const Text('Bạn có chắc chắn muốn đăng xuất?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(
+              'Hủy',
+              style: TextStyle(color: AppColors.textSecondary),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              Navigator.pop(context);
+              await Provider.of<AuthProvider>(context, listen: false).signOut();
+              if (mounted) {
+                Navigator.pushReplacementNamed(context, AppRoutes.login);
+              }
+            },
+            style: ElevatedButton.styleFrom(backgroundColor: AppColors.error),
+            child: const Text('Đăng xuất'),
+          ),
+        ],
       ),
-    );
-  }
-
-  void _showChangePasswordDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Đổi mật khẩu'),
-          content: const Text('Tính năng đổi mật khẩu đang được phát triển'),
-          actions: [
-            CustomConfirmButtonStyles.outline(
-              text: 'Hủy',
-              onPressed: () => Navigator.pop(context),
-            ),
-            const SizedBox(width: 8),
-            CustomConfirmButtonStyles.primary(
-              text: 'OK',
-              onPressed: () => Navigator.pop(context),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _showDeleteAccountDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Xóa tài khoản'),
-          content: const Text('Bạn có chắc chắn muốn xóa tài khoản? Hành động này không thể hoàn tác.'),
-          actions: [
-            CustomConfirmButtonStyles.outline(
-              text: 'Hủy',
-              onPressed: () => Navigator.pop(context),
-            ),
-            const SizedBox(width: 8),
-            CustomConfirmButtonStyles.danger(
-              text: 'Xóa',
-              onPressed: () {
-                Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Tính năng xóa tài khoản đang được phát triển')),
-                );
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _showLogoutDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Đăng xuất'),
-          content: const Text('Bạn có chắc chắn muốn đăng xuất?'),
-          actions: [
-            CustomConfirmButtonStyles.outline(
-              text: 'Hủy',
-              onPressed: () => Navigator.pop(context),
-            ),
-            const SizedBox(width: 8),
-            CustomConfirmButtonStyles.warning(
-              text: 'Đăng xuất',
-              onPressed: () {
-                Navigator.pop(context);
-                Provider.of<AuthProvider>(context, listen: false).logout();
-                Navigator.pop(context); // Close profile page
-              },
-            ),
-          ],
-        );
-      },
     );
   }
 }

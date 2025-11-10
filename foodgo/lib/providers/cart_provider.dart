@@ -1,11 +1,15 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/cart_item_model.dart';
 import '../models/menu_item_model.dart';
+import '../services/cart_service.dart';
 
 class CartProvider extends ChangeNotifier {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final CartService _cartService = CartService();
+  StreamSubscription<List<QueryDocumentSnapshot<Map<String, dynamic>>>>? _subscription;
   
   final List<CartItemModel> _items = [];
   final Map<String, String> _cartItemIds = {}; // Lưu mapping giữa cart item và document ID
@@ -19,41 +23,44 @@ class CartProvider extends ChangeNotifier {
   int get itemCount => _items.fold(0, (sum, item) => sum + item.quantity);
   double get totalPrice => _items.fold(0, (sum, item) => sum + (item.item.price * item.quantity));
 
-  Future<void> loadCartItems(String userId) async {
+  Future<void> subscribe(String userId) async {
     try {
       _isLoading = true;
       _errorMessage = null;
       notifyListeners();
 
-      final snapshot = await _firestore
-          .collection('cart_items')
-          .where('userId', isEqualTo: userId)
-          .get();
-
-      _items.clear();
-      _cartItemIds.clear();
-
-      for (var doc in snapshot.docs) {
-        final data = doc.data();
-        final cartItem = CartItemModel.fromJson(data);
-        _items.add(cartItem);
-        
-        // Tạo key duy nhất cho cart item
-        final key = _getCartItemKey(cartItem);
-        _cartItemIds[key] = doc.id;
-      }
-
+      await _subscription?.cancel();
+      _subscription = _cartService.streamCartDocs(userId).listen((docs) {
+        _items.clear();
+        _cartItemIds.clear();
+        for (final doc in docs) {
+          final data = doc.data();
+          final cartItem = CartItemModel.fromJson(data);
+          _items.add(cartItem);
+          final key = _getCartItemKey(cartItem);
+          _cartItemIds[key] = doc.id;
+        }
+        _isLoading = false;
+        notifyListeners();
+      }, onError: (e) {
+        _errorMessage = 'Lỗi stream giỏ hàng: $e';
+        _isLoading = false;
+        notifyListeners();
+      });
     } catch (e) {
-      _errorMessage = 'Lỗi khi tải giỏ hàng: $e';
-      debugPrint('Error loading cart items: $e');
-    } finally {
+      _errorMessage = 'Lỗi khi đăng ký giỏ hàng: $e';
       _isLoading = false;
       notifyListeners();
     }
   }
 
+  Future<void> unsubscribe() async {
+    await _subscription?.cancel();
+    _subscription = null;
+  }
+
   // Phương thức đơn giản cho việc thêm từ MenuItemCard
-  Future<void> addItem(MenuItemModel item, {String? userId}) async {
+  Future<void> addItem(MenuItemModel item, int i, {String? userId}) async {
     await addToCart(
       userId: userId ?? 'temp_user', // Temporary user ID nếu chưa đăng nhập
       item: item,
@@ -91,18 +98,10 @@ class CartProvider extends ChangeNotifier {
         // Cập nhật số lượng item có sẵn
         final existingItem = _items[existingIndex];
         final newQuantity = existingItem.quantity + quantity;
-        
         await updateQuantity(existingItem, newQuantity);
       } else {
-        // Thêm item mới vào Firestore
-        final docRef = await _firestore.collection('cart_items').add({
-          ...cartItem.toJson(),
-          'userId': userId,
-          'createdAt': FieldValue.serverTimestamp(),
-        });
-
-        _items.add(cartItem);
-        _cartItemIds[key] = docRef.id;
+        // Thêm item mới qua service (stream sẽ tự đồng bộ lại _items)
+        await _cartService.addItem(userId: userId, cartItem: cartItem);
       }
 
     } catch (e) {
@@ -123,14 +122,10 @@ class CartProvider extends ChangeNotifier {
 
       final key = _getCartItemKey(cartItem);
       final docId = _cartItemIds[key];
-      
       if (docId != null) {
-        await _firestore.collection('cart_items').doc(docId).update({
-          'quantity': newQuantity,
-          'updatedAt': FieldValue.serverTimestamp(),
-        });
+        await _cartService.updateQuantity(docId: docId, quantity: newQuantity);
 
-        // Cập nhật local state
+        // Optimistically update local state for immediate UI feedback
         final index = _items.indexWhere((item) => _getCartItemKey(item) == key);
         if (index != -1) {
           _items[index] = CartItemModel(
@@ -158,13 +153,9 @@ class CartProvider extends ChangeNotifier {
 
       final key = _getCartItemKey(cartItem);
       final docId = _cartItemIds[key];
-
       if (docId != null) {
-        await _firestore.collection('cart_items').doc(docId).delete();
-        _cartItemIds.remove(key);
+        await _cartService.removeItem(docId: docId);
       }
-
-      _items.removeWhere((item) => _getCartItemKey(item) == key);
 
     } catch (e) {
       _errorMessage = 'Lỗi khi xóa khỏi giỏ hàng: $e';
@@ -181,20 +172,7 @@ class CartProvider extends ChangeNotifier {
       _errorMessage = null;
       notifyListeners();
 
-      // Xóa tất cả cart items của user
-      final snapshot = await _firestore
-          .collection('cart_items')
-          .where('userId', isEqualTo: userId)
-          .get();
-
-      final batch = _firestore.batch();
-      for (final doc in snapshot.docs) {
-        batch.delete(doc.reference);
-      }
-      await batch.commit();
-
-      _items.clear();
-      _cartItemIds.clear();
+      await _cartService.clearCart(userId: userId);
 
     } catch (e) {
       _errorMessage = 'Lỗi khi xóa giỏ hàng: $e';

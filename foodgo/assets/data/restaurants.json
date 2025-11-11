@@ -2,51 +2,25 @@
   "restaurants": [
     {
       "id": "r1",
-      "name": "FoodGo Burger",
-      "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339581/burgerBo.png",
+      "name": "FoodGo Pasetur",
+      "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1762822583/pasetur_bdcfxb.png",
       "rating": 4.5,
       "estimatedTime": 25,
       "address": "101 Pasteur, Phường Bến Nghé, Thành phố Hồ Chí Minh",
       "openingHours": "08:00-22:00",
       "phone": "+84281234567",
-      "isOpen": true,
-      "tags": ["burger", "fastfood", "combo"]
+      "isOpen": true
     },
     {
       "id": "r2",
-      "name": "Pizza Hub",
-      "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339581/pizza_ThapCam.png",
+      "name": "FoodGo Nguyễn Du",
+      "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1762822583/nguyendu_wo8dbs.png",
       "rating": 4.2,
       "estimatedTime": 30,
       "address": "55 Nguyễn Du, Phường Bến Nghé, Thành phố Hồ Chí Minh",
       "openingHours": "09:00-23:00",
       "phone": "+84287654321",
-      "isOpen": true,
-      "tags": ["pizza", "italian"]
-    },
-    {
-      "id": "r3",
-      "name": "Chicken Corner",
-      "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339581/canhGa.png",
-      "rating": 4.0,
-      "estimatedTime": 20,
-      "address": "200 Cộng Hòa, Phường 12, Thành phố Hồ Chí Minh",
-      "openingHours": "10:00-21:00",
-      "phone": "+84281230000",
-      "isOpen": false,
-      "tags": ["chicken", "snack"]
-    },
-    {
-      "id": "r4",
-      "name": "Seafood Paradise",
-      "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339581/pizza_HaiSan.png",
-      "rating": 4.3,
-      "estimatedTime": 35,
-      "address": "88 Lê Lợi, Phường Bến Thành, Thành phố Hồ Chí Minh",
-      "openingHours": "11:00-22:00",
-      "phone": "+84281234568",
-      "isOpen": true,
-      "tags": ["seafood", "pizza", "fresh"]
+      "isOpen": true
     }
   ]
 }

@@ -11,11 +11,12 @@ import '../../pages/cart/cart_page.dart';
 import '../../pages/checkout/checkout_page.dart';
 import '../../pages/profile/profile_page.dart';
 import '../../pages/notification/notification_page.dart';
-import '../../pages/orders/order_history_page.dart'; // Thêm import này
+import '../../pages/orders/order_history_page.dart';
 import '../../pages/error/not_found_page.dart';
 import '../../providers/auth_provider.dart';
 import '../../models/menu_item_model.dart';
-import '../../pages/address/address_list_page.dart'; // Thêm import
+import '../../pages/address/address_list_page.dart';
+import '../../pages/address/address_management_page.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -45,10 +46,30 @@ class RouteGenerator {
       case AppRoutes.notification:
         return _createRoute(const NotificationPage());
 
-      // Menu & Product routes
+      // Search route - 👈 Add search route
+      case AppRoutes.search:
+        final searchArgs = args as Map<String, dynamic>?;
+        return _createRoute(
+          Scaffold(
+            appBar: AppBar(title: const Text('Tìm kiếm')),
+            body: Center(
+              child: Text('Search Page - Query: ${searchArgs?['query'] ?? ''}'),
+            ),
+          ),
+        );
+
+      // Product routes
       case AppRoutes.productDetail:
         if (args is MenuItemModel) {
           return _createRoute(ProductDetailPage(product: args));
+        } else if (args is String) {
+          // Handle product ID
+          return _createRoute(
+            Scaffold(
+              appBar: AppBar(title: const Text('Chi tiết sản phẩm')),
+              body: Center(child: Text('Product ID: $args')),
+            ),
+          );
         }
         return _errorRoute('Product detail argument is required');
 
@@ -56,30 +77,19 @@ class RouteGenerator {
       case AppRoutes.checkout:
         return _protectedRoute(const CheckoutPage());
       
-      case AppRoutes.orderHistory: // Thêm route này
+      case AppRoutes.orderHistory:
         return _protectedRoute(const OrderHistoryPage());
       
-      // Temporary routes cho các trang chưa có (để tránh crash)
-      case AppRoutes.addresses:
-        return _protectedRoute(const AddressListPage());
-      
-      case AppRoutes.paymentMethods:
-        return _temporaryRoute('Phương thức thanh toán', 'Tính năng đang phát triển');
-      
-      case AppRoutes.favorites:
-        return _temporaryRoute('Yêu thích', 'Tính năng đang phát triển');
-      
-      case AppRoutes.notifications:
-        return _temporaryRoute('Cài đặt thông báo', 'Tính năng đang phát triển');
-      
-      case AppRoutes.help:
-        return _temporaryRoute('Trợ giúp & Hỗ trợ', 'Tính năng đang phát triển');
-      
-      case AppRoutes.about:
-        return _temporaryRoute('Về ứng dụng', 'Thông tin về FoodGo App');
-      
-      case AppRoutes.orderDetail:
-        return _temporaryRoute('Chi tiết đơn hàng', 'Tính năng đang phát triển');
+      // Address Routes
+      case AppRoutes.addressList:
+        final addressArgs = args as Map<String, dynamic>?;
+        return _protectedRoute(AddressListPage(
+          selectMode: addressArgs?['selectMode'] ?? false,
+          onAddressSelected: addressArgs?['onAddressSelected'],
+        ));
+        
+      case AppRoutes.addressManagement:
+        return _protectedRoute(const AddressManagementPage());
 
       // Default case
       default:
@@ -116,7 +126,6 @@ class RouteGenerator {
             if (authProvider.isLoggedIn) {
               return page;
             } else {
-              // Redirect to login if not authenticated
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 Navigator.of(context).pushNamedAndRemoveUntil(
                   AppRoutes.login,
@@ -143,96 +152,6 @@ class RouteGenerator {
         );
       },
       transitionDuration: const Duration(milliseconds: 300),
-    );
-  }
-
-  // Route tạm thời cho các trang chưa implement
-  static PageRouteBuilder _temporaryRoute(String title, String message) {
-    return PageRouteBuilder(
-      pageBuilder: (context, animation, secondaryAnimation) => Scaffold(
-        backgroundColor: const Color(0xFFF8F9FA),
-        appBar: AppBar(
-          title: Text(
-            title,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-              color: Color(0xFF1A1A1A),
-            ),
-          ),
-          backgroundColor: Colors.white,
-          elevation: 0,
-          centerTitle: true,
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: Color(0xFF1A1A1A)),
-            onPressed: () => Navigator.pop(context),
-          ),
-        ),
-        body: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(32.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  width: 80,
-                  height: 80,
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFFFF6B6B), Color(0xFFFF8E8E)],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(
-                    Icons.construction,
-                    color: Colors.white,
-                    size: 40,
-                  ),
-                ),
-                const SizedBox(height: 24),
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w600,
-                    color: Color(0xFF1A1A1A),
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 12),
-                Text(
-                  message,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    color: Color(0xFF6B7280),
-                    height: 1.4,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 32),
-                ElevatedButton.icon(
-                  onPressed: () => Navigator.pop(context),
-                  icon: const Icon(Icons.arrow_back),
-                  label: const Text('Quay lại'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFFF6B6B),
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-      transitionsBuilder: (context, animation, secondaryAnimation, child) {
-        return FadeTransition(opacity: animation, child: child);
-      },
     );
   }
 

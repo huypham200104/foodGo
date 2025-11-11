@@ -3,7 +3,7 @@
     {
       "id": 1,
       "group": "Gà Rán",
-      "name": "Đùi Gà Rán (1 miếng)",
+      "name": "Đùi Gà Rán",
       "description": "Đùi tẩm bột giòn",
       "price": 40000,
       "options": [
@@ -20,7 +20,7 @@
     {
       "id": 2,
       "group": "Gà Rán",
-      "name": "Cánh Gà Rán (1 miếng)",
+      "name": "Cánh Gà Rán",
       "description": "Cánh tẩm bột giòn",
       "price": 35000,
       "options": [
@@ -33,7 +33,7 @@
     {
       "id": 3,
       "group": "Gà Rán",
-      "name": "Gà Fillet (1 miếng)",
+      "name": "Gà Fillet",
       "description": "Thịt gà không xương",
       "price": 45000,
       "options": [
@@ -46,7 +46,7 @@
     {
       "id": 4,
       "group": "Gà Rán",
-      "name": "Gà Popcorn (Gà Viên)",
+      "name": "Gà Popcorn",
       "description": "Gà viên chiên giòn",
       "price": 35000,
       "options": [
@@ -59,7 +59,7 @@
     {
       "id": 5,
       "group": "Burger",
-      "name": "Burger Bò Tiêu Chuẩn",
+      "name": "Burger Bò",
       "description": "Bò, rau, sốt đặc biệt",
       "price": 55000,
       "options": [
@@ -124,7 +124,7 @@
     {
       "id": 10,
       "group": "Ăn Kèm",
-      "name": "Xúc Xích (1 thanh)",
+      "name": "Xúc Xích",
       "description": "Xúc xích chiên hoặc nướng",
       "price": 20000,
       "options": [
@@ -137,7 +137,7 @@
     {
       "id": 11,
       "group": "Ăn Kèm",
-      "name": "Bánh Gà (1 cái)",
+      "name": "Bánh Gà",
       "description": "Bánh nhân gà xay",
       "price": 25000,
       "options": [
@@ -150,7 +150,7 @@
     {
       "id": 12,
       "group": "Salad",
-      "name": "Salad Trộn Rau Củ",
+      "name": "Salad Rau Củ",
       "description": "Rau củ tươi, sốt",
       "price": 30000,
       "options": [
@@ -163,7 +163,7 @@
     {
       "id": 13,
       "group": "Mì",
-      "name": "Mì Ý Sốt Bò Băm",
+      "name": "Mì Ý",
       "description": "Mì Spaghetti sốt Bolognese",
       "price": 40000,
       "options": [
@@ -197,7 +197,7 @@
     {
       "id": 15,
       "group": "Tráng Miệng",
-      "name": "Bánh Tart Trứng (2 cái)",
+      "name": "Bánh Tart Trứng",
       "description": "Bánh tart nhỏ, nhân trứng béo ngậy",
       "price": 15000,
       "options": [

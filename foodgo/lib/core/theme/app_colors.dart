@@ -91,4 +91,41 @@ class AppColors {
     begin: Alignment.centerLeft,
     end: Alignment.centerRight,
   );
+
+  // Utility Decorations (moved from app_gradients.dart)
+  static BoxDecoration get primaryButtonDecoration => BoxDecoration(
+    gradient: buttonGradient,
+    borderRadius: BorderRadius.circular(8),
+    boxShadow: [
+      BoxShadow(
+        color: shadowLight,
+        blurRadius: 4,
+        offset: Offset(0, 2),
+      ),
+    ],
+  );
+  
+  static BoxDecoration get circleButtonDecoration => BoxDecoration(
+    gradient: primaryGradient,
+    shape: BoxShape.circle,
+    boxShadow: [
+      BoxShadow(
+        color: primary.withOpacity(0.25),
+        blurRadius: 12,
+        offset: Offset(0, 4),
+      ),
+    ],
+  );
+  
+  static BoxDecoration get cardDecoration => BoxDecoration(
+    gradient: cardGradient,
+    borderRadius: BorderRadius.circular(12),
+    boxShadow: [
+      BoxShadow(
+        color: shadowLight,
+        blurRadius: 4,
+        offset: Offset(0, 2),
+      ),
+    ],
+  );
 }

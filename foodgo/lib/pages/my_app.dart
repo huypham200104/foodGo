@@ -6,7 +6,7 @@ import '../providers/auth_provider.dart';
 import '../providers/cart_provider.dart';
 import '../providers/navigation_provider.dart';
 import '../services/screen_service.dart';
-import '../core/routes/route_generator.dart';
+import '../core/routes/route_generator.dart';  // 👈 Thay đổi import
 import '../core/routes/app_routes.dart';
 
 class MyApp extends StatelessWidget {
@@ -30,8 +30,8 @@ class MyApp extends StatelessWidget {
             theme: themeProvider.themeData,
             locale: localeProvider.locale,
             initialRoute: AppRoutes.home,
-            onGenerateRoute: RouteGenerator.generateRoute,
-            onUnknownRoute: RouteGenerator.generateRoute,
+            onGenerateRoute: RouteGenerator.generateRoute,     // 👈 Sử dụng RouteGenerator
+            onUnknownRoute: RouteGenerator.generateRoute,      // 👈 Sử dụng RouteGenerator
             builder: (context, child) {
               // Initialize ScreenService globally
               ScreenService.init(context);

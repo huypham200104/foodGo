@@ -63,16 +63,23 @@ class ActionShowMenu(Action):
         domain: Dict[Text, Any],
     ) -> List[Dict[Text, Any]]:
         try:
-            menu_ref = db.collection("menu")
+            menu_ref = db.collection("menu_items")
             docs = menu_ref.stream()
 
             menu_items = []
             for doc in docs:
                 data = doc.to_dict()
-                name = data.get("name", "Không rõ")
-                price = data.get("price", "N/A")
+                print(f"[DEBUG] Document ID: {doc.id}, Data: {data}")
+                
+                # 👈 Kiểm tra isAvailable trước khi thêm vào menu
+                if data.get("isAvailable", True):
+                    menu_items.append({
+                        "id": doc.id,
+                        "name": data.get("name", "Không rõ"),
+                        "price": data.get("price", 0)  # 👈 Chỉ lấy name và price
+                    })
 
-                menu_items.append({"name": name, "price": price})
+            print(f"[DEBUG] Total menu items found: {len(menu_items)}")
 
             if not menu_items:
                 dispatcher.utter_message(
@@ -87,18 +94,23 @@ class ActionShowMenu(Action):
             dispatcher.utter_message(
                 json_message={
                     "type": "menu",
-                    "status": "ok",
-                    "items": menu_items,
-                    "message": "Menu hôm nay"
+                    "status": "success",
+                    "message": "Menu hôm nay nè!",
+                    "total_items": len(menu_items),
+                    "items": menu_items  # 👈 Chỉ có id, name, price
                 }
             )
 
         except Exception as e:
             print(f"[ERROR] Lỗi khi tải menu: {e}")
+            import traceback
+            traceback.print_exc()
+            
             dispatcher.utter_message(
                 json_message={
                     "type": "error",
-                    "message": "Lỗi hệ thống: không thể tải menu."
+                    "message": "Lỗi hệ thống: không thể tải menu.",
+                    "error": str(e)
                 }
             )
 
@@ -129,34 +141,52 @@ class ActionGetPrice(Action):
             )
             return []
 
-        docs = db.collection("menu").stream()
-        found = None
-        for doc in docs:
-            data = doc.to_dict()
-            name = data.get("name", "")
-            price = data.get("price", "")
-            if name.lower() in food.lower():
-                found = {"name": name, "price": price}
-                break
+        try:
+            docs = db.collection("menu_items").where("isAvailable", "==", True).stream()
+            found = None
+            
+            for doc in docs:
+                data = doc.to_dict()
+                name = data.get("name", "")
+                price = data.get("price", 0)
+                
+                if (food.lower() in name.lower() or 
+                    name.lower() in food.lower()):
+                    found = {
+                        "id": doc.id,
+                        "name": name, 
+                        "price": price  # 👈 Chỉ lấy name và price
+                    }
+                    break
 
-        if not found:
+            if not found:
+                dispatcher.utter_message(
+                    json_message={
+                        "type": "not_found",
+                        "food": food,
+                        "message": f"Xin lỗi, quán không có món '{food}'. Bạn có thể xem menu để chọn món khác nhé!"
+                    }
+                )
+                return []
+
             dispatcher.utter_message(
                 json_message={
-                    "type": "not_found",
-                    "food": food,
-                    "message": f"Xin lỗi, quán không có món '{food}'."
+                    "type": "price",
+                    "food": found["name"],
+                    "price": found["price"],
+                    "message": f"Món {found['name']} có giá {found['price']:,} VND."
                 }
             )
-            return []
-
-        dispatcher.utter_message(
-            json_message={
-                "type": "price",
-                "food": found["name"],
-                "price": found["price"],
-                "message": f"Món {found['name']} có giá {found['price']} VND."
-            }
-        )
+            
+        except Exception as e:
+            print(f"[ERROR] Lỗi khi tìm giá món: {e}")
+            dispatcher.utter_message(
+                json_message={
+                    "type": "error",
+                    "message": "Lỗi hệ thống: không thể tìm thông tin món ăn."
+                }
+            )
+            
         return []
 
 
@@ -176,48 +206,70 @@ class ActionOrderFood(Action):
         food = tracker.get_slot("food")
         quantity = tracker.get_slot("quantity")
 
-        if not food or not quantity:
+        if not food:
             dispatcher.utter_message(
                 json_message={
                     "type": "missing_info",
-                    "message": "Vui lòng cho biết món và số lượng bạn muốn đặt."
+                    "message": "Vui lòng cho biết món bạn muốn đặt."
                 }
             )
             return []
 
-        docs = db.collection("menu").stream()
-        found = None
-        for doc in docs:
-            data = doc.to_dict()
-            name = data.get("name", "")
-            price = data.get("price", 0)
-            if name.lower() in food.lower():
-                found = {"name": name, "price": price}
-                break
+        try:
+            docs = db.collection("menu_items").where("isAvailable", "==", True).stream()
+            found = None
+            
+            for doc in docs:
+                data = doc.to_dict()
+                name = data.get("name", "")
+                price = data.get("price", 0)
+                
+                if (food.lower() in name.lower() or 
+                    name.lower() in food.lower()):
+                    found = {
+                        "id": doc.id,
+                        "name": name, 
+                        "price": price  # 👈 Chỉ lấy name và price
+                    }
+                    break
 
-        if not found:
+            if not found:
+                dispatcher.utter_message(
+                    json_message={
+                        "type": "not_found",
+                        "food": food,
+                        "message": f"Xin lỗi, quán không có món '{food}'. Bạn có thể xem menu để chọn món khác nhé!"
+                    }
+                )
+                return []
+
+            # 👈 Parse quantity với default = 1
+            qty = parse_quantity(quantity) if quantity else 1
+            total = qty * int(found["price"])
+
             dispatcher.utter_message(
                 json_message={
-                    "type": "not_found",
-                    "food": food,
-                    "message": f"Xin lỗi, quán không có món '{food}'."
+                    "type": "order",
+                    "item": {
+                        "id": found["id"],
+                        "name": found["name"],
+                        "price": found["price"]  # 👈 Chỉ có id, name, price
+                    },
+                    "quantity": qty,
+                    "unit_price": found["price"],
+                    "total_price": total,
+                    "message": f"Đã thêm {qty} phần {found['name']} vào giỏ hàng. Tổng giá: {total:,} VND."
                 }
             )
-            return []
 
-        qty = parse_quantity(quantity)
-        total = qty * int(found["price"])
-
-        dispatcher.utter_message(
-            json_message={
-                "type": "order",
-                "food": found["name"],
-                "quantity": qty,
-                "unit_price": found["price"],
-                "total_price": total,
-                "message": f"Đặt {qty} phần {found['name']} thành công. Tổng giá: {total:,} VND."
-            }
-        )
+        except Exception as e:
+            print(f"[ERROR] Lỗi khi đặt món: {e}")
+            dispatcher.utter_message(
+                json_message={
+                    "type": "error",
+                    "message": "Lỗi hệ thống: không thể đặt món."
+                }
+            )
 
         return []
 
@@ -238,7 +290,130 @@ class ActionOutOfScope(Action):
         dispatcher.utter_message(
             json_message={
                 "type": "unknown",
-                "message": "Xin lỗi, tôi chưa hiểu ý bạn. Vui lòng nói lại về món ăn hoặc đặt món nhé."
+                "message": "Xin lỗi, tôi chưa hiểu ý bạn. Bạn có thể:\n• Xem menu\n• Hỏi giá món\n• Đặt món ăn\n\nVui lòng thử lại nhé!"
             }
         )
+        return []
+
+
+# ============================================================
+# 5️⃣ THÊM ACTION TÌM KIẾM MÓN THEO CATEGORY
+# ============================================================
+class ActionSearchByCategory(Action):
+    def name(self) -> Text:
+        return "action_search_by_category"
+
+    def run(
+        self,
+        dispatcher: CollectingDispatcher,
+        tracker: Tracker,
+        domain: Dict[Text, Any],
+    ) -> List[Dict[Text, Any]]:
+        category = tracker.get_slot("category")
+        
+        if not category:
+            dispatcher.utter_message(
+                json_message={
+                    "type": "ask_category",
+                    "message": "Bạn muốn xem món thuộc loại nào? (burger, pizza, drink, v.v.)"
+                }
+            )
+            return []
+
+        try:
+            docs = db.collection("menu_items").where("category", "==", category).where("isAvailable", "==", True).stream()
+            items = []
+            
+            for doc in docs:
+                data = doc.to_dict()
+                items.append({
+                    "id": doc.id,
+                    "name": data.get("name", ""),
+                    "price": data.get("price", 0)  # 👈 Chỉ lấy name và price
+                })
+
+            if not items:
+                dispatcher.utter_message(
+                    json_message={
+                        "type": "category_empty",
+                        "category": category,
+                        "message": f"Hiện tại quán không có món {category}. Bạn có thể xem toàn bộ menu nhé!"
+                    }
+                )
+                return []
+
+            dispatcher.utter_message(
+                json_message={
+                    "type": "category_items",
+                    "category": category,
+                    "items": items,
+                    "total_items": len(items),
+                    "message": f"Các món {category} hiện có ({len(items)} món):"
+                }
+            )
+
+        except Exception as e:
+            print(f"[ERROR] Lỗi khi tìm món theo category: {e}")
+            dispatcher.utter_message(
+                json_message={
+                    "type": "error",
+                    "message": "Lỗi hệ thống: không thể tìm món theo loại."
+                }
+            )
+
+        return []
+
+
+# ============================================================
+# 6️⃣ THÊM ACTION RECOMMEND MÓN PHỔ BIẾN
+# ============================================================
+class ActionRecommendPopular(Action):
+    def name(self) -> Text:
+        return "action_recommend_popular"
+
+    def run(
+        self,
+        dispatcher: CollectingDispatcher,
+        tracker: Tracker,
+        domain: Dict[Text, Any],
+    ) -> List[Dict[Text, Any]]:
+        try:
+            docs = db.collection("menu_items").where("isAvailable", "==", True).limit(5).stream()
+            items = []
+            
+            for doc in docs:
+                data = doc.to_dict()
+                items.append({
+                    "id": doc.id,
+                    "name": data.get("name", ""),
+                    "price": data.get("price", 0)  # 👈 Chỉ lấy name và price
+                })
+
+            if not items:
+                dispatcher.utter_message(
+                    json_message={
+                        "type": "no_recommendations",
+                        "message": "Hiện tại chưa có gợi ý món ăn. Bạn có thể xem menu để chọn nhé!"
+                    }
+                )
+                return []
+
+            dispatcher.utter_message(
+                json_message={
+                    "type": "recommendations",
+                    "items": items,
+                    "total_items": len(items),
+                    "message": f"Đây là những món được yêu thích nhất ({len(items)} món):"
+                }
+            )
+
+        except Exception as e:
+            print(f"[ERROR] Lỗi khi recommend món: {e}")
+            dispatcher.utter_message(
+                json_message={
+                    "type": "error",
+                    "message": "Lỗi hệ thống: không thể gợi ý món ăn."
+                }
+            )
+
         return []

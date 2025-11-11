@@ -1,65 +1,92 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'core/routes/app_router.dart';    // 👈 Import AppRouter
-import 'core/routes/app_routes.dart';
-import 'core/theme/app_theme.dart';
-import 'firebase_core/firebase_core.dart';
+// import 'firebase_core/firebase_core.dart';  // 👈 XÓA dòng này (duplicate import)
 import 'firebase_options.dart';
 import 'pages/my_app.dart';
 import 'upload_seed.dart' as upload_seed;
 
 // Flag để bật/tắt upload seed data
-const bool shouldUploadSeed = false; // Đặt false sau khi upload xong
+const bool shouldUploadSeed = false;
 const bool uploadAllData = false;
+const bool clearDataBeforeUpload = false;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Đảm bảo hỗ trợ input method cho tiếng Việt
-  SystemChrome.setSystemUIOverlayStyle(
-    const SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-    ),
-  );
+  // 👈 Thêm error handling cho SystemChrome
+  try {
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.dark,
+        systemNavigationBarColor: Colors.white,
+        systemNavigationBarIconBrightness: Brightness.dark,
+      ),
+    );
+  } catch (e) {
+    debugPrint('SystemChrome config warning: $e');
+  }
 
-  // Khởi tạo Firebase
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  // 👈 Thêm error handling cho Firebase
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    debugPrint('✅ Firebase initialized successfully');
+  } catch (e) {
+    debugPrint('❌ Firebase initialization error: $e');
+    // Continue anyway - app might work without some Firebase features
+  }
 
-  // Upload seed data nếu cần
+  // 👈 Seed data upload với better error handling
   if (shouldUploadSeed) {
     try {
-      print('🔄 Bắt đầu upload seed data...');
+      if (clearDataBeforeUpload) {
+        debugPrint('🗑️  Bắt đầu xóa tất cả dữ liệu hiện có...');
+        await upload_seed.clearAllData();
+        debugPrint('✅ Đã xóa tất cả dữ liệu thành công!');
+        
+        await Future.delayed(const Duration(seconds: 1));
+      }
+      
+      debugPrint('🔄 Bắt đầu upload seed data...');
       if (uploadAllData) {
         await upload_seed.uploadAllSeeds();
-        print('✅ Đã upload tất cả seed data thành công!');
+        debugPrint('✅ Đã upload tất cả seed data thành công!');
       } else {
         await upload_seed.uploadMenuItems();
-        print('✅ Đã upload menu items thành công!');
+        debugPrint('✅ Đã upload menu items thành công!');
       }
     } catch (e) {
-      print('❌ Lỗi khi upload seed data: $e');
+      debugPrint('❌ Lỗi khi upload seed data: $e');
+      // Don't block app launch due to seed data errors
     }
   }
 
-  // Khởi chạy app
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'FoodGo',
-      theme: AppTheme.lightTheme,
-      initialRoute: AppRoutes.home,
-      onGenerateRoute: AppRouter.generateRoute,  // 👈 Sử dụng AppRouter
-      debugShowCheckedModeBanner: false,
+  // 👈 Wrap runApp trong try-catch
+  try {
+    runApp(const MyApp());
+  } catch (e) {
+    debugPrint('❌ App launch error: $e');
+    // Fallback app nếu MyApp fail
+    runApp(
+      MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.error, size: 64, color: Colors.red),
+                const SizedBox(height: 16),
+                const Text('App failed to start'),
+                const SizedBox(height: 8),
+                Text('Error: $e'),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
-

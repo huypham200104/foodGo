@@ -10,24 +10,6 @@ Future<List<dynamic>> _readArray(String assetPath, String rootKey) async {
   return const [];
 }
 
-Future<void> uploadUsers() async {
-  final firestore = FirebaseFirestore.instance;
-  final users = await _readArray('assets/data/users.json', 'users');
-  for (final u in users) {
-    final id = (u['id'] ?? '').toString();
-    await firestore.collection('users').doc(id.isEmpty ? null : id).set(Map<String, dynamic>.from(u));
-  }
-}
-
-Future<void> uploadAddresses() async {
-  final firestore = FirebaseFirestore.instance;
-  final addresses = await _readArray('assets/data/addresses.json', 'addresses');
-  for (final a in addresses) {
-    final id = (a['id'] ?? '').toString();
-    await firestore.collection('addresses').doc(id.isEmpty ? null : id).set(Map<String, dynamic>.from(a));
-  }
-}
-
 Future<void> uploadRestaurants() async {
   final firestore = FirebaseFirestore.instance;
   final restaurants = await _readArray('assets/data/restaurants.json', 'restaurants');
@@ -64,55 +46,236 @@ Future<void> uploadRewards() async {
   }
 }
 
-Future<void> uploadCartItems() async {
-  final firestore = FirebaseFirestore.instance;
-  final cartItems = await _readArray('assets/data/cart_items.json', 'cartItems');
-  for (final c in cartItems) {
-    final id = (c['id'] ?? '').toString();
-    await firestore.collection('cart_items').doc(id.isEmpty ? null : id).set(Map<String, dynamic>.from(c));
-  }
-}
-
-Future<void> uploadOrders() async {
-  final firestore = FirebaseFirestore.instance;
-  final orders = await _readArray('assets/data/orders.json', 'orders');
-  for (final o in orders) {
-    final id = (o['id'] ?? '').toString();
-    await firestore.collection('orders').doc(id.isEmpty ? null : id).set(Map<String, dynamic>.from(o));
-  }
-}
-
-Future<void> uploadReviews() async {
-  final firestore = FirebaseFirestore.instance;
-  final reviews = await _readArray('assets/data/reviews.json', 'reviews');
-  for (final r in reviews) {
-    final id = (r['id'] ?? '').toString();
-    await firestore.collection('reviews').doc(id.isEmpty ? null : id).set(Map<String, dynamic>.from(r));
-  }
-}
-
-Future<void> uploadComplaints() async {
-  final firestore = FirebaseFirestore.instance;
-  final complaints = await _readArray('assets/data/complaints.json', 'complaints');
-  for (final c in complaints) {
-    final id = (c['id'] ?? '').toString();
-    await firestore.collection('complaints').doc(id.isEmpty ? null : id).set(Map<String, dynamic>.from(c));
-  }
-}
-
 Future<void> uploadAllSeeds() async {
   await Future.wait([
-    uploadUsers(),
-    uploadAddresses(),
     uploadRestaurants(),
     uploadMenuItems(),
     uploadVouchers(),
-    uploadRewards(),
-    uploadCartItems(),
-    uploadOrders(),
-    uploadReviews(),
-    uploadComplaints(),
+    uploadRewards()
   ]);
+}
+
+// 👈 Thêm method xóa tất cả dữ liệu
+Future<void> clearAllData() async {
+  final firestore = FirebaseFirestore.instance;
+  
+  try {
+    print('🗑️  Đang xóa dữ liệu từ các collection...');
+    
+    // Danh sách tất cả collections cần xóa
+    final collectionsToDelete = [
+      'addresses',
+      'cart_items',
+      'complaints',
+      'menu',
+      'menu_items',
+      'notifications',
+      'orders',
+      'restaurants',
+      'reviews',
+      'rewards',
+      'users',
+      'vouchers',
+      // Thêm các collection khác nếu có
+    ];
+
+    // Xóa từng collection
+    for (String collectionName in collectionsToDelete) {
+      await _deleteCollection(firestore, collectionName);
+    }
+    
+    print('✅ Đã xóa tất cả dữ liệu thành công!');
+    
+  } catch (e) {
+    print('❌ Lỗi khi xóa dữ liệu: $e');
+    rethrow;
+  }
+}
+
+// 👈 Method helper để xóa một collection
+Future<void> _deleteCollection(FirebaseFirestore firestore, String collectionName) async {
+  try {
+    print('   🗑️  Đang xóa collection: $collectionName');
+    
+    // Lấy tất cả documents trong collection
+    final querySnapshot = await firestore.collection(collectionName).get();
+    
+    if (querySnapshot.docs.isNotEmpty) {
+      // Xóa theo batch để tối ưu performance
+      WriteBatch batch = firestore.batch();
+      int count = 0;
+      
+      for (QueryDocumentSnapshot doc in querySnapshot.docs) {
+        batch.delete(doc.reference);
+        count++;
+        
+        // Firebase Firestore batch limit = 500 operations
+        if (count >= 500) {
+          await batch.commit();
+          batch = firestore.batch();
+          count = 0;
+          
+          // Đợi một chút để tránh rate limiting
+          await Future.delayed(Duration(milliseconds: 100));
+        }
+      }
+      
+      // Commit batch cuối cùng
+      if (count > 0) {
+        await batch.commit();
+      }
+      
+      print('   ✅ Đã xóa ${querySnapshot.docs.length} documents từ $collectionName');
+    } else {
+      print('   ℹ️  Collection $collectionName đã trống');
+    }
+    
+  } catch (e) {
+    print('   ❌ Lỗi khi xóa collection $collectionName: $e');
+    // Không throw để tiếp tục xóa các collections khác
+  }
+}
+
+// 👈 Method xóa selective - chỉ xóa những collections được chỉ định
+Future<void> clearSpecificData(List<String> collections) async {
+  final firestore = FirebaseFirestore.instance;
+  
+  try {
+    print('🗑️  Đang xóa dữ liệu từ ${collections.length} collections...');
+    
+    for (String collectionName in collections) {
+      await _deleteCollection(firestore, collectionName);
+    }
+    
+    print('✅ Đã xóa dữ liệu từ các collections được chỉ định!');
+    
+  } catch (e) {
+    print('❌ Lỗi khi xóa dữ liệu selective: $e');
+    rethrow;
+  }
+}
+
+// 👈 Method xóa dữ liệu cũ (older than specified days)
+Future<void> clearOldData({int olderThanDays = 30}) async {
+  final firestore = FirebaseFirestore.instance;
+  final cutoffDate = DateTime.now().subtract(Duration(days: olderThanDays));
+  
+  try {
+    print('🗑️  Đang xóa dữ liệu cũ hơn $olderThanDays ngày...');
+    
+    // Collections có timestamp
+    final timestampCollections = ['orders', 'reviews', 'notifications'];
+    
+    for (String collectionName in timestampCollections) {
+      await _deleteOldDocuments(firestore, collectionName, cutoffDate);
+    }
+    
+    print('✅ Đã xóa dữ liệu cũ thành công!');
+    
+  } catch (e) {
+    print('❌ Lỗi khi xóa dữ liệu cũ: $e');
+    rethrow;
+  }
+}
+
+// 👈 Helper method xóa documents cũ
+Future<void> _deleteOldDocuments(
+  FirebaseFirestore firestore, 
+  String collectionName, 
+  DateTime cutoffDate
+) async {
+  try {
+    print('   🗑️  Đang xóa documents cũ từ $collectionName...');
+    
+    // Query documents có createdAt < cutoffDate
+    final querySnapshot = await firestore
+        .collection(collectionName)
+        .where('createdAt', isLessThan: cutoffDate)
+        .get();
+    
+    if (querySnapshot.docs.isNotEmpty) {
+      WriteBatch batch = firestore.batch();
+      int count = 0;
+      
+      for (QueryDocumentSnapshot doc in querySnapshot.docs) {
+        batch.delete(doc.reference);
+        count++;
+        
+        if (count >= 500) {
+          await batch.commit();
+          batch = firestore.batch();
+          count = 0;
+          await Future.delayed(Duration(milliseconds: 100));
+        }
+      }
+      
+      if (count > 0) {
+        await batch.commit();
+      }
+      
+      print('   ✅ Đã xóa ${querySnapshot.docs.length} documents cũ từ $collectionName');
+    } else {
+      print('   ℹ️  Không có documents cũ trong $collectionName');
+    }
+    
+  } catch (e) {
+    print('   ❌ Lỗi khi xóa documents cũ từ $collectionName: $e');
+  }
+}
+
+// 👈 Method backup trước khi xóa (optional)
+Future<void> backupBeforeClear() async {
+  final firestore = FirebaseFirestore.instance;
+  
+  try {
+    print('💾 Đang backup dữ liệu trước khi xóa...');
+    
+    // Tạo backup collection với timestamp
+    final backupTimestamp = DateTime.now().millisecondsSinceEpoch;
+    final backupCollectionName = 'backup_$backupTimestamp';
+    
+    // Backup important collections
+    final importantCollections = ['users', 'restaurants', 'orders'];
+    
+    for (String collectionName in importantCollections) {
+      final querySnapshot = await firestore.collection(collectionName).get();
+      
+      if (querySnapshot.docs.isNotEmpty) {
+        WriteBatch batch = firestore.batch();
+        int count = 0;
+        
+        for (QueryDocumentSnapshot doc in querySnapshot.docs) {
+          final backupDoc = firestore
+              .collection(backupCollectionName)
+              .doc('${collectionName}_${doc.id}');
+              
+          batch.set(backupDoc, {
+            'originalCollection': collectionName,
+            'originalId': doc.id,
+            'data': doc.data(),
+            'backupTime': FieldValue.serverTimestamp(),
+          });
+          
+          count++;
+          if (count >= 500) {
+            await batch.commit();
+            batch = firestore.batch();
+            count = 0;
+          }
+        }
+        
+        if (count > 0) {
+          await batch.commit();
+        }
+      }
+    }
+    
+    print('✅ Backup hoàn tất trong collection: $backupCollectionName');
+    
+  } catch (e) {
+    print('❌ Lỗi khi backup: $e');
+    rethrow;
+  }
 }
 
 

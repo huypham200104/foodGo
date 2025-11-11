@@ -11,8 +11,7 @@ import '../../models/restaurant_model.dart';
 import '../../services/menu_service.dart';
 import '../../services/screen_service.dart';
 import '../../core/routes/app_routes.dart';
-import '../../core/theme/app_colors.dart';
-import '../../core/theme/app_gradients.dart';
+import '../../core/theme/app_colors.dart'; // 👈 Chỉ cần import này
 
 // Import widgets
 import 'widgets/top_bar.dart';
@@ -25,7 +24,7 @@ import 'widgets/horizontal_card_list.dart';
 import 'widgets/food_card.dart';
 import 'widgets/product_card.dart';
 import 'widgets/custom_bottom_nav.dart';
-import 'widgets/floating_chat_button.dart'; // Thay đổi import
+import 'widgets/floating_chat_button.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -145,7 +144,7 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      body: Stack( // Thay đổi từ SafeArea sang Stack
+      body: Stack(
         children: [
           // Main content
           SafeArea(
@@ -156,14 +155,11 @@ class _HomePageState extends State<HomePage> {
                     : _buildHomeContent(),
           ),
           
-          // Floating Chat Button - có thể di chuyển tự do
+          // Floating Chat Button
           FloatingChatButton(
             onPressed: () {
-              // Custom chat action
               debugPrint('Chat button pressed');
-              
-              // TODO: Navigate to chat screen khi implement
-              // Navigator.pushNamed(context, AppRoutes.chat);
+              // TODO: Navigate to chat screen when implemented
             },
             showOnlineIndicator: true,
           ),
@@ -173,7 +169,6 @@ class _HomePageState extends State<HomePage> {
         currentIndex: 0,
         onTap: _handleBottomNavTap,
       ),
-      // Xóa floatingActionButton vì đã dùng Stack với FloatingChatButton
     );
   }
 
@@ -183,9 +178,9 @@ class _HomePageState extends State<HomePage> {
       color: AppColors.primary,
       child: CustomScrollView(
         controller: _scrollController,
-        physics: const BouncingScrollPhysics(), // Thêm physics để scroll mượt hơn
+        physics: const BouncingScrollPhysics(),
         slivers: [
-          // Top Bar với responsive height
+          // Top Bar
           SliverToBoxAdapter(
             child: TopBar(
               onNotificationTap: () =>
@@ -196,7 +191,7 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
 
-          // Search Field với responsive margin
+          // Search Field
           SliverToBoxAdapter(
             child: Padding(
               padding: EdgeInsets.symmetric(
@@ -210,7 +205,7 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
 
-          // Top Search Chips với responsive padding
+          // Top Search Chips
           SliverToBoxAdapter(
             child: Padding(
               padding: EdgeInsets.symmetric(vertical: ScreenService.smallSpacing),
@@ -226,10 +221,10 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
 
-          // Banner Carousel với responsive height
+          // Banner Carousel
           SliverToBoxAdapter(
             child: Container(
-              height: ScreenService.isSmallScreen ? 160 : 200, // Responsive height
+              height: ScreenService.isSmallScreen ? 160 : 200,
               margin: EdgeInsets.symmetric(
                 horizontal: ScreenService.mediumSpacing,
                 vertical: ScreenService.smallSpacing,
@@ -243,7 +238,7 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
 
-          // Sản phẩm mới Section với responsive spacing
+          // Sản phẩm mới Section - 👈 Sử dụng AppColors thay vì AppGradients
           if (_newProducts.isNotEmpty) ...[
             SliverToBoxAdapter(
               child: Padding(
@@ -254,7 +249,7 @@ class _HomePageState extends State<HomePage> {
                   leadingIcon: Container(
                     padding: EdgeInsets.all(ScreenService.smallSpacing / 2),
                     decoration: BoxDecoration(
-                      gradient: AppColors.successGradient,
+                      gradient: AppColors.successGradient, // 👈 Từ AppColors
                       borderRadius: BorderRadius.circular(12),
                       boxShadow: [
                         BoxShadow(
@@ -264,17 +259,10 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ],
                     ),
-                    child: Image.asset(
-                      'assets/icons/new.svg',  // Sử dụng new.svg ở đây
-                      width: ScreenService.isSmallScreen ? 16 : 20,
-                      height: ScreenService.isSmallScreen ? 16 : 20,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Icon(
-                          Icons.fiber_new,
-                          size: ScreenService.isSmallScreen ? 16 : 20,
-                          color: Colors.white,
-                        );
-                      },
+                    child: Icon(
+                      Icons.fiber_new,
+                      size: ScreenService.isSmallScreen ? 16 : 20,
+                      color: Colors.white,
                     ),
                   ),
                   onSeeAllTap: () {
@@ -299,16 +287,16 @@ class _HomePageState extends State<HomePage> {
                     item: item,
                     onTap: () => _navigateToProductDetail(item.id),
                     onAddToCart: () => _addToCart(item),
-                    showBadge: true,      // Hiển thị badge NEW
-                    badgeText: 'NEW',     // Text cho badge
-                    badgeColor: AppColors.success, // Màu badge
+                    showBadge: true,
+                    badgeText: 'NEW',
+                    badgeColor: AppColors.success,
                   ),
                 ),
               ),
             ),
           ],
 
-          // Sản phẩm bán chạy Section với responsive spacing
+          // Sản phẩm bán chạy Section - 👈 Sử dụng AppColors
           if (_bestsellerProducts.isNotEmpty) ...[
             SliverToBoxAdapter(
               child: Padding(
@@ -319,7 +307,7 @@ class _HomePageState extends State<HomePage> {
                   leadingIcon: Container(
                     padding: EdgeInsets.all(ScreenService.smallSpacing / 2),
                     decoration: BoxDecoration(
-                      gradient: AppColors.warningGradient,
+                      gradient: AppColors.warningGradient, // 👈 Từ AppColors
                       borderRadius: BorderRadius.circular(12),
                       boxShadow: [
                         BoxShadow(
@@ -329,17 +317,10 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ],
                     ),
-                    child: Image.asset(
-                      'assets/icons/hot.svg',  // Sử dụng hot.svg ở đây
-                      width: ScreenService.isSmallScreen ? 16 : 20,
-                      height: ScreenService.isSmallScreen ? 16 : 20,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Icon(
-                          Icons.local_fire_department,
-                          size: ScreenService.isSmallScreen ? 16 : 20,
-                          color: Colors.white,
-                        );
-                      },
+                    child: Icon(
+                      Icons.local_fire_department,
+                      size: ScreenService.isSmallScreen ? 16 : 20,
+                      color: Colors.white,
                     ),
                   ),
                   onSeeAllTap: () {
@@ -364,36 +345,25 @@ class _HomePageState extends State<HomePage> {
                     item: item,
                     onTap: () => _navigateToProductDetail(item.id),
                     onAddToCart: () => _addToCart(item),
-                    showBadge: true,      // Hiển thị badge HOT
-                    badgeText: 'HOT',     // Text cho badge
-                    badgeColor: AppColors.warning, // Màu badge
+                    showBadge: true,
+                    badgeText: 'HOT',
+                    badgeColor: AppColors.warning,
                   ),
                 ),
               ),
             ),
           ],
 
-          // Empty state với responsive design
+          // Empty state
           if (_newProducts.isEmpty && _bestsellerProducts.isEmpty)
             SliverToBoxAdapter(
               child: Container(
                 margin: EdgeInsets.all(ScreenService.mediumSpacing),
                 padding: EdgeInsets.all(ScreenService.largeSpacing),
                 constraints: BoxConstraints(
-                  minHeight: ScreenService.availableHeight * 0.3, // 30% của available height
+                  minHeight: ScreenService.availableHeight * 0.3,
                 ),
-                decoration: BoxDecoration(
-                  color: AppColors.surface,
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: AppColors.borderLight),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.shadowLight,
-                      blurRadius: 8,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                ),
+                decoration: AppColors.cardDecoration, // 👈 Từ AppColors
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -450,12 +420,12 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
 
-          // Bottom spacing để tránh bị che bởi FAB và bottom nav
+          // Bottom spacing
           SliverToBoxAdapter(
             child: SizedBox(
-              height: (ScreenService.isSmallScreen ? 85 : 90) + // Bottom nav height mới
-                      80 + // FAB space
-                      ScreenService.mediumSpacing, // Extra spacing
+              height: (ScreenService.isSmallScreen ? 85 : 90) +
+                      80 +
+                      ScreenService.mediumSpacing,
             ),
           ),
         ],

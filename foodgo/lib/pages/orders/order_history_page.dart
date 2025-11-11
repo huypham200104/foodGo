@@ -1,13 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../core/theme/app_colors.dart';
-import '../../core/routes/app_routes.dart'; // Import AppRoutes
+import '../../core/routes/app_routes.dart';
 import '../../services/screen_service.dart' as screen;
-import '../../services/order_service.dart'; // Import OrderService
+import '../../services/order_service.dart';
 import '../../models/order_model.dart';
 import '../../providers/auth_provider.dart';
-import 'widgets/order_history_card.dart';
+import 'widgets/order_history_app_bar.dart';
+import 'widgets/order_history_loading.dart';
+import 'widgets/order_history_error.dart';
+import 'widgets/order_history_empty.dart';
 import 'widgets/order_status_filter.dart';
+import 'widgets/order_history_list.dart';
+import 'widgets/order_detail_dialog.dart';
+import 'widgets/order_rating_dialog.dart';
+import 'widgets/order_cancel_dialog.dart';
 import 'widgets/empty_orders_widget.dart';
 
 class OrderHistoryPage extends StatefulWidget {
@@ -73,22 +80,8 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: AppBar(
-        title: Text(
-          'Đơn hàng của tôi',
-          style: TextStyle(
-            fontSize: screen.ScreenService.largeText,
-            fontWeight: FontWeight.w600,
-            color: AppColors.textPrimary,
-          ),
-        ),
-        backgroundColor: AppColors.surface,
-        elevation: 0,
-        centerTitle: true,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: AppColors.textPrimary),
-          onPressed: () => Navigator.pop(context),
-        ),
+      appBar: OrderHistoryAppBar(
+        onBack: () => Navigator.pop(context),
       ),
       body: _buildBody(),
     );
@@ -96,11 +89,14 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
 
   Widget _buildBody() {
     if (_isLoading) {
-      return _buildLoadingWidget();
+      return const OrderHistoryLoading();
     }
     
     if (_errorMessage != null) {
-      return _buildErrorWidget();
+      return OrderHistoryError(
+        message: _errorMessage!,
+        onRetry: _loadOrders,
+      );
     }
     
     if (_orders.isEmpty) {
@@ -120,159 +116,43 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
         // Orders list
         Expanded(
           child: _filteredOrders.isEmpty
-              ? _buildEmptyFilteredOrders()
-              : RefreshIndicator(
+              ? const OrderHistoryEmpty(
+                  message: 'Không tìm thấy đơn hàng với trạng thái này'
+                )
+              : OrderHistoryList(
+                  orders: _filteredOrders,
                   onRefresh: _loadOrders,
-                  color: AppColors.primary,
-                  child: ListView.builder(
-                    padding: EdgeInsets.all(screen.ScreenService.mediumSpacing),
-                    itemCount: _filteredOrders.length,
-                    itemBuilder: (context, index) {
-                      final order = _filteredOrders[index];
-                      return OrderHistoryCard(
-                        order: order,
-                        onTap: () => _viewOrderDetail(order),
-                        onReorder: () => _reorder(order),
-                        onRate: OrderService.canRateOrder(order) 
-                            ? () => _rateOrder(order) 
-                            : null,
-                        onCancel: OrderService.canCancelOrder(order)
-                            ? () => _cancelOrder(order)
-                            : null,
-                      );
-                    },
-                  ),
+                  onOrderTap: _viewOrderDetail,
+                  onReorder: _reorder,
+                  onRate: _rateOrder,
+                  onCancel: _cancelOrder,
                 ),
         ),
       ],
     );
   }
 
-  Widget _buildLoadingWidget() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          CircularProgressIndicator(color: AppColors.primary),
-          SizedBox(height: screen.ScreenService.mediumSpacing),
-          Text(
-            'Đang tải đơn hàng...',
-            style: TextStyle(
-              fontSize: screen.ScreenService.mediumText,
-              color: AppColors.textSecondary,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildErrorWidget() {
-    return Center(
-      child: Padding(
-        padding: EdgeInsets.all(screen.ScreenService.largeSpacing),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.error_outline,
-              size: 64,
-              color: AppColors.error,
-            ),
-            SizedBox(height: screen.ScreenService.mediumSpacing),
-            Text(
-              'Có lỗi xảy ra',
-              style: TextStyle(
-                fontSize: screen.ScreenService.largeText,
-                fontWeight: FontWeight.w600,
-                color: AppColors.textPrimary,
-              ),
-            ),
-            SizedBox(height: screen.ScreenService.smallSpacing),
-            Text(
-              _errorMessage!,
-              style: TextStyle(
-                fontSize: screen.ScreenService.mediumText,
-                color: AppColors.textSecondary,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(height: screen.ScreenService.largeSpacing),
-            ElevatedButton.icon(
-              onPressed: _loadOrders,
-              icon: Icon(Icons.refresh),
-              label: Text('Thử lại'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
-                padding: EdgeInsets.symmetric(
-                  horizontal: screen.ScreenService.largeSpacing,
-                  vertical: screen.ScreenService.mediumSpacing,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildEmptyFilteredOrders() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.search_off,
-            size: 64,
-            color: AppColors.textLight,
-          ),
-          SizedBox(height: screen.ScreenService.mediumSpacing),
-          Text(
-            'Không có đơn hàng nào',
-            style: TextStyle(
-              fontSize: screen.ScreenService.mediumText,
-              fontWeight: FontWeight.w600,
-              color: AppColors.textPrimary,
-            ),
-          ),
-          SizedBox(height: screen.ScreenService.smallSpacing),
-          Text(
-            'Không tìm thấy đơn hàng với trạng thái này',
-            style: TextStyle(
-              fontSize: screen.ScreenService.smallText,
-              color: AppColors.textSecondary,
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ],
-      ),
-    );
-  }
-
   void _viewOrderDetail(OrderModel order) {
-    Navigator.pushNamed(
-      context,
-      AppRoutes.orderDetail, // Sử dụng AppRoutes
-      arguments: order,
+    showDialog(
+      context: context,
+      builder: (context) => OrderDetailDialog(order: order),
     );
   }
 
   Future<void> _reorder(OrderModel order) async {
     try {
-      // TODO: Implement reorder logic - add items to cart
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Đang thêm món vào giỏ hàng...'),
+          content: const Text('Đang thêm món vào giỏ hàng...'),
           backgroundColor: AppColors.primary,
         ),
       );
       
-      // Navigate to cart after adding items
       Navigator.pushNamed(context, AppRoutes.cart);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Không thể đặt lại đơn hàng'),
+          content: const Text('Không thể đặt lại đơn hàng'),
           backgroundColor: AppColors.error,
         ),
       );
@@ -280,99 +160,63 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
   }
 
   Future<void> _rateOrder(OrderModel order) async {
-    // TODO: Show rating dialog
-    showDialog(
+    final result = await showDialog<double>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Đánh giá đơn hàng'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text('Bạn cảm thấy đơn hàng này như thế nào?'),
-            SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(5, (index) {
-                return IconButton(
-                  onPressed: () async {
-                    try {
-                      await OrderService.rateOrder(
-                        order.id,
-                        (index + 1).toDouble(),
-                        null,
-                      );
-                      Navigator.pop(context);
-                      _loadOrders(); // Refresh orders
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('Đánh giá thành công!'),
-                          backgroundColor: AppColors.success,
-                        ),
-                      );
-                    } catch (e) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('Không thể đánh giá'),
-                          backgroundColor: AppColors.error,
-                        ),
-                      );
-                    }
-                  },
-                  icon: Icon(
-                    Icons.star,
-                    color: AppColors.warning,
-                  ),
-                );
-              }),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text('Hủy'),
-          ),
-        ],
-      ),
+      builder: (context) => OrderRatingDialog(order: order),
     );
+
+    if (result != null) {
+      try {
+        await OrderService.rateOrder(order.id, result, null);
+        _loadOrders(); // Refresh orders
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: const Text('Đánh giá thành công!'),
+              backgroundColor: AppColors.success,
+            ),
+          );
+        }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: const Text('Không thể đánh giá'),
+              backgroundColor: AppColors.error,
+            ),
+          );
+        }
+      }
+    }
   }
 
   Future<void> _cancelOrder(OrderModel order) async {
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Hủy đơn hàng'),
-        content: Text('Bạn có chắc chắn muốn hủy đơn hàng này?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: Text('Không'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: Text('Hủy đơn hàng'),
-          ),
-        ],
-      ),
+      builder: (context) => OrderCancelDialog(order: order),
     );
 
     if (confirmed == true) {
       try {
         await OrderService.cancelOrder(order.id, 'Hủy bởi người dùng');
         _loadOrders(); // Refresh orders
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Đã hủy đơn hàng thành công'),
-            backgroundColor: AppColors.success,
-          ),
-        );
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: const Text('Đã hủy đơn hàng thành công'),
+              backgroundColor: AppColors.success,
+            ),
+          );
+        }
       } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Không thể hủy đơn hàng'),
-            backgroundColor: AppColors.error,
-          ),
-        );
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: const Text('Không thể hủy đơn hàng'),
+              backgroundColor: AppColors.error,
+            ),
+          );
+        }
       }
     }
   }

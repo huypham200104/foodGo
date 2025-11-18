@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../../core/theme/app_colors.dart';
-import '../../../services/screen_service.dart';
 
 class HorizontalCardList<T> extends StatelessWidget {
   final List<T> items;

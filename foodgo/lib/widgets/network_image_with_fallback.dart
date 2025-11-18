@@ -46,7 +46,24 @@ class NetworkImageWithFallback extends StatelessWidget {
       ),
       child: Icon(
         Icons.fastfood,
-        size: width * 0.4,
+        // Guard against unbounded sizes: if width/height are not finite,
+        // fall back to a sensible icon size.
+        size: (() {
+          final w = width;
+          final h = height;
+          double base;
+          if (w.isFinite && w > 0) {
+            base = w;
+          } else if (h.isFinite && h > 0) {
+            base = h;
+          } else {
+            base = 48.0;
+          }
+          // Use 40% of the base size but ensure it's finite and >= 16
+          final s = base * 0.4;
+          if (!s.isFinite || s <= 0) return 24.0;
+          return s.clamp(16.0, 128.0);
+        })(),
         color: AppColors.textLight,
       ),
     );

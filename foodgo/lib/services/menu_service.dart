@@ -4,12 +4,16 @@ import 'package:flutter/services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:foodgo/models/menu_item_model.dart';
 import '../core/constans/app_icons.dart';
-import '../services/firebase_service.dart'; // Thêm import này
+import '../services/firebase_service.dart';
 
 class MenuService {
   static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   static List<MenuItemModel>? _cachedMenu;
   static Map<String, dynamic>? _cachedMetadata;
+  
+  // 👈 Thêm cache cho new products và bestsellers
+  static List<MenuItemModel>? _cachedNewProducts;
+  static List<MenuItemModel>? _cachedBestsellerProducts;
 
   /// Load menu data từ Firebase Firestore
   static Future<List<MenuItemModel>> loadMenuData() async {
@@ -58,6 +62,11 @@ class MenuService {
 
   /// Lấy sản phẩm mới từ Firebase
   static Future<List<MenuItemModel>> getNewProducts() async {
+    // 👈 Sử dụng cache
+    if (_cachedNewProducts != null) {
+      return _cachedNewProducts!;
+    }
+
     try {
       final QuerySnapshot snapshot = await _firestore
           .collection('menu_items')
@@ -66,36 +75,43 @@ class MenuService {
           .orderBy('createdAt', descending: true)
           .limit(10)
           .get();
+      
       if (snapshot.docs.isNotEmpty) {
-        return snapshot.docs.map((doc) {
+        _cachedNewProducts = snapshot.docs.map((doc) {
           final data = doc.data() as Map<String, dynamic>;
           data['id'] = doc.id;
           return MenuItemModel.fromJson(FirebaseService.convertFirestoreData(data));
         }).toList();
+        return _cachedNewProducts!;
       }
 
-      // Fallback when no docs match - chỉ lấy sản phẩm có isNew = true
+      // Fallback when no docs match
       final all = await loadMenuData();
       final candidates = all
           .where((e) => e.isAvailable && (e.isNew == true))
           .toList();
-      candidates.sort((a, b) => (b.createdAt ?? DateTime(0)).compareTo(a.createdAt ?? DateTime(0)));
-      // Chỉ trả về sản phẩm có isNew = true, không trả về tất cả sản phẩm
-      return candidates.take(10).toList();
+      candidates.sort((a, b) => (b.createdAt).compareTo(a.createdAt));
+      _cachedNewProducts = candidates.take(10).toList();
+      return _cachedNewProducts!;
     } catch (e) {
       print('Error loading new products: $e');
-      // Fallback to local - chỉ lấy sản phẩm có isNew = true
       final all = await _loadMenuFromLocal();
       final candidates = all
           .where((e) => e.isAvailable && (e.isNew == true))
           .toList();
-      candidates.sort((a, b) => (b.createdAt ?? DateTime(0)).compareTo(a.createdAt ?? DateTime(0)));
-      return candidates.take(10).toList();
+      candidates.sort((a, b) => (b.createdAt).compareTo(a.createdAt));
+      _cachedNewProducts = candidates.take(10).toList();
+      return _cachedNewProducts!;
     }
   }
 
   /// Lấy sản phẩm bán chạy từ Firebase
   static Future<List<MenuItemModel>> getBestsellerProducts() async {
+    // 👈 Sử dụng cache
+    if (_cachedBestsellerProducts != null) {
+      return _cachedBestsellerProducts!;
+    }
+
     try {
       final QuerySnapshot snapshot = await _firestore
           .collection('menu_items')
@@ -104,27 +120,31 @@ class MenuService {
           .orderBy('soldCount', descending: true)
           .limit(10)
           .get();
+      
       if (snapshot.docs.isNotEmpty) {
-        return snapshot.docs.map((doc) {
+        _cachedBestsellerProducts = snapshot.docs.map((doc) {
           final data = doc.data() as Map<String, dynamic>;
           data['id'] = doc.id;
           return MenuItemModel.fromJson(FirebaseService.convertFirestoreData(data));
         }).toList();
+        return _cachedBestsellerProducts!;
       }
 
       // Fallback: sort all by soldCount desc
       final all = await loadMenuData();
-      all.sort((a, b) => (b.soldCount ?? 0).compareTo(a.soldCount ?? 0));
-      return all.take(10).toList();
+      all.sort((a, b) => (b.soldCount).compareTo(a.soldCount));
+      _cachedBestsellerProducts = all.take(10).toList();
+      return _cachedBestsellerProducts!;
     } catch (e) {
       print('Error loading bestseller products: $e');
       final all = await _loadMenuFromLocal();
-      all.sort((a, b) => (b.soldCount ?? 0).compareTo(a.soldCount ?? 0));
-      return all.take(10).toList();
+      all.sort((a, b) => (b.soldCount).compareTo(a.soldCount));
+      _cachedBestsellerProducts = all.take(10).toList();
+      return _cachedBestsellerProducts!;
     }
   }
 
-  /// Lấy products theo category từ Firebase
+  /// Lấy sản phẩm theo category từ Firebase
   static Future<List<MenuItemModel>> getProductsByCategory(String category) async {
     try {
       final QuerySnapshot snapshot = await _firestore
@@ -225,30 +245,91 @@ class MenuService {
     ];
   }
 
-  /// Get product by ID từ Firebase
-  static Future<MenuItemModel?> getProductById(String id) async {
+  /// Get product by ID từ Firebase - 👈 Sửa lại method này
+  static Future<MenuItemModel?> getProductById(String productId) async {
     try {
-      final DocumentSnapshot doc = await _firestore
-          .collection('menu_items')
-          .doc(id)
-          .get();
-
-      if (doc.exists) {
-        final data = doc.data() as Map<String, dynamic>;
-        data['id'] = doc.id;
-        return MenuItemModel.fromJson(data);
+      debugPrint('Getting product by ID: $productId');
+      
+      // 1. Tìm trong cached menu trước
+      if (_cachedMenu != null) {
+        try {
+          final cachedProduct = _cachedMenu!.firstWhere(
+            (product) => product.id == productId,
+          );
+          debugPrint('Found product in cached menu: ${cachedProduct.name}');
+          return cachedProduct;
+        } catch (e) {
+          // Không tìm thấy trong cached menu
+        }
       }
+      
+      // 2. Tìm trong cached new products
+      if (_cachedNewProducts != null) {
+        try {
+          final cachedProduct = _cachedNewProducts!.firstWhere(
+            (product) => product.id == productId,
+          );
+          debugPrint('Found product in cached new products: ${cachedProduct.name}');
+          return cachedProduct;
+        } catch (e) {
+          // Không tìm thấy trong cached new products
+        }
+      }
+      
+      // 3. Tìm trong cached bestsellers
+      if (_cachedBestsellerProducts != null) {
+        try {
+          final cachedProduct = _cachedBestsellerProducts!.firstWhere(
+            (product) => product.id == productId,
+          );
+          debugPrint('Found product in cached bestsellers: ${cachedProduct.name}');
+          return cachedProduct;
+        } catch (e) {
+          // Không tìm thấy trong cached bestsellers
+        }
+      }
+      
+      // 4. Load từ Firestore nếu không có trong cache
+      debugPrint('Loading product from Firestore: $productId');
+      final doc = await _firestore
+          .collection('menu_items')
+          .doc(productId)
+          .get();
+          
+      if (doc.exists) {
+        final data = doc.data()!;
+        data['id'] = doc.id;
+        final product = MenuItemModel.fromJson(FirebaseService.convertFirestoreData(data));
+        debugPrint('Loaded product from Firestore: ${product.name}');
+        return product;
+      }
+      
+      // 5. Fallback: Load tất cả menu và tìm
+      debugPrint('Fallback: Loading all menu items');
+      final allMenu = await loadMenuData();
+      try {
+        final product = allMenu.firstWhere(
+          (product) => product.id == productId,
+        );
+        debugPrint('Found product in all menu: ${product.name}');
+        return product;
+      } catch (e) {
+        debugPrint('Product not found anywhere: $productId');
+        return null;
+      }
+      
     } catch (e) {
-      print('Error loading product by ID: $e');
+      debugPrint('Error getting product by ID: $e');
+      return null;
     }
-    
-    return null;
   }
 
-  /// Clear cache
+  /// Clear cache - 👈 Cập nhật để clear tất cả cache
   static void clearCache() {
     _cachedMenu = null;
     _cachedMetadata = null;
+    _cachedNewProducts = null;
+    _cachedBestsellerProducts = null;
   }
 
   /// Update product sold count (khi có order thành công)

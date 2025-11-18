@@ -7,17 +7,16 @@ import '../../services/menu_service.dart';
 import '../../models/menu_item_model.dart';
 import '../../providers/cart_provider.dart';
 import '../../providers/auth_provider.dart';
-import '../../widgets/network_image_with_fallback.dart';
 import 'widgets/menu_item_card.dart';
 import 'widgets/menu_category_tabs.dart';
 
 class MenuPage extends StatefulWidget {
-  final String? initialCategory;
+  final String? initialCategory; // 👈 Đảm bảo tên parameter này đúng
   final String? filter;
   
   const MenuPage({
     super.key,
-    this.initialCategory,
+    this.initialCategory, // 👈 Đảm bảo tên parameter này đúng
     this.filter,
   });
 

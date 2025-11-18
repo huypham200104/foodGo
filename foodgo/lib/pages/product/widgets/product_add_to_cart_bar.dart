@@ -3,25 +3,57 @@ import 'package:provider/provider.dart';
 import '../../../models/menu_item_model.dart';
 import '../../../providers/cart_provider.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../services/screen_service.dart';
 
 class ProductAddToCartBar extends StatelessWidget {
   final MenuItemModel product;
   final int quantity;
+  final List<Map<String, dynamic>>? selectedToppings; // 👈 Thêm selectedToppings
+  final bool canAdd;
   final VoidCallback onAddToCart;
 
   const ProductAddToCartBar({
     super.key,
     required this.product,
     required this.quantity,
+    this.selectedToppings,
+    this.canAdd = true,
     required this.onAddToCart,
   });
 
   @override
   Widget build(BuildContext context) {
+    // 👈 Tính tổng giá đúng bao gồm toppings
+    final basePrice = product.price * quantity;
+    double _toDouble(dynamic v) {
+      if (v == null) return 0.0;
+      if (v is double) return v;
+      if (v is int) return v.toDouble();
+      if (v is String) return double.tryParse(v) ?? 0.0;
+      return 0.0;
+    }
+
+    final toppingsPrice = (selectedToppings ?? []).fold<double>(
+      0.0,
+      (sum, topping) => sum + _toDouble(topping['price']),
+    ) * quantity;
+    final totalPrice = basePrice + toppingsPrice;
+
+    String _formatVND(int value) {
+      final s = value.toString();
+      if (s.length <= 3) return '$s VND';
+      final buffer = StringBuffer();
+      for (int i = 0; i < s.length; i++) {
+        if (i != 0 && (s.length - i) % 3 == 0) buffer.write('.');
+        buffer.write(s[i]);
+      }
+      return '${buffer.toString()} VND';
+    }
+
     return Consumer<CartProvider>(
       builder: (context, cartProvider, child) {
         return Container(
-          padding: const EdgeInsets.all(20),
+          padding: EdgeInsets.all(ScreenService.mediumSpacing),
           decoration: BoxDecoration(
             color: Colors.white,
             boxShadow: [
@@ -40,17 +72,18 @@ class ProductAddToCartBar extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
+                      Text(
                         'Tổng cộng:',
                         style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey,
+                          fontSize: ScreenService.smallText,
+                          color: AppColors.textSecondary,
                         ),
                       ),
                       Text(
-                        '${(product.price * quantity).toStringAsFixed(0)}đ',
-                        style: const TextStyle(
-                          fontSize: 20,
+                        // 👈 Hiển thị tổng giá đúng với format
+                        _formatVND(totalPrice.toInt()),
+                        style: TextStyle(
+                          fontSize: ScreenService.mediumText,
                           fontWeight: FontWeight.bold,
                           color: AppColors.primary,
                         ),
@@ -58,32 +91,22 @@ class ProductAddToCartBar extends StatelessWidget {
                     ],
                   ),
                 ),
-                const SizedBox(width: 16),
+                SizedBox(width: ScreenService.mediumSpacing),
                 Expanded(
-                  child: Container(
-                    height: 56,
-                    decoration: BoxDecoration(
-                      gradient: AppColors.buttonGradient,
-                      borderRadius: BorderRadius.circular(16),
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.primary.withOpacity(0.3),
-                          blurRadius: 8,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-                    ),
+                  child: SizedBox(
+                    height: ScreenService.buttonHeight,
                     child: ElevatedButton(
-                      onPressed: cartProvider.isLoading ? null : onAddToCart,
+                      onPressed: (cartProvider.isLoading || !canAdd) ? null : onAddToCart,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.transparent,
-                        shadowColor: Colors.transparent,
+                        backgroundColor: AppColors.primary,
+                        foregroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
+                          borderRadius: BorderRadius.circular(12),
                         ),
+                        elevation: 0,
                       ),
                       child: cartProvider.isLoading
-                          ? const SizedBox(
+                          ? SizedBox(
                               height: 20,
                               width: 20,
                               child: CircularProgressIndicator(
@@ -91,13 +114,33 @@ class ProductAddToCartBar extends StatelessWidget {
                                 valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                               ),
                             )
-                          : const Text(
-                              'Thêm vào giỏ hàng',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.white,
-                              ),
+                          : Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Container(
+                                  width: 36,
+                                  height: 36,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withOpacity(0.12),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(
+                                    Icons.add,
+                                    color: Colors.white,
+                                    size: 20,
+                                  ),
+                                ),
+                                SizedBox(width: ScreenService.smallSpacing),
+                                Text(
+                                  'Thêm',
+                                  style: TextStyle(
+                                    fontSize: ScreenService.mediumText,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ],
                             ),
                     ),
                   ),

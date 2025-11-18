@@ -22,6 +22,8 @@ class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     final args = settings.arguments;
 
+    debugPrint('🚦 Navigating to: ${settings.name} with args: $args');
+
     switch (settings.name) {
       // Auth routes
       case AppRoutes.login:
@@ -35,7 +37,11 @@ class RouteGenerator {
         return _createRoute(const HomePage());
       
       case AppRoutes.menu:
-        return _createRoute(const MenuPage());
+        final menuArgs = args as Map<String, dynamic>?;
+        return _createRoute(MenuPage(
+          filter: menuArgs?['filter'],
+          initialCategory: menuArgs?['categoryId'], // 👈 Sửa từ categoryId thành initialCategory
+        ));
       
       case AppRoutes.cart:
         return _protectedRoute(const CartPage());
@@ -46,32 +52,30 @@ class RouteGenerator {
       case AppRoutes.notification:
         return _createRoute(const NotificationPage());
 
-      // Search route - 👈 Add search route
+      // Search route - 👈 Tạo SearchPage placeholder
       case AppRoutes.search:
         final searchArgs = args as Map<String, dynamic>?;
-        return _createRoute(
-          Scaffold(
-            appBar: AppBar(title: const Text('Tìm kiếm')),
-            body: Center(
-              child: Text('Search Page - Query: ${searchArgs?['query'] ?? ''}'),
-            ),
-          ),
-        );
+        return _createRoute(_SearchPage(
+          initialQuery: searchArgs?['query'],
+        ));
 
-      // Product routes
+      // Product routes - 👈 Sửa lại product detail route
       case AppRoutes.productDetail:
         if (args is MenuItemModel) {
+          // Truyền trực tiếp MenuItemModel
           return _createRoute(ProductDetailPage(product: args));
         } else if (args is String) {
-          // Handle product ID
-          return _createRoute(
-            Scaffold(
-              appBar: AppBar(title: const Text('Chi tiết sản phẩm')),
-              body: Center(child: Text('Product ID: $args')),
-            ),
-          );
+          // Truyền productId
+          return _createRoute(ProductDetailPage(productId: args));
+        } else if (args is Map<String, dynamic>) {
+          // Truyền arguments map
+          return _createRoute(ProductDetailPage(
+            productId: args['productId'],
+            product: args['product'],
+          ));
         }
-        return _errorRoute('Product detail argument is required');
+        // Fallback: không có arguments
+        return _errorRoute('Product detail: Missing product information');
 
       // Order routes
       case AppRoutes.checkout:
@@ -91,8 +95,14 @@ class RouteGenerator {
       case AppRoutes.addressManagement:
         return _protectedRoute(const AddressManagementPage());
 
+      // Error route
+      case AppRoutes.notFound:
+        final message = args is String ? args : 'Page not found';
+        return _createRoute(NotFoundPage(message: message));
+
       // Default case
       default:
+        debugPrint('❌ Unknown route: ${settings.name}');
         return _errorRoute('Route not found: ${settings.name}');
     }
   }
@@ -101,9 +111,10 @@ class RouteGenerator {
     return PageRouteBuilder(
       pageBuilder: (context, animation, secondaryAnimation) => page,
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        // Slide transition from right to left
         const begin = Offset(1.0, 0.0);
         const end = Offset.zero;
-        const curve = Curves.ease;
+        const curve = Curves.easeInOut;
 
         var tween = Tween(begin: begin, end: end).chain(
           CurveTween(curve: curve),
@@ -111,10 +122,14 @@ class RouteGenerator {
 
         return SlideTransition(
           position: animation.drive(tween),
-          child: child,
+          child: FadeTransition(
+            opacity: animation,
+            child: child,
+          ),
         );
       },
       transitionDuration: const Duration(milliseconds: 300),
+      reverseTransitionDuration: const Duration(milliseconds: 250),
     );
   }
 
@@ -126,13 +141,19 @@ class RouteGenerator {
             if (authProvider.isLoggedIn) {
               return page;
             } else {
+              // Redirect to login if not authenticated
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 Navigator.of(context).pushNamedAndRemoveUntil(
                   AppRoutes.login,
                   (route) => false,
                 );
               });
-              return const SizedBox.shrink();
+              return Container(
+                color: Colors.white,
+                child: const Center(
+                  child: CircularProgressIndicator(),
+                ),
+              );
             }
           },
         );
@@ -140,7 +161,7 @@ class RouteGenerator {
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         const begin = Offset(1.0, 0.0);
         const end = Offset.zero;
-        const curve = Curves.ease;
+        const curve = Curves.easeInOut;
 
         var tween = Tween(begin: begin, end: end).chain(
           CurveTween(curve: curve),
@@ -161,8 +182,92 @@ class RouteGenerator {
         message: message,
       ),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
-        return FadeTransition(opacity: animation, child: child);
+        return FadeTransition(
+          opacity: animation, 
+          child: child,
+        );
       },
+      transitionDuration: const Duration(milliseconds: 300),
+    );
+  }
+}
+
+// 👈 Temporary SearchPage placeholder
+class _SearchPage extends StatelessWidget {
+  final String? initialQuery;
+
+  const _SearchPage({
+    this.initialQuery,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Tìm kiếm'),
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
+        elevation: 1,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            // Search input
+            TextField(
+              autofocus: true,
+              decoration: InputDecoration(
+                hintText: initialQuery ?? 'Tìm kiếm món ăn...',
+                prefixIcon: const Icon(Icons.search),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              onSubmitted: (value) {
+                // TODO: Implement search functionality
+                debugPrint('Search query: $value');
+              },
+            ),
+            
+            const SizedBox(height: 20),
+            
+            // Placeholder content
+            Expanded(
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.search,
+                      size: 64,
+                      color: Colors.grey[400],
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      'Tìm kiếm món ăn yêu thích',
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.grey[600],
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      initialQuery != null 
+                          ? 'Tìm kiếm: "$initialQuery"' 
+                          : 'Nhập từ khóa để bắt đầu tìm kiếm',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey[500],
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

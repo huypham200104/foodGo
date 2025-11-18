@@ -4,12 +4,11 @@
       "id": "g1",
       "name": "Đùi Gà Rán",
       "description": "Đùi gà tẩm bột giòn, chiên vàng giòn, thơm ngon",
-      "price": 40000,
+      "price": 20000,
       "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339578/duiGa_jgg2pw.png",
       "toppings": [
         {"name": "Cay", "price": 0},
-        {"name": "Không cay", "price": 0},
-        {"name": "Size Má đùi", "price": 5000}
+        {"name": "Không cay", "price": 0}
       ],
       "ingredients": ["gà", "bột giòn", "gia vị"],
       "isAvailable": true,
@@ -23,7 +22,7 @@
       "id": "g2",
       "name": "Cánh Gà Rán",
       "description": "Cánh gà tẩm bột giòn, chiên vàng giòn, thơm ngon",
-      "price": 35000,
+      "price": 20000,
       "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339576/canhGa_auibz9.png",
       "toppings": [
         {"name": "Cay", "price": 0},
@@ -40,7 +39,7 @@
       "id": "g3",
       "name": "Gà Fillet",
       "description": "Thịt gà không xương",
-      "price": 45000,
+      "price": 25000,
       "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339578/gaKhongXuong_csuaph.png",
       "toppings": [
         {"name": "Cay", "price": 0},
@@ -57,11 +56,11 @@
       "id": "g4",
       "name": "Gà Popcorn",
       "description": "Gà viên chiên giòn",
-      "price": 35000,
+      "price": 15000,
       "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339578/gaVien_td7fpk.png",
       "toppings": [
-        {"name": "Size Vừa", "price": 15000},
-        {"name": "Size Lớn", "price": 30000}
+        {"name": "Size Vừa", "price": 0},
+        {"name": "Size Lớn", "price": 3000}
       ],
       "ingredients": ["gà", "bột giòn", "gia vị"],
       "isAvailable": true,
@@ -74,10 +73,11 @@
       "id": "b1",
       "name": "Burger Bò",
       "description": "Bò, rau, sốt đặc biệt",
-      "price": 55000,
+      "price": 29000,
       "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339575/burgerBo_ccuojj.png",
       "toppings": [
-        {"name": "Thêm phô mai", "price": 10000}
+        {"name": "Thêm phô mai", "price": 3000},
+        {"name": "Thêm trứng ốp la", "price": 3000}
       ],
       "ingredients": ["bò", "bánh", "xà lách", "sốt"],
       "isAvailable": true,
@@ -90,10 +90,11 @@
       "id": "b2",
       "name": "Burger Gà Giòn",
       "description": "Gà giòn, rau, sốt",
-      "price": 50000,
+      "price": 29000,
       "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339576/burgerGa_xufy8q.png",
       "toppings": [
-        {"name": "Thêm trứng ốp la", "price": 8000}
+        {"name": "Thêm trứng ốp la", "price": 3000},
+        {"name": "Thêm phô mai", "price": 3000}
       ],
       "ingredients": ["gà", "bánh", "xà lách", "sốt"],
       "isAvailable": true,
@@ -106,7 +107,7 @@
       "id": "b3",
       "name": "Sandwich Trứng",
       "description": "Bán vào buổi sáng",
-      "price": 30000,
+      "price": 20000,
       "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339581/sandwichTrung_jz9lvc.png",
       "toppings": [],
       "ingredients": ["bánh mì", "trứng", "sốt"],
@@ -118,11 +119,11 @@
       "id": "s1",
       "name": "Khoai Tây Chiên",
       "description": "Khoai tây cắt thanh",
-      "price": 25000,
+      "price": 15000,
       "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339579/khoaiTayChien_laz8eg.png",
       "toppings": [
-        {"name": "Size M", "price": 10000},
-        {"name": "Size L", "price": 20000}
+        {"name": "Size M", "price": 0},
+        {"name": "Size L", "price": 3000}
       ],
       "ingredients": ["khoai tây", "muối"],
       "isAvailable": true,
@@ -135,10 +136,9 @@
       "id": "s2",
       "name": "Khoai Tây Lắc",
       "description": "Khoai chiên, lắc bột",
-      "price": 40000,
+      "price": 15000,
       "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339580/khoatTayLac_czsaqz.png",
       "toppings": [
-        {"name": "Size Vừa", "price": 15000},
         {"name": "Phô mai", "price": 0},
         {"name": "Rong biển", "price": 0},
         {"name": "Trứng muối", "price": 0}
@@ -154,7 +154,7 @@
       "id": "s3",
       "name": "Xúc Xích",
       "description": "Xúc xích chiên hoặc nướng",
-      "price": 20000,
+      "price": 12000,
       "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339581/xucXich_bl1twu.png",
       "toppings": [],
       "ingredients": ["xúc xích"],
@@ -166,7 +166,7 @@
       "id": "s4",
       "name": "Salad",
       "description": "Rau củ tươi, sốt",
-      "price": 30000,
+      "price": 25000,
       "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339579/salad_waamec.png",
       "toppings": [
         {"name": "Sốt mè rang", "price": 0},
@@ -181,10 +181,11 @@
       "id": "n1",
       "name": "Mì Ý Sốt Bò Băm",
       "description": "Mì Spaghetti sốt Bolognese",
-      "price": 65000,
+      "price": 29000,
       "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339579/miY_vje1om.png",
       "toppings": [
-        {"name": "Size Lớn", "price": 20000}
+        {"name": "Size Lớn", "price": 3000},
+        {"name": "Size nhỏ", "price": 0}
       ],
       "ingredients": ["mì spaghetti", "sốt bò băm"],
       "isAvailable": true,
@@ -195,7 +196,7 @@
       "id": "d1",
       "name": "Kem Ly",
       "description": "Kem tươi các vị cơ bản",
-      "price": 25000,
+      "price": 10000,
       "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339578/kemLy_qjr1ri.png",
       "toppings": [
         {"name": "Vani", "price": 0},
@@ -211,7 +212,7 @@
       "id": "d2",
       "name": "Bánh Tart Trứng",
       "description": "Bánh tart nhỏ, nhân trứng béo ngậy",
-      "price": 15000,
+      "price": 12000,
       "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339576/banhTartTrung_zdjie7.png",
       "toppings": [],
       "ingredients": ["bột", "trứng", "sữa"],
@@ -223,7 +224,7 @@
       "id": "d3",
       "name": "Pudding Trái Cây",
       "description": "Pudding mềm mịn, thạch trái cây",
-      "price": 35000,
+      "price": 12000,
       "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339579/puddingTraiCay_bhhcg8.png",
       "toppings": [
         {"name": "Vị Dâu", "price": 0},
@@ -239,7 +240,7 @@
       "id": "dr1",
       "name": "Pepsi",
       "description": "Pepsi 330ml",
-      "price": 15000,
+      "price": 10000,
       "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339579/pepsi_ovwnnl.jpg",
       "toppings": [],
       "ingredients": ["nước ngọt có ga"],
@@ -253,7 +254,7 @@
       "id": "dr2",
       "name": "Coca",
       "description": "Coca cola 330ml",
-      "price": 15000,
+      "price": 10000,
       "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339575/coca_li7fj6.jpg",
       "toppings": [],
       "ingredients": ["nước ngọt có ga"],
@@ -263,12 +264,11 @@
       "isNew": false,
       "soldCount": 1876
     },
-
     {
       "id": "dr3",
       "name": "Nước Suối",
       "description": "Nước lọc đóng chai",
-      "price": 10000,
+      "price": 5000,
       "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339575/aqua_xvsuye.jpg",
       "toppings": [],
       "ingredients": ["nước"],
@@ -280,7 +280,7 @@
       "id": "c1",
       "name": "The Golden Crisp",
       "description": "1 Đùi Gà Rán + 1 Khoai Tây Lắc + 1 Pudding Trái Cây",
-      "price": 105000,
+      "price": 45000,
       "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339576/combo1_tmrbbl.png",
       "toppings": [],
       "ingredients": [],
@@ -294,7 +294,7 @@
       "id": "c2",
       "name": "Noodle Delight",
       "description": "1 Mì Ý (Size Vừa) + 1 Xúc Xích + 1 Pudding",
-      "price": 110000,
+      "price": 49000,
       "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339577/combo2_oqvqzu.png",
       "toppings": [],
       "ingredients": [],
@@ -306,7 +306,7 @@
       "id": "c3",
       "name": "Duet Deluxe",
       "description": "1 Burger Gà + 1 Burger Bò + 1 Khoai Tây Chiên (M) + 2 Nước Suối",
-      "price": 145000,
+      "price": 79000,
       "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339577/combo3_a9s5ye.png",
       "toppings": [],
       "ingredients": [],
@@ -320,7 +320,7 @@
       "id": "c4",
       "name": "Sweet Duo",
       "description": "1 Burger Gà + 2 Bánh Tart Trứng + 2 Kem Ly",
-      "price": 105000,
+      "price": 69000,
       "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339577/combo4_c3xbqs.png",
       "toppings": [],
       "ingredients": [],
@@ -332,7 +332,7 @@
       "id": "c5",
       "name": "The Mega Feast",
       "description": "4 Đùi Gà + 2 Burger Bò + 1 Khoai Tây Chiên (L) + 1 Gà Popcorn (L) + 4 Nước Ngọt",
-      "price": 400000,
+      "price": 199000,
       "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339577/combo5_hhasqc.png",
       "toppings": [],
       "ingredients": [],
@@ -344,7 +344,7 @@
       "id": "c6",
       "name": "Family Grand Set",
       "description": "4 Gà Fillet + 4 Cánh Gà + 1 Khoai Tây Lắc (Vừa) + 2 Salad + 4 Nước Suối",
-      "price": 430000,
+      "price": 249000,
       "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339577/combo6_or8nz3.png",
       "toppings": [],
       "ingredients": [],
@@ -356,7 +356,7 @@
       "id": "c7",
       "name": "The Party Box",
       "description": "6 Cánh Gà + 1 Burger Bò + 1 Mì Ý (Lớn) + 2 Khoai Tây Lắc + 3 Nước Ngọt",
-      "price": 435000,
+      "price": 229000,
       "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339577/combo7_potcs8.png",
       "toppings": [],
       "ingredients": [],
@@ -368,13 +368,13 @@
       "id": "p1",
       "name": "Pizza Pepperoni Cá Nhân",
       "description": "Pizza 8 inch với pepperoni, phô mai mozzarella",
-      "price": 85000,
+      "price": 69000,
       "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1762741483/pizzaPhoMai_w7yfkb.png",
       "toppings": [
-        {"name": "Thêm phô mai", "price": 15000},
-        {"name": "Thêm pepperoni", "price": 20000},
+        {"name": "Thêm phô mai", "price": 10000},
+        {"name": "Thêm pepperoni", "price": 15000},
         {"name": "Đế mỏng", "price": 0},
-        {"name": "Đế dày", "price": 5000}
+        {"name": "Đế dày", "price": 3000}
       ],
       "ingredients": ["bột pizza", "pepperoni", "phô mai mozzarella", "sốt cà chua"],
       "isAvailable": true,
@@ -388,14 +388,14 @@
       "id": "p2",
       "name": "Pizza Gà BBQ",
       "description": "Pizza với gà nướng BBQ, hành tây, ớt chuông",
-      "price": 95000,
+      "price": 79000,
       "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1762741483/pizzaGa_t4eioz.png",
       "toppings": [
         {"name": "Size 8 inch", "price": 0},
-        {"name": "Size 10 inch", "price": 25000},
+        {"name": "Size 10 inch", "price": 15000},
         {"name": "Đế mỏng", "price": 0},
-        {"name": "Đế dày", "price": 5000},
-        {"name": "Thêm gà", "price": 20000}
+        {"name": "Đế dày", "price": 3000},
+        {"name": "Thêm gà", "price": 15000}
       ],
       "ingredients": ["bột pizza", "gà nướng", "sốt BBQ", "hành tây", "ớt chuông", "phô mai"],
       "isAvailable": true,
@@ -409,13 +409,13 @@
       "id": "gn1",
       "name": "Gà Nướng Teriyaki",
       "description": "Nửa con gà nướng sốt teriyaki Nhật Bản",
-      "price": 120000,
+      "price": 99000,
       "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1762741483/gaNuong_yxsgc3.png",
       "toppings": [
         {"name": "Cay", "price": 0},
         {"name": "Không cay", "price": 0},
-        {"name": "Thêm cơm trắng", "price": 15000},
-        {"name": "Thêm salad", "price": 10000}
+        {"name": "Thêm cơm trắng", "price": 10000},
+        {"name": "Thêm salad", "price": 8000}
       ],
       "ingredients": ["gà", "sốt teriyaki", "gia vị Nhật"],
       "isAvailable": true,
@@ -429,7 +429,7 @@
       "id": "dr4",
       "name": "Trà Sữa Trân Châu",
       "description": "Trà sữa Taiwan với trân châu đen",
-      "price": 45000,
+      "price": 35000,
       "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1762741483/pizzaSpeciaCombo_svnilr.png",
       "toppings": [
         {"name": "Trà đen", "price": 0},
@@ -438,7 +438,7 @@
         {"name": "Ít đường", "price": 0},
         {"name": "Vừa đường", "price": 0},
         {"name": "Nhiều đường", "price": 0},
-        {"name": "Thêm topping", "price": 10000}
+        {"name": "Thêm topping", "price": 7000}
       ],
       "ingredients": ["trà", "sữa", "trân châu", "đường"],
       "isAvailable": true,
@@ -452,13 +452,13 @@
       "id": "d4",
       "name": "Bánh Su Kem",
       "description": "Bánh su nhân kem vanilla tươi (4 cái)",
-      "price": 35000,
+      "price": 29000,
       "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1762741484/banhSukem_vf7sju.png",
       "toppings": [
         {"name": "Kem vanilla", "price": 0},
         {"name": "Kem chocolate", "price": 0},
-        {"name": "Thêm sốt chocolate", "price": 8000},
-        {"name": "Thêm sốt dâu", "price": 8000}
+        {"name": "Thêm sốt chocolate", "price": 5000},
+        {"name": "Thêm sốt dâu", "price": 5000}
       ],
       "ingredients": ["bột su", "kem tươi", "vanilla"],
       "isAvailable": true,
@@ -468,12 +468,11 @@
       "soldCount": 89,
       "createdAt": "2024-11-21T13:10:00Z"
     },
-    
     {
       "id": "c8",
       "name": "Pizza Special Combo",
       "description": "1 Pizza Pepperoni + 1 Trà Sữa Trân Châu + 1 Bánh Su Kem",
-      "price": 140000,
+      "price": 125000,
       "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1762741483/pizzaSpeciaCombo_svnilr.png",
       "toppings": [],
       "ingredients": [],
@@ -488,7 +487,7 @@
       "id": "c9",
       "name": "BBQ Feast Combo",
       "description": "1 Gà Nướng Teriyaki + 1 Pizza Gà BBQ 8 inch + 2 Trà Sữa + 1 Khoai Tây Chiên Size M",
-      "price": 290000,
+      "price": 249000,
       "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1762741483/BBQFestCombo_s9f3uq.png",
       "toppings": [],
       "ingredients": [],
@@ -500,7 +499,6 @@
       "createdAt": "2024-11-26T12:30:00Z"
     }
   ],
-  
   "metadata": {
     "lastUpdated": "2024-11-26T14:00:00Z",
     "totalItems": 32,
@@ -520,5 +518,3 @@
     "new_item_days": 30
   }
 }
-
-

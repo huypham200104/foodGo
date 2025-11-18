@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../../../services/menu_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../services/screen_service.dart';
-import '../../../core/constans/app_icons.dart';
 
 class CategoryIcons extends StatelessWidget {
   final Function(String)? onCategoryTap;

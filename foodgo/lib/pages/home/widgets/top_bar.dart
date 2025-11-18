@@ -42,7 +42,7 @@ class TopBar extends StatelessWidget {
       child: Row(
         children: [
 
-          
+
           // Title
           Expanded(
             child: Center(
@@ -68,10 +68,9 @@ class TopBar extends StatelessWidget {
               ),
             ),
           ),
-          
+
         ],
       ),
     );
   }
 }
-

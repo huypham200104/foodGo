@@ -19,7 +19,18 @@ class ProductCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: () {
+        // Debug: Log khi card được tap
+        debugPrint('ProductCard tapped: ${item.id} - ${item.name}');
+        debugPrint('onTap callback exists: ${onTap != null}');
+        
+        // Gọi callback nếu có
+        if (onTap != null) {
+          onTap!();
+        } else {
+          debugPrint('No onTap callback provided for ProductCard');
+        }
+      },
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white,
@@ -89,6 +100,39 @@ class ProductCard extends StatelessWidget {
                           color: Colors.white,
                           fontSize: screen.ScreenService.smallText - 2,
                           fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                
+                // Add to cart button
+                if (onAddToCart != null)
+                  Positioned(
+                    bottom: 8,
+                    right: 8,
+                    child: GestureDetector(
+                      onTap: () {
+                        debugPrint('Add to cart tapped: ${item.id} - ${item.name}');
+                        onAddToCart!();
+                      },
+                      child: Container(
+                        width: 32,
+                        height: 32,
+                        decoration: BoxDecoration(
+                          color: AppColors.primary,
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColors.primary.withOpacity(0.3),
+                              blurRadius: 4,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: const Icon(
+                          Icons.add,
+                          color: Colors.white,
+                          size: 18,
                         ),
                       ),
                     ),

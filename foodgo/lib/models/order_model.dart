@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'cart_item_model.dart';
-import 'user_model.dart';
 import 'restaurant_model.dart';
 import 'address_model.dart';
 

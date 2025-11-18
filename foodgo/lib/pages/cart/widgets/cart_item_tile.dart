@@ -63,6 +63,34 @@ class CartItemTile extends StatelessWidget {
                       fontWeight: FontWeight.w500,
                     ),
                   ),
+                  // Selected toppings display
+                  if (cartItem.selectedToppings.isNotEmpty) ...[
+                    SizedBox(height: ScreenService.smallSpacing / 2),
+                    Wrap(
+                      spacing: 6,
+                      runSpacing: 6,
+                      children: cartItem.selectedToppings.map((t) {
+                        final name = t['name']?.toString() ?? '';
+                        final price = t['price'];
+                        final priceNum = (price is num) ? price : (double.tryParse(price?.toString() ?? '') ?? 0.0);
+                        final label = priceNum > 0 ? '$name · ${formatVnd(priceNum)}' : name;
+                        return Container(
+                          padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                          decoration: BoxDecoration(
+                            color: Colors.grey[100],
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            label,
+                            style: TextStyle(
+                              fontSize: ScreenService.smallText - 1,
+                              color: Colors.grey[800],
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ],
                   if (cartItem.note.isNotEmpty) ...[
                     SizedBox(height: ScreenService.smallSpacing / 2),
                     Container(

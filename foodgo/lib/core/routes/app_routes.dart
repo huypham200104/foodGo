@@ -9,7 +9,7 @@ class AppRoutes {
   static const String cart = '/cart';
   static const String profile = '/profile';
   static const String notification = '/notification';
-  static const String search = '/search'; // 👈 Add search route
+  static const String search = '/search';
   
   // Product routes
   static const String productDetail = '/product-detail';
@@ -25,14 +25,6 @@ class AppRoutes {
   // Error routes
   static const String notFound = '/not-found';
   
-  // 👈 Remove temporary routes - không cần thiết
-  // static const String paymentMethods = '/payment-methods';
-  // static const String favorites = '/favorites';
-  // static const String notifications = '/notifications';
-  // static const String help = '/help';
-  // static const String about = '/about';
-  // static const String orderDetail = '/order-detail';
-  
   // List of all routes for validation
   static const List<String> allRoutes = [
     login,
@@ -42,7 +34,7 @@ class AppRoutes {
     cart,
     profile,
     notification,
-    search,        // 👈 Add
+    search,
     productDetail,
     checkout,
     orderHistory,

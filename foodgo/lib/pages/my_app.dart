@@ -6,7 +6,7 @@ import '../providers/auth_provider.dart';
 import '../providers/cart_provider.dart';
 import '../providers/navigation_provider.dart';
 import '../services/screen_service.dart';
-import '../core/routes/route_generator.dart';  // 👈 Thay đổi import
+import '../core/routes/route_generator.dart';
 import '../core/routes/app_routes.dart';
 
 class MyApp extends StatelessWidget {
@@ -25,21 +25,75 @@ class MyApp extends StatelessWidget {
       child: Consumer2<ThemeProvider, LocaleProvider>(
         builder: (context, themeProvider, localeProvider, child) {
           return MaterialApp(
-            title: 'FoodGo',
+            title: 'FoodGo - Đặt đồ ăn online',
             debugShowCheckedModeBanner: false,
+            
+            // Theme
             theme: themeProvider.themeData,
             locale: localeProvider.locale,
+            
+            // Routing - 👈 Sử dụng RouteGenerator hoàn toàn
             initialRoute: AppRoutes.home,
-            onGenerateRoute: RouteGenerator.generateRoute,     // 👈 Sử dụng RouteGenerator
-            onUnknownRoute: RouteGenerator.generateRoute,      // 👈 Sử dụng RouteGenerator
+            onGenerateRoute: RouteGenerator.generateRoute,
+            onUnknownRoute: (settings) => RouteGenerator.generateRoute(
+              RouteSettings(
+                name: AppRoutes.notFound,
+                arguments: 'Unknown route: ${settings.name}',
+              ),
+            ),
+            
+            // Global builder
             builder: (context, child) {
               // Initialize ScreenService globally
               ScreenService.init(context);
-              return child!;
+              
+              // Handle potential navigation errors
+              if (child == null) {
+                debugPrint('❌ Child is null in MaterialApp builder');
+                return const Scaffold(
+                  body: Center(
+                    child: Text('App initialization error'),
+                  ),
+                );
+              }
+              
+              return child;
             },
+            
+            // Navigation observers for debugging
+            navigatorObservers: [
+              _AppNavigatorObserver(),
+            ],
           );
         },
       ),
     );
+  }
+}
+
+// 👈 Navigator Observer để debug navigation
+class _AppNavigatorObserver extends NavigatorObserver {
+  @override
+  void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    super.didPush(route, previousRoute);
+    debugPrint('🚦 Pushed: ${route.settings.name}');
+  }
+
+  @override
+  void didPop(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    super.didPop(route, previousRoute);
+    debugPrint('🚦 Popped: ${route.settings.name}');
+  }
+
+  @override
+  void didReplace({Route<dynamic>? newRoute, Route<dynamic>? oldRoute}) {
+    super.didReplace(newRoute: newRoute, oldRoute: oldRoute);
+    debugPrint('🚦 Replaced: ${oldRoute?.settings.name} → ${newRoute?.settings.name}');
+  }
+
+  @override
+  void didRemove(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    super.didRemove(route, previousRoute);
+    debugPrint('🚦 Removed: ${route.settings.name}');
   }
 }

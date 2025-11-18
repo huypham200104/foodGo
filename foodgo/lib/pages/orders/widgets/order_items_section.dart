@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../services/screen_service.dart' as screen;
 import '../../../models/cart_item_model.dart';
-import '../../../utils/currency_formatter.dart';
 
 class OrderItemsSection extends StatelessWidget {
   final List<CartItemModel> items;

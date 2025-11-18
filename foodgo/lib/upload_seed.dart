@@ -4,9 +4,18 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 Future<List<dynamic>> _readArray(String assetPath, String rootKey) async {
   final String jsonString = await rootBundle.loadString(assetPath);
-  final Map<String, dynamic> data = json.decode(jsonString) as Map<String, dynamic>;
-  final list = data[rootKey];
-  if (list is List) return list;
+  final dynamic decoded = json.decode(jsonString);
+
+  // If file is a top-level array, return it directly
+  if (decoded is List) return decoded;
+
+  // If file is an object/map, try to extract the array by rootKey
+  if (decoded is Map<String, dynamic>) {
+    final list = decoded[rootKey];
+    if (list is List) return list;
+  }
+
+  // Fallback: return empty list
   return const [];
 }
 
@@ -46,12 +55,63 @@ Future<void> uploadRewards() async {
   }
 }
 
+Future<void> uploadNotifications() async {
+  final firestore = FirebaseFirestore.instance;
+  final notifications = await _readArray('assets/data/notifications.json', 'notifications');
+  int success = 0;
+  int failed = 0;
+
+  for (final n in notifications) {
+    try {
+      final Map<String, dynamic> doc = Map<String, dynamic>.from(n);
+
+      // Convert ISO date strings to Firestore Timestamp if present
+      Timestamp? _parseTs(dynamic v) {
+        if (v == null) return null;
+        if (v is Timestamp) return v;
+        if (v is String) {
+          try {
+            final dt = DateTime.parse(v);
+            return Timestamp.fromDate(dt);
+          } catch (_) {
+            return null;
+          }
+        }
+        return null;
+      }
+
+      final createdAt = _parseTs(doc['createdAt']);
+      final scheduledAt = _parseTs(doc['scheduledAt']);
+      final expiresAt = _parseTs(doc['expiresAt']);
+      final sentAt = _parseTs(doc['sentAt']);
+
+      if (createdAt != null) doc['createdAt'] = createdAt;
+      if (scheduledAt != null) doc['scheduledAt'] = scheduledAt;
+      if (expiresAt != null) doc['expiresAt'] = expiresAt;
+      if (sentAt != null) doc['sentAt'] = sentAt;
+
+      await firestore.collection('notifications').add(doc);
+      success++;
+    } catch (e, st) {
+      failed++;
+      print('❌ Failed to upload a notification: $e');
+      print(st);
+      // continue with next
+    }
+  }
+
+  print('🔔 uploadNotifications completed. success=$success failed=$failed total=${notifications.length}');
+}
+
+
 Future<void> uploadAllSeeds() async {
   await Future.wait([
     uploadRestaurants(),
     uploadMenuItems(),
     uploadVouchers(),
-    uploadRewards()
+    uploadRewards(),
+    uploadNotifications(),
+
   ]);
 }
 

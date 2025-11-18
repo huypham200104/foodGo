@@ -78,6 +78,9 @@ class AddressService {
   // Update existing address
   static Future<void> updateAddress(AddressModel address) async {
     try {
+      if (address.id.isEmpty) {
+        throw Exception('updateAddress called with null/empty id');
+      }
       final batch = _firestore.batch();
       
       // If this address is being set as default, unset other defaults first
@@ -228,9 +231,9 @@ class AddressService {
 
   // Validate address data before saving
   static bool isValidAddress(AddressModel address) {
-    return address.name?.isNotEmpty == true &&
-           address.phone?.isNotEmpty == true &&
-           address.detail?.isNotEmpty == true &&
-           address.userId?.isNotEmpty == true;
+      // Phone is optional in the UI; require userId, name and detail at minimum.
+      return address.name?.isNotEmpty == true &&
+        address.detail?.isNotEmpty == true &&
+        address.userId?.isNotEmpty == true;
   }
 }

@@ -29,7 +29,12 @@ class CartItemModel {
   };
 
   double get totalPrice =>
-      (item.price +
-          selectedToppings.fold(0, (sum, e) => sum + (e['price'] ?? 0))) *
+      (item.price + selectedToppings.fold(0.0, (sum, e) {
+            final p = e['price'];
+            if (p == null) return sum;
+            if (p is num) return sum + p.toDouble();
+            if (p is String) return sum + (double.tryParse(p) ?? 0.0);
+            return sum;
+          })) *
           quantity;
 }

@@ -4,20 +4,23 @@ import 'package:provider/provider.dart';
 import '../../models/menu_item_model.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/cart_provider.dart';
+import '../../services/menu_service.dart';
 import '../../core/routes/app_routes.dart';
+import '../../core/theme/app_colors.dart';
+import '../../services/screen_service.dart';
 import 'widgets/product_image_header.dart';
-import 'widgets/product_info_section.dart';
-import 'widgets/product_options_section.dart';
-import 'widgets/product_note_section.dart';
 import 'widgets/product_quantity_section.dart';
 import 'widgets/product_add_to_cart_bar.dart';
+import 'widgets/product_details_section.dart';
 
 class ProductDetailPage extends StatefulWidget {
-  final MenuItemModel product;
+  final String? productId;
+  final MenuItemModel? product;
 
   const ProductDetailPage({
     super.key,
-    required this.product,
+    this.productId,
+    this.product,
   });
 
   @override
@@ -27,13 +30,87 @@ class ProductDetailPage extends StatefulWidget {
 class _ProductDetailPageState extends State<ProductDetailPage> {
   int _quantity = 1;
   String? _selectedSize;
-  List<Map<String, dynamic>> _selectedToppings = [];
+  List<ToppingOption> _selectedToppings = []; // 👈 Sửa kiểu dữ liệu
   final TextEditingController _noteController = TextEditingController();
+
+  // State cho loading data
+  MenuItemModel? _product;
+  bool _isLoading = false;
+  String? _error;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeProduct();
+  }
+
+  Future<void> _initializeProduct() async {
+    if (widget.product != null) {
+      // Nếu đã có product data
+      setState(() {
+        _product = widget.product;
+      });
+      return;
+    }
+
+    if (widget.productId != null) {
+      // Load product từ productId
+      await _loadProductById(widget.productId!);
+    } else {
+      // Thử lấy từ route arguments
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final args = ModalRoute.of(context)?.settings.arguments;
+        if (args is String) {
+          _loadProductById(args);
+        } else if (args is MenuItemModel) {
+          setState(() {
+            _product = args;
+          });
+        } else {
+          setState(() {
+            _error = 'Không tìm thấy thông tin sản phẩm';
+          });
+        }
+      });
+    }
+  }
+
+  Future<void> _loadProductById(String productId) async {
+    setState(() {
+      _isLoading = true;
+      _error = null;
+    });
+
+    try {
+      debugPrint('Loading product with ID: $productId');
+
+      // Thử load từ cache trước
+      final product = await MenuService.getProductById(productId);
+
+      if (product != null) {
+        setState(() {
+          _product = product;
+          _isLoading = false;
+        });
+      } else {
+        setState(() {
+          _error = 'Không tìm thấy sản phẩm';
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      debugPrint('Error loading product: $e');
+      setState(() {
+        _error = 'Lỗi khi tải sản phẩm: $e';
+        _isLoading = false;
+      });
+    }
+  }
 
   // Helper methods để lấy sizes và toppings an toàn
   List<String> get _productSizes {
     try {
-      return widget.product.sizes;
+      return _product?.sizes ?? [];
     } catch (e) {
       debugPrint('Error getting sizes: $e');
       return <String>[];
@@ -42,7 +119,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
 
   List<String> get _productToppings {
     try {
-      return widget.product.toppings;
+      return _product?.toppings ?? [];
     } catch (e) {
       debugPrint('Error getting toppings: $e');
       return <String>[];
@@ -67,13 +144,15 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     });
   }
 
-  void _onToppingsChanged(List<Map<String, dynamic>> toppings) {
+  void _onToppingsChanged(List<ToppingOption> toppings) { // 👈 Sửa kiểu callback
     setState(() {
       _selectedToppings = toppings;
     });
   }
 
   Future<void> _handleAddToCart() async {
+    if (_product == null) return;
+
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     final cartProvider = Provider.of<CartProvider>(context, listen: false);
 
@@ -91,18 +170,18 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
 
       await cartProvider.addToCart(
         userId: userId,
-        item: widget.product,
+        item: _product!,
         quantity: _quantity,
-        selectedToppings: List<Map<String, dynamic>>.from(_selectedToppings),
+        selectedToppings: _selectedToppings.map((t) => t.toJson()).toList(),
         note: _noteController.text.trim(),
       );
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Đã thêm ${widget.product.name} vào giỏ hàng'),
+            content: Text('Đã thêm ${_product!.name} vào giỏ hàng'),
             duration: const Duration(seconds: 2),
-            backgroundColor: Theme.of(context).primaryColor,
+            backgroundColor: AppColors.success,
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
@@ -117,7 +196,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Lỗi: ${e.toString()}'),
-            backgroundColor: Colors.red,
+            backgroundColor: AppColors.error,
           ),
         );
       }
@@ -126,63 +205,211 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
 
   @override
   Widget build(BuildContext context) {
+    ScreenService.init(context);
+
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: CustomScrollView(
-        slivers: [
-          // App Bar với hình ảnh
-          ProductImageHeader(
-            imageUrl: widget.product.imageUrl,
-          ),
+      backgroundColor: AppColors.background,
+      body: _buildBody(),
+    );
+  }
 
-          // Nội dung chi tiết
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Thông tin sản phẩm
-                  ProductInfoSection(
-                    product: widget.product,
-                  ),
-                  const SizedBox(height: 24),
+  Widget _buildBody() {
+    if (_isLoading) {
+      return _buildLoadingState();
+    }
 
-                  // Chọn size và toppings
-                  ProductOptionsSection(
-                    sizes: _productSizes,
-                    toppings: _productToppings.cast<dynamic>(), // Cast List<String> to List<dynamic>
-                    selectedSize: _selectedSize,
-                    selectedToppings: _selectedToppings,
-                    onSizeChanged: _onSizeSelected,
-                    onToppingsChanged: _onToppingsChanged,
-                  ),
+    if (_error != null) {
+      return _buildErrorState();
+    }
 
-                  // Ghi chú
-                  ProductNoteSection(
-                    controller: _noteController,
-                  ),
-                  const SizedBox(height: 24),
+    if (_product == null) {
+      return _buildNotFoundState();
+    }
 
-                  // Chọn số lượng
-                  ProductQuantitySection(
-                    quantity: _quantity,
-                    onQuantityChanged: _onQuantityChanged,
-                  ),
-                  const SizedBox(height: 40),
-                ],
-              ),
+    return _buildProductDetail();
+  }
+
+  Widget _buildLoadingState() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          CircularProgressIndicator(color: AppColors.primary),
+          SizedBox(height: ScreenService.mediumSpacing),
+          Text(
+            'Đang tải thông tin sản phẩm...',
+            style: TextStyle(
+              fontSize: ScreenService.mediumText,
+              color: AppColors.textSecondary,
             ),
           ),
         ],
       ),
+    );
+  }
 
-      // Bottom bar với nút thêm vào giỏ hàng
-      bottomNavigationBar: ProductAddToCartBar(
-        product: widget.product,
-        quantity: _quantity,
-        onAddToCart: _handleAddToCart,
+  Widget _buildErrorState() {
+    return Center(
+      child: Padding(
+        padding: EdgeInsets.all(ScreenService.mediumSpacing),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.error_outline,
+              size: 64,
+              color: AppColors.error,
+            ),
+            SizedBox(height: ScreenService.mediumSpacing),
+            Text(
+              'Có lỗi xảy ra',
+              style: TextStyle(
+                fontSize: ScreenService.largeText,
+                fontWeight: FontWeight.w600,
+                color: AppColors.textPrimary,
+              ),
+            ),
+            SizedBox(height: ScreenService.smallSpacing),
+            Text(
+              _error!,
+              style: TextStyle(
+                fontSize: ScreenService.smallText,
+                color: AppColors.textSecondary,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: ScreenService.mediumSpacing),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton.icon(
+                  onPressed: () => Navigator.of(context).pop(),
+                  icon: const Icon(Icons.arrow_back),
+                  label: const Text('Quay lại'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.textSecondary,
+                  ),
+                ),
+                ElevatedButton.icon(
+                  onPressed: () {
+                    if (widget.productId != null) {
+                      _loadProductById(widget.productId!);
+                    }
+                  },
+                  icon: const Icon(Icons.refresh),
+                  label: const Text('Thử lại'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
+    );
+  }
+
+  Widget _buildNotFoundState() {
+    return Center(
+      child: Padding(
+        padding: EdgeInsets.all(ScreenService.mediumSpacing),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.search_off,
+              size: 64,
+              color: AppColors.textSecondary,
+            ),
+            SizedBox(height: ScreenService.mediumSpacing),
+            Text(
+              'Không tìm thấy sản phẩm',
+              style: TextStyle(
+                fontSize: ScreenService.largeText,
+                fontWeight: FontWeight.w600,
+                color: AppColors.textPrimary,
+              ),
+            ),
+            SizedBox(height: ScreenService.smallSpacing),
+            Text(
+              'Sản phẩm bạn đang tìm kiếm không tồn tại hoặc đã bị xóa',
+              style: TextStyle(
+                fontSize: ScreenService.smallText,
+                color: AppColors.textSecondary,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: ScreenService.mediumSpacing),
+            ElevatedButton.icon(
+              onPressed: () => Navigator.of(context).pop(),
+              icon: const Icon(Icons.arrow_back),
+              label: const Text('Quay lại'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primary,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildProductDetail() {
+    return Column(
+      children: [
+        // Main content
+        Expanded(
+          child: CustomScrollView(
+            slivers: [
+              // App Bar với hình ảnh
+              ProductImageHeader(
+                imageUrl: _product!.imageUrl,
+              ),
+
+              // Nội dung chi tiết
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Product details section
+                      ProductDetailsSection(
+                        product: _product!,
+                        quantity: _quantity,
+                        selectedToppings: _selectedToppings,
+                        onToppingsChanged: _onToppingsChanged,
+                      ),
+
+                      SizedBox(height: ScreenService.mediumSpacing),
+
+                      // Chọn số lượng
+                      ProductQuantitySection(
+                        quantity: _quantity,
+                        onQuantityChanged: _onQuantityChanged,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+
+        // Bottom bar
+        ProductAddToCartBar(
+          product: _product!,
+          quantity: _quantity,
+          selectedToppings: _selectedToppings.map((t) => {
+            'name': t.name,
+            'price': t.price,
+          }).toList(), // 👈 Chuyển đổi sang Map để tương thích
+          // Require selection if product has topping options
+          canAdd: _product!.effectiveToppingOptions.isEmpty || _selectedToppings.isNotEmpty,
+          onAddToCart: _handleAddToCart,
+        ),
+      ],
     );
   }
 }

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../services/screen_service.dart' as screen;
 import '../../../models/order_model.dart';
-import '../../../models/cart_item_model.dart';
 import '../../../models/address_model.dart';
 import 'order_info_section.dart';
 import 'order_items_section.dart';    // 👈 Add import

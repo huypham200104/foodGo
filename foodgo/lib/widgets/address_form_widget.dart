@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../models/address_model.dart';
 import '../core/theme/app_colors.dart';
 import '../services/screen_service.dart' as screen;
@@ -224,10 +225,16 @@ class AddressFormWidgetState extends State<AddressFormWidget> {
       // Lấy userId và cast explicit
       final String userId;
       final tempUserId = widget.userId ?? widget.address?.userId;
-      
+      // Try to fallback to currently authenticated Firebase user if parent didn't provide userId
       if (tempUserId == null || tempUserId.isEmpty) {
-        _showError('Không tìm thấy thông tin người dùng');
-        return;
+        final current = FirebaseAuth.instance.currentUser;
+        if (current != null && current.uid.isNotEmpty) {
+          debugPrint('AddressFormWidget: falling back to FirebaseAuth.currentUser.uid=${current.uid}');
+          userId = current.uid;
+        } else {
+          _showError('Không tìm thấy thông tin người dùng');
+          return;
+        }
       } else {
         userId = tempUserId; // Safe assignment
       }

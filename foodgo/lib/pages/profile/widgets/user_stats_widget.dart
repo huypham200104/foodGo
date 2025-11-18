@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
-import '../../../services/screen_service.dart' as screen;
 import 'user_stat_column.dart';
 
 class UserStatsWidget extends StatelessWidget {

@@ -204,7 +204,15 @@ class OrderModel {
       restaurantName: data['restaurantName'] ?? '',
       restaurantImage: data['restaurantImage'],
       items: (data['items'] as List<dynamic>?)
-          ?.map((e) => CartItemModel.fromJson(e))
+          ?.where((e) => e != null && e is Map)
+          .map((e) {
+            try {
+              return CartItemModel.fromJson(Map<String, dynamic>.from(e as Map));
+            } catch (_) {
+              return null;
+            }
+          })
+          .whereType<CartItemModel>()
           .toList() ?? [],
       deliveryFee: (data['deliveryFee'] ?? 0).toDouble(),
       totalPrice: (data['totalPrice'] ?? 0).toDouble(),
@@ -212,10 +220,10 @@ class OrderModel {
       createdAt: (data['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
       deliveredAt: (data['deliveredAt'] as Timestamp?)?.toDate(),
       note: data['note'] ?? '',
-      deliveryAddress: data['deliveryAddress'] != null
+      deliveryAddress: data['deliveryAddress'] != null && data['deliveryAddress'] is Map<String, dynamic>
           ? AddressModel.fromJson(data['deliveryAddress'])
           : null,
-      estimatedDeliveryTime: data['estimatedDeliveryTime'],
+      estimatedDeliveryTime: _parseInt(data['estimatedDeliveryTime']),
       rating: data['rating']?.toDouble(),
       review: data['review'],
       cancelReason: data['cancelReason'],
@@ -258,6 +266,25 @@ class OrderModel {
     return data;
   }
 
+  /// Helper method to parse DateTime from various formats
+  static DateTime? _parseDateTime(dynamic value) {
+    if (value == null) return null;
+    if (value is Timestamp) return value.toDate();
+    if (value is String) return DateTime.parse(value);
+    if (value is int) return DateTime.fromMillisecondsSinceEpoch(value);
+    if (value is DateTime) return value;
+    return null;
+  }
+
+  /// Helper method to parse int safely
+  static int? _parseInt(dynamic value) {
+    if (value == null) return null;
+    if (value is int) return value;
+    if (value is double) return value.toInt();
+    if (value is String) return int.tryParse(value);
+    return null;
+  }
+
   factory OrderModel.fromJson(Map<String, dynamic> json) => OrderModel(
     id: json['id'] ?? '',
     status: json['status'] ?? 'pending',
@@ -266,37 +293,31 @@ class OrderModel {
     restaurantName: json['restaurantName'] ?? '',
     restaurantImage: json['restaurantImage'],
     items: (json['items'] as List<dynamic>?)
-        ?.map((e) => CartItemModel.fromJson(e))
+        ?.where((e) => e != null && e is Map<String, dynamic>)
+        .map((e) {
+          try {
+            return CartItemModel.fromJson(e as Map<String, dynamic>);
+          } catch (_) {
+            return null;
+          }
+        })
+        .whereType<CartItemModel>()
         .toList() ?? [],
     deliveryFee: (json['deliveryFee'] ?? 0).toDouble(),
     totalPrice: (json['totalPrice'] ?? 0).toDouble(),
     paymentMethod: json['paymentMethod'] ?? 'cash',
-    createdAt: json['createdAt'] is String 
-        ? DateTime.parse(json['createdAt'])
-        : DateTime.fromMillisecondsSinceEpoch(json['createdAt']),
-    deliveredAt: json['deliveredAt'] != null
-        ? (json['deliveredAt'] is String 
-            ? DateTime.parse(json['deliveredAt'])
-            : DateTime.fromMillisecondsSinceEpoch(json['deliveredAt']))
-        : null,
+    createdAt: _parseDateTime(json['createdAt']) ?? DateTime.now(),
+    deliveredAt: _parseDateTime(json['deliveredAt']),
     note: json['note'] ?? '',
     deliveryAddress: json['deliveryAddress'] != null 
         ? AddressModel.fromJson(json['deliveryAddress'])
         : null,
-    estimatedDeliveryTime: json['estimatedDeliveryTime'],
+    estimatedDeliveryTime: _parseInt(json['estimatedDeliveryTime']),
     rating: json['rating']?.toDouble(),
     review: json['review'],
     cancelReason: json['cancelReason'],
-    cancelledAt: json['cancelledAt'] != null
-        ? (json['cancelledAt'] is String 
-            ? DateTime.parse(json['cancelledAt'])
-            : DateTime.fromMillisecondsSinceEpoch(json['cancelledAt']))
-        : null,
-    updatedAt: json['updatedAt'] != null
-        ? (json['updatedAt'] is String 
-            ? DateTime.parse(json['updatedAt'])
-            : DateTime.fromMillisecondsSinceEpoch(json['updatedAt']))
-        : null,
+    cancelledAt: _parseDateTime(json['cancelledAt']),
+    updatedAt: _parseDateTime(json['updatedAt']),
   );
 
   Map<String, dynamic> toJson() => {

@@ -18,7 +18,7 @@ class BankPaymentHandler extends StatelessWidget {
   final Function(bool) onProcessingChanged;
 
   // Bank information for VietQR, TienPhong Bank example
-  static const String bankCode = "TPB"; // TienPhong Bank code
+  static const String bankCode = "Momo"; // TienPhong Bank code
   static const String accountNumber = "0328559320";
   static const String accountName = "PHAM NGOC HUY";
 
@@ -91,16 +91,15 @@ class BankPaymentHandler extends StatelessWidget {
         bankCode: bankCode,
         accountNumber: accountNumber,
         accountName: accountName,
-        onConfirmed: () => _processBankOrder(context, orderId),
+        onConfirmed: () => _createBankOrder(context, orderId),
       ),
     );
   }
 
-  Future<void> _processBankOrder(BuildContext context, String orderId) async {
+  Future<void> _createBankOrder(BuildContext context, String orderId) async {
     onProcessingChanged(true);
-
     try {
-      await CheckoutService.processOrder(
+      await CheckoutService.createOrderFromCart(
         cartProvider: cartProvider,
         authProvider: authProvider,
         deliveryAddress: selectedAddress!,
@@ -115,15 +114,15 @@ class BankPaymentHandler extends StatelessWidget {
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text('Đơn hàng đã được tạo thành công!'),
+                const Text('Đơn hàng đã được tạo thành công!'),
                 Text(
                   'Mã đơn hàng: $orderId',
-                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                  style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
                 ),
               ],
             ),
             backgroundColor: AppColors.success,
-            duration: Duration(seconds: 4),
+            duration: const Duration(seconds: 4),
           ),
         );
 

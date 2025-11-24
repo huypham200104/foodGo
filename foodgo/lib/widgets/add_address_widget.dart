@@ -42,7 +42,7 @@ class _AddAddressWidgetState extends State<AddAddressWidget> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Địa chỉ đã được thêm thành công!')),
         );
-        Navigator.of(context).pop();
+        Navigator.of(context).pop(true); // Return success result
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Lỗi khi thêm địa chỉ: $e')),

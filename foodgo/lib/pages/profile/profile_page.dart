@@ -96,7 +96,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   icon: Icons.location_on,
                   title: 'Địa chỉ giao hàng',
                   subtitle: 'Quản lý địa chỉ giao hàng',
-                  onTap: () => Navigator.pushNamed(context, AppRoutes.addressManagement), // 👈 Sửa
+                  onTap: () => Navigator.pushNamed(context, AppRoutes.addressList), // 👈 Sửa thành addressList
                 ),
                 
                 ProfileMenuItem(
@@ -105,14 +105,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   subtitle: 'Cài đặt thông báo',
                   onTap: () => Navigator.pushNamed(context, AppRoutes.notification), // 👈 Sửa
                 ),
-                
-                // 👈 Các menu items chưa có routes - hiển thị coming soon
-                ProfileMenuItem(
-                  icon: Icons.payment,
-                  title: 'Phương thức thanh toán',
-                  subtitle: 'Thêm/sửa thông tin thanh toán',
-                  onTap: () => _showComingSoonDialog('Phương thức thanh toán'), // 👈 Temporary
-                ),
+
                 
                 ProfileMenuItem(
                   icon: Icons.favorite,
@@ -128,12 +121,6 @@ class _ProfilePageState extends State<ProfilePage> {
                   onTap: () => _showComingSoonDialog('Trợ giúp & Hỗ trợ'), // 👈 Temporary
                 ),
                 
-                ProfileMenuItem(
-                  icon: Icons.info,
-                  title: 'Về ứng dụng',
-                  subtitle: 'Thông tin phiên bản, điều khoản',
-                  onTap: () => _showAboutDialog(), // 👈 Local dialog
-                ),
                 
                 ProfileMenuItem(
                   icon: Icons.logout,

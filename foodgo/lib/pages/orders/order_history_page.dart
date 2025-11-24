@@ -6,6 +6,7 @@ import '../../services/screen_service.dart' as screen;
 import '../../services/order_service.dart';
 import '../../models/order_model.dart';
 import '../../providers/auth_provider.dart';
+import '../../providers/cart_provider.dart';
 import 'widgets/order_history_app_bar.dart';
 import 'widgets/order_history_loading.dart';
 import 'widgets/order_history_error.dart';
@@ -141,21 +142,42 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
 
   Future<void> _reorder(OrderModel order) async {
     try {
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      final cartProvider = Provider.of<CartProvider>(context, listen: false);
+      final userId = authProvider.currentUser?.id;
+
+      if (userId == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text('Vui lòng đăng nhập để đặt lại đơn hàng'),
+            backgroundColor: AppColors.error,
+          ),
+        );
+        return;
+      }
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: const Text('Đang thêm món vào giỏ hàng...'),
           backgroundColor: AppColors.primary,
+          duration: const Duration(seconds: 1),
         ),
       );
+
+      await cartProvider.addItems(order.items, userId: userId);
       
-      Navigator.pushNamed(context, AppRoutes.cart);
+      if (mounted) {
+        Navigator.pushNamed(context, AppRoutes.cart);
+      }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text('Không thể đặt lại đơn hàng'),
-          backgroundColor: AppColors.error,
-        ),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Không thể đặt lại đơn hàng: $e'),
+            backgroundColor: AppColors.error,
+          ),
+        );
+      }
     }
   }
 
@@ -168,7 +190,7 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
     if (result != null) {
       try {
         await OrderService.rateOrder(order.id, result, null);
-        _loadOrders(); // Refresh orders
+        _loadOrders();
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(

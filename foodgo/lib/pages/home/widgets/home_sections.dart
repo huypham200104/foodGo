@@ -37,11 +37,11 @@ class HomeSections extends StatelessWidget {
               leadingIcon: Container(
                 padding: EdgeInsets.all(ScreenService.smallSpacing / 2),
                 decoration: BoxDecoration(
-                  gradient: AppColors.successGradient,
+                  gradient: AppColors.primaryGradient,
                   borderRadius: BorderRadius.circular(12),
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.success.withOpacity(0.3),
+                      color: AppColors.primary.withOpacity(0.3),
                       blurRadius: 8,
                       offset: const Offset(0, 2),
                     ),
@@ -97,11 +97,11 @@ class HomeSections extends StatelessWidget {
               leadingIcon: Container(
                 padding: EdgeInsets.all(ScreenService.smallSpacing / 2),
                 decoration: BoxDecoration(
-                  gradient: AppColors.warningGradient,
+                  gradient: AppColors.primaryGradient,
                   borderRadius: BorderRadius.circular(12),
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.warning.withOpacity(0.3),
+                      color: AppColors.primary.withOpacity(0.3),
                       blurRadius: 8,
                       offset: const Offset(0, 2),
                     ),

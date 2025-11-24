@@ -1,0 +1,26 @@
+[
+  {
+    "name": "price_value",
+    "pattern": "\\d+ nghìn"
+  },
+  {
+    "name": "price_value",
+    "pattern": "\\d+ ngàn"
+  },
+  {
+    "name": "price_value",
+    "pattern": "\\d+ đồng"
+  },
+  {
+    "name": "price_value",
+    "pattern": "\\d+000"
+  },
+  {
+    "name": "price_value",
+    "pattern": "\\d+[kK]"
+  },
+  {
+    "name": "food",
+    "pattern": "(\\bmì\\ ý\\b|\\bmì\\ ý\\ sốt\\ bò\\ băm\\b|\\btrà\\ sữa\\b|\\btrà\\ sữa\\ trân\\ châu\\b|\\bburger\\b|\\bburger\\ bò\\b|\\bcơm\\ gà\\b|\\bpizza\\b|\\bkhoai\\ tây\\ chiên\\b|\\bcoca\\b|\\bgà\\ rán\\b|\\bbún\\ bò\\b|\\btrà\\ đào\\ cam\\ sả\\b|\\bsalad\\b|\\bxa\\ lách\\b|\\bsa\\ lát\\b|\\bnước\\b|\\bnuoc\\b|\\bdrink\\b|\\bpepsi\\b|\\btrà\\b|\\bcà\\ phê\\b)"
+  }
+]

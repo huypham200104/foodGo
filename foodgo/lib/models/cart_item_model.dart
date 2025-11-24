@@ -13,13 +13,28 @@ class CartItemModel {
     this.note = '',
   });
 
-  factory CartItemModel.fromJson(Map<String, dynamic> json) => CartItemModel(
-    item: MenuItemModel.fromJson(json['item']),
-    quantity: json['quantity'] ?? 1,
-    selectedToppings:
-    List<Map<String, dynamic>>.from(json['selectedToppings'] ?? const []),
-    note: json['note'] ?? '',
-  );
+  factory CartItemModel.fromJson(Map<String, dynamic> json) {
+    int parseQuantity(dynamic value) {
+      if (value == null) return 1;
+      if (value is int) return value;
+      if (value is double) return value.toInt();
+      if (value is String) return int.tryParse(value) ?? 1;
+      return 1;
+    }
+
+    // Try to get item data from 'item' key, or use json itself if 'item' is missing (flattened structure)
+    final itemData = json['item'] is Map<String, dynamic> 
+        ? json['item'] as Map<String, dynamic>
+        : json;
+
+    return CartItemModel(
+      item: MenuItemModel.fromJson(itemData),
+      quantity: parseQuantity(json['quantity']),
+      selectedToppings:
+          List<Map<String, dynamic>>.from(json['selectedToppings'] ?? const []),
+      note: json['note'] ?? '',
+    );
+  }
 
   Map<String, dynamic> toJson() => {
     'item': item.toJson(),

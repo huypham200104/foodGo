@@ -1,10 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/order_model.dart';
-import '../models/cart_item_model.dart';
 import '../models/address_model.dart';
 import '../providers/cart_provider.dart';
 import '../providers/auth_provider.dart';
-import 'firebase_service.dart';
 
 class CheckoutService {
   static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -74,8 +72,7 @@ class CheckoutService {
   /// Get restaurant ID from cart items (assuming all items from same restaurant)
   static String _getRestaurantIdFromItems(List<dynamic> items) {
     if (items.isNotEmpty) {
-      // Assuming cart items have restaurant info
-      // You might need to get this from MenuItemModel
+      // MenuItemModel has restaurantId field
       return items.first.item.restaurantId ?? 'default_restaurant';
     }
     return 'default_restaurant';
@@ -83,11 +80,9 @@ class CheckoutService {
 
   /// Get restaurant name from cart items
   static String _getRestaurantNameFromItems(List<dynamic> items) {
-    if (items.isNotEmpty) {
-      // You might need to get this from MenuItemModel
-      return items.first.item.restaurantName ?? 'Nhà hàng';
-    }
-    return 'Nhà hàng';
+    // MenuItemModel does NOT have restaurantName field
+    // Return default value instead
+    return 'FoodGo Restaurant';
   }
 
   /// Get order by ID

@@ -1,0 +1,50 @@
+[
+  {
+    "name": "NUMBER",
+    "pattern": "\\d+"
+  },
+  {
+    "name": "NUMBER",
+    "pattern": "ba"
+  },
+  {
+    "name": "NUMBER",
+    "pattern": "bảy"
+  },
+  {
+    "name": "NUMBER",
+    "pattern": "bốn"
+  },
+  {
+    "name": "NUMBER",
+    "pattern": "chín"
+  },
+  {
+    "name": "NUMBER",
+    "pattern": "hai"
+  },
+  {
+    "name": "NUMBER",
+    "pattern": "mười"
+  },
+  {
+    "name": "NUMBER",
+    "pattern": "một"
+  },
+  {
+    "name": "NUMBER",
+    "pattern": "năm"
+  },
+  {
+    "name": "NUMBER",
+    "pattern": "sáu"
+  },
+  {
+    "name": "NUMBER",
+    "pattern": "tám"
+  },
+  {
+    "name": "quantity_unit",
+    "pattern": "(\\bphần\\b|\\bcái\\b|\\bly\\b|\\bcốc\\b|\\b\\\\d\\+\\ nghìn\\b|\\b\\\\d\\+\\ đồng\\b|\\b\\\\d\\+000\\b|\\bphần\\b|\\bcái\\b|\\bly\\b|\\bcốc\\b|\\b\\\\d\\+\\ nghìn\\b|\\b\\\\d\\+\\ đồng\\b|\\b\\\\d\\+000\\b)"
+  }
+]

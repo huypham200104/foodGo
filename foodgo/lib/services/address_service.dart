@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import '../models/address_model.dart';
 
 class AddressService {
@@ -8,16 +9,21 @@ class AddressService {
   // Get all addresses for a specific user
   static Future<List<AddressModel>> getUserAddresses(String userId) async {
     try {
+      debugPrint('🔍 AddressService.getUserAddresses for userId: $userId');
+      
       final querySnapshot = await _firestore
           .collection(_collectionName)
           .where('userId', isEqualTo: userId)
           .orderBy('createdAt', descending: false)
           .get();
 
+      debugPrint('✅ Found ${querySnapshot.docs.length} addresses for user $userId');
+      
       return querySnapshot.docs
           .map((doc) => AddressModel.fromFirestore(doc.data(), doc.id))
           .toList();
     } catch (e) {
+      debugPrint('❌ AddressService.getUserAddresses error: $e');
       throw Exception('Lỗi khi tải danh sách địa chỉ: $e');
     }
   }
@@ -43,7 +49,7 @@ class AddressService {
   }
 
   // Add new address
-  static Future<void> addAddress(AddressModel address) async {
+  static Future<String> addAddress(AddressModel address) async {
     try {
       final batch = _firestore.batch();
       
@@ -70,6 +76,8 @@ class AddressService {
 
       // Commit batch
       await batch.commit();
+      
+      return newAddressRef.id;
     } catch (e) {
       throw Exception('Lỗi khi thêm địa chỉ: $e');
     }

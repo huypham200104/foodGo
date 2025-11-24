@@ -12,47 +12,53 @@ intents:
   - cancel_order
   - ask_opening_hours
   - out_of_scope
-
-entities:
-  - food
-  - quantity
-  - size
+  - ask_recommendation
+  - ask_new_items
+  - ask_ingredients
+  - ask_vouchers
+  - check_membership
+  - search_by_price
+  - ask_more
 
 slots:
+  search_max_price:
+    type: float
+    mappings:
+      - type: custom
+  search_offset:
+    type: float
+    mappings:
+      - type: custom
   food:
     type: text
-    influence_conversation: true
     mappings:
       - type: from_entity
         entity: food
-
   quantity:
-    type: text
-    influence_conversation: true
+    type: any
     mappings:
       - type: from_entity
         entity: quantity
-
-  size:
+  category:
     type: text
-    influence_conversation: true
     mappings:
       - type: from_entity
-        entity: size
+        entity: category
+
 
 responses:
   utter_greet:
-    - text: "Xin chào! Bạn muốn gọi món gì hôm nay?"
+    - text: "Chào bạn! Mình là FoodGo Bot. Mình có thể giúp gì cho bạn hôm nay?"
+
   utter_goodbye:
-    - text: "Tạm biệt bạn! Hẹn gặp lại nhé 👋"
+    - text: "Tạm biệt bạn! Hẹn gặp lại nhé!"
+
   utter_thank:
     - text: "Cảm ơn bạn nhiều nha!"
+
   utter_confirm_order:
     - text: "Bạn muốn đặt {quantity} phần {food}, đúng không ạ?"
-  utter_out_of_scope:
-    - text: "Xin lỗi, tôi chưa hiểu ý bạn. Bạn có thể nói lại về món ăn hoặc đặt món nhé?"
-  utter_cancel:
-    - text: "Đơn hàng của bạn đã được huỷ."
+
   utter_opening_hours:
     - text: "Quán mở cửa từ 8:00 sáng đến 10:00 tối mỗi ngày."
 
@@ -60,4 +66,16 @@ actions:
   - action_show_menu
   - action_get_price
   - action_order_food
-  - action_out_of_scope
+  - action_recommend_popular
+  - action_recommend_new
+  - action_ask_ingredients
+  - action_show_vouchers
+  - action_check_membership
+  - action_search_by_price
+  - action_show_more_items
+  - action_cancel_order
+  - action_custom_fallback
+
+session_config:
+  session_expiration_time: 60
+  carry_over_slots_to_new_session: true

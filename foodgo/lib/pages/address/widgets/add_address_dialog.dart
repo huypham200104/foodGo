@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../models/address_model.dart';
 import '../../../services/screen_service.dart' as screen;
+import '../../../services/address_service.dart';
+import '../../../widgets/address_form_widget.dart';
 
 class AddAddressDialog extends StatefulWidget {
   final AddressModel? address; // Null for add, non-null for edit
@@ -18,33 +20,16 @@ class AddAddressDialog extends StatefulWidget {
 }
 
 class _AddAddressDialogState extends State<AddAddressDialog> {
-  final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
-  final _phoneController = TextEditingController();
-  final _addressController = TextEditingController();
-  final _noteController = TextEditingController();
-  bool _isDefault = false;
+  final GlobalKey<AddressFormWidgetState> _formKey = GlobalKey<AddressFormWidgetState>();
+  bool _isLoading = false;
 
   @override
   void initState() {
     super.initState();
-    if (widget.address != null) {
-      // Edit mode
-      final address = widget.address!;
-      _nameController.text = address.name ?? '';
-      _phoneController.text = address.phone ?? '';
-      _addressController.text = address.detail ?? address.fullAddress;
-      _noteController.text = address.note ?? '';
-      _isDefault = address.isDefault;
-    }
   }
 
   @override
   void dispose() {
-    _nameController.dispose();
-    _phoneController.dispose();
-    _addressController.dispose();
-    _noteController.dispose();
     super.dispose();
   }
 
@@ -64,130 +49,11 @@ class _AddAddressDialogState extends State<AddAddressDialog> {
       ),
       content: SizedBox(
         width: double.maxFinite,
-        child: Form(
-          key: _formKey,
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Tên địa chỉ
-                TextFormField(
-                  controller: _nameController,
-                  decoration: InputDecoration(
-                    labelText: 'Tên địa chỉ',
-                    hintText: 'Nhà, Văn phòng, ...',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide(color: AppColors.primary),
-                    ),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return 'Vui lòng nhập tên địa chỉ';
-                    }
-                    return null;
-                  },
-                ),
-                
-                SizedBox(height: screen.ScreenService.mediumSpacing),
-                
-                // Số điện thoại
-                TextFormField(
-                  controller: _phoneController,
-                  keyboardType: TextInputType.phone,
-                  decoration: InputDecoration(
-                    labelText: 'Số điện thoại',
-                    hintText: '0987654321',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide(color: AppColors.primary),
-                    ),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return 'Vui lòng nhập số điện thoại';
-                    }
-                    if (value.length < 10) {
-                      return 'Số điện thoại không hợp lệ';
-                    }
-                    return null;
-                  },
-                ),
-                
-                SizedBox(height: screen.ScreenService.mediumSpacing),
-                
-                // Địa chỉ chi tiết
-                TextFormField(
-                  controller: _addressController,
-                  maxLines: 3,
-                  decoration: InputDecoration(
-                    labelText: 'Địa chỉ chi tiết',
-                    hintText: 'Số nhà, tên đường, phường/xã, quận/huyện, thành phố',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide(color: AppColors.primary),
-                    ),
-                    alignLabelWithHint: true,
-                  ),
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return 'Vui lòng nhập địa chỉ chi tiết';
-                    }
-                    return null;
-                  },
-                ),
-                
-                SizedBox(height: screen.ScreenService.mediumSpacing),
-                
-                // Ghi chú
-                TextFormField(
-                  controller: _noteController,
-                  maxLines: 2,
-                  decoration: InputDecoration(
-                    labelText: 'Ghi chú (tùy chọn)',
-                    hintText: 'Ghi chú cho shipper...',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide(color: AppColors.primary),
-                    ),
-                    alignLabelWithHint: true,
-                  ),
-                ),
-                
-                SizedBox(height: screen.ScreenService.smallSpacing),
-                
-                // Đặt làm địa chỉ mặc định
-                CheckboxListTile(
-                  value: _isDefault,
-                  onChanged: (value) {
-                    setState(() {
-                      _isDefault = value ?? false;
-                    });
-                  },
-                  title: Text(
-                    'Đặt làm địa chỉ mặc định',
-                    style: TextStyle(
-                      color: AppColors.textPrimary,
-                      fontSize: screen.ScreenService.smallText,
-                    ),
-                  ),
-                  activeColor: AppColors.primary,
-                  contentPadding: EdgeInsets.zero,
-                ),
-              ],
-            ),
+        child: SingleChildScrollView(
+          child: AddressFormWidget(
+            key: _formKey,
+            address: widget.address,
+            onSave: _handleSave,
           ),
         ),
       ),
@@ -200,31 +66,81 @@ class _AddAddressDialogState extends State<AddAddressDialog> {
           ),
         ),
         ElevatedButton(
-          onPressed: _saveAddress,
+          onPressed: _isLoading ? null : _saveAddress,
           style: ElevatedButton.styleFrom(
             backgroundColor: AppColors.primary,
             foregroundColor: Colors.white,
           ),
-          child: Text(isEdit ? 'Cập nhật' : 'Thêm'),
+          child: _isLoading 
+            ? SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                ),
+              )
+            : Text(isEdit ? 'Cập nhật' : 'Thêm'),
         ),
       ],
     );
   }
 
+  void _handleSave(AddressModel address) {
+    // This will be called by AddressFormWidget when form is valid
+    _saveAddressToFirebase(address);
+  }
+
   void _saveAddress() {
-    if (_formKey.currentState!.validate()) {
-      final address = AddressModel(
-        id: widget.address?.id ?? '',
-        name: _nameController.text.trim(),
-        phone: _phoneController.text.trim(),
-        detail: _addressController.text.trim(),
-        note: _noteController.text.trim().isNotEmpty ? _noteController.text.trim() : null,
-        isDefault: _isDefault,
-        userId: widget.address?.userId,
-      );
+    // Trigger the form save
+    _formKey.currentState?.saveAddress();
+  }
+
+  Future<void> _saveAddressToFirebase(AddressModel address) async {
+    setState(() => _isLoading = true);
+
+    try {
+      if (widget.address == null) {
+        // Add new address
+        await AddressService.addAddress(address);
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Đã thêm địa chỉ thành công'),
+              backgroundColor: AppColors.success,
+            ),
+          );
+        }
+      } else {
+        // Update existing address
+        await AddressService.updateAddress(address);
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Đã cập nhật địa chỉ thành công'),
+              backgroundColor: AppColors.success,
+            ),
+          );
+        }
+      }
       
-      Navigator.pop(context);
-      widget.onSaved(address);
+      if (mounted) {
+        Navigator.pop(context);
+        widget.onSaved(address);
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Lỗi: $e'),
+            backgroundColor: AppColors.error,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
     }
   }
 }

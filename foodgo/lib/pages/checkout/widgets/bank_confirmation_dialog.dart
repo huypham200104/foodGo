@@ -26,9 +26,14 @@ class BankConfirmationDialog extends StatelessWidget {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       title: Row(
         children: [
-          Icon(Icons.qr_code, color: AppColors.primary),
+          Icon(Icons.qr_code, color: AppColors.primary, size: 20),
           SizedBox(width: 8),
-          Text('Xác nhận thanh toán'),
+          Expanded(
+            child: Text(
+              'Xác nhận thanh toán',
+              style: TextStyle(fontSize: 16),
+            ),
+          ),
         ],
       ),
       content: Column(
@@ -97,8 +102,8 @@ class BankConfirmationDialog extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildBankInfoRow('Ngân hàng:', 'Vietcombank (VCB)'),
-          _buildBankInfoRow('Số tài khoản:', accountNumber),
+          _buildBankInfoRow('Ví điện tử:', 'MoMo'),
+          _buildBankInfoRow('Số điện thoại:', accountNumber),
           _buildBankInfoRow('Tên tài khoản:', accountName),
           _buildBankInfoRow('Số tiền:', '${amount.toStringAsFixed(0)}đ'),
           _buildBankInfoRow('Nội dung:', 'FOODGO $orderId'),

@@ -9,12 +9,13 @@ import '../../services/screen_service.dart' as screen;
 import '../../services/address_service.dart';
 import 'widgets/payment_method_section.dart';
 import 'widgets/order_summary_section.dart';
-import 'widgets/delivery_address_section.dart';
+import 'widgets/checkout_address_widget.dart';
 import 'widgets/notes_section.dart';
 import 'widgets/checkout_bottom_bar.dart';
 import 'widgets/empty_cart_widget.dart';
 import 'widgets/bank_payment_handler.dart';
-import 'widgets/address_validation_dialogs.dart';
+import '../../widgets/add_address_widget.dart';
+import '../../services/checkout_service.dart';
 
 class CheckoutPage extends StatefulWidget {
   const CheckoutPage({super.key});
@@ -56,9 +57,18 @@ class _CheckoutPageState extends State<CheckoutPage> {
     }
 
     try {
-      final defaultAddress = await AddressService.getDefaultAddress(
+      var defaultAddress = await AddressService.getDefaultAddress(
         authProvider.currentUser!.id
       );
+
+      if (defaultAddress == null) {
+        final userAddresses = await AddressService.getUserAddresses(
+          authProvider.currentUser!.id
+        );
+        if (userAddresses.isNotEmpty) {
+          defaultAddress = userAddresses.first;
+        }
+      }
 
       setState(() {
         selectedAddress = defaultAddress;
@@ -78,14 +88,31 @@ class _CheckoutPageState extends State<CheckoutPage> {
   }
 
   void _navigateToAddressPage() async {
-    final result = await Navigator.pushNamed(
-      context,
-      AppRoutes.addressList,
-      arguments: {'selectMode': true},
-    );
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
     
-    if (result != null && result is AddressModel) {
-      setState(() => selectedAddress = result);
+    if (selectedAddress == null) {
+      final result = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => AddAddressWidget(
+            userId: authProvider.currentUser!.id,
+          ),
+        ),
+      );
+      
+      if (result == true) {
+        _loadDefaultAddress();
+      }
+    } else {
+      final result = await Navigator.pushNamed(
+        context,
+        AppRoutes.addressList,
+        arguments: {'selectMode': true},
+      );
+      
+      if (result != null && result is AddressModel) {
+        setState(() => selectedAddress = result);
+      }
     }
   }
 
@@ -189,8 +216,9 @@ class _CheckoutPageState extends State<CheckoutPage> {
       );
     }
     
-    return DeliveryAddressSection(
+    return CheckoutAddressWidget(
       address: selectedAddress,
+      onAddAddress: _navigateToAddressPage,
       onChangeAddress: _navigateToAddressPage,
     );
   }
@@ -198,23 +226,29 @@ class _CheckoutPageState extends State<CheckoutPage> {
   Future<void> _processOrder(CartProvider cartProvider, AuthProvider authProvider) async {
     // Validate address and phone
     if (selectedAddress == null) {
-      AddressValidationDialogs.showAddressRequiredDialog(
-        context,
-        onSelectAddress: _navigateToAddressPage,
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Vui lòng chọn địa chỉ giao hàng'),
+          backgroundColor: AppColors.error,
+        ),
       );
       return;
     }
 
     if (selectedAddress!.safePhone.isEmpty) {
-      AddressValidationDialogs.showPhoneRequiredDialog(
-        context,
-        onUpdateAddress: _navigateToAddressPage,
+      _navigateToAddressPage();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Vui lòng cập nhật số điện thoại trong địa chỉ giao hàng'),
+          backgroundColor: AppColors.error,
+        ),
       );
       return;
     }
 
-    // Bank payment is handled by BankPaymentHandler
+    // Bank payment - trigger QR dialog
     if (selectedPaymentMethod == PaymentMethod.bank) {
+      _onPaymentMethodChanged(PaymentMethod.bank);
       return;
     }
 
@@ -222,8 +256,14 @@ class _CheckoutPageState extends State<CheckoutPage> {
     _onProcessingChanged(true);
     
     try {
-      // Your existing cash order processing logic
-      // ...
+      // Create order using CheckoutService
+      await CheckoutService.createOrderFromCart(
+        cartProvider: cartProvider,
+        authProvider: authProvider,
+        deliveryAddress: selectedAddress!,
+        paymentMethod: 'cash',
+        notes: notesController.text,
+      );
       
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(

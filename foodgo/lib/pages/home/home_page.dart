@@ -14,7 +14,7 @@ import '../../core/theme/app_colors.dart';
 import 'widgets/home_content.dart';
 import 'widgets/home_states.dart';
 import 'widgets/custom_bottom_nav.dart';
-import 'widgets/floating_chat_button.dart';
+import '../../widgets/chat_bubble.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -156,13 +156,11 @@ class _HomePageState extends State<HomePage> {
                       ),
           ),
 
-          // Floating Chat Button
-          FloatingChatButton(
-            onPressed: () {
-              debugPrint('Chat button pressed');
-              // TODO: Navigate to chat screen when implemented
-            },
-            showOnlineIndicator: true,
+          // Floating Chat Bubble
+          Positioned(
+            bottom: 20,
+            right: 20,
+            child: ChatBubble(),
           ),
         ],
       ),

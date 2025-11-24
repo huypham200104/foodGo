@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../providers/auth_provider.dart';
 import '../../models/address_model.dart';
 import '../../core/theme/app_colors.dart';
 import '../../services/screen_service.dart' as screen;
+import '../../services/address_service.dart'; // Use AddressService instead
 import 'widgets/address_form_dialog.dart';
 import 'widgets/address_item_tile.dart';
 
@@ -44,19 +44,12 @@ class _AddressManagementPageState extends State<AddressManagementPage> {
     if (authProvider.currentUser?.id == null) return;
 
     try {
-      final snapshot = await FirebaseFirestore.instance
-          .collection('addresses')
-          .where('userId', isEqualTo: authProvider.currentUser!.id)
-          .get();
+      final userAddresses = await AddressService.getUserAddresses(
+        authProvider.currentUser!.id
+      );
 
       setState(() {
-        addresses = snapshot.docs
-            .map((doc) {
-              final data = doc.data();
-              data['id'] = doc.id;
-              return AddressModel.fromJson(data);
-            })
-            .toList();
+        addresses = userAddresses;
         isLoading = false;
       });
     } catch (e) {
@@ -107,7 +100,7 @@ class _AddressManagementPageState extends State<AddressManagementPage> {
                                 ? () => _selectAddress(address)
                                 : null,
                             onEdit: () => _showEditAddressDialog(address),
-                            onDelete: () => _deleteAddress(address.id!),
+                            onDelete: () => _deleteAddress(address.id),
                           );
                         },
                       ),
@@ -239,23 +232,11 @@ class _AddressManagementPageState extends State<AddressManagementPage> {
     try {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
       // Create new address with userId
-      final newAddress = AddressModel(
-        id: '',
-        label: address.label,
-        detail: address.detail,
-        latitude: address.latitude,
-        longitude: address.longitude,
+      final newAddress = address.copyWith(
         userId: authProvider.currentUser!.id,
-        isDefault: address.isDefault,
-        city: address.city,
-        ward: address.ward,
       );
       
-      final docRef = await FirebaseFirestore.instance
-          .collection('addresses')
-          .add(newAddress.toJson());
-      
-      await docRef.update({'id': docRef.id});
+      await AddressService.addAddress(newAddress);
       _loadAddresses();
       
       if (mounted) {
@@ -280,10 +261,7 @@ class _AddressManagementPageState extends State<AddressManagementPage> {
 
   Future<void> _updateAddress(AddressModel address) async {
     try {
-      await FirebaseFirestore.instance
-          .collection('addresses')
-          .doc(address.id)
-          .update(address.toJson());
+      await AddressService.updateAddress(address);
       
       _loadAddresses();
       
@@ -329,10 +307,7 @@ class _AddressManagementPageState extends State<AddressManagementPage> {
 
     if (confirmed == true) {
       try {
-        await FirebaseFirestore.instance
-            .collection('addresses')
-            .doc(addressId)
-            .delete();
+        await AddressService.deleteAddress(addressId);
         
         _loadAddresses();
         

@@ -125,7 +125,7 @@ class CustomBottomNav extends StatelessWidget {
     );
   }
 
-  // ================== NAVIGATION METHODS (FIXED) ==================
+  // ================== NAVIGATION METHODS ==================
 
   void _navigateToHome(BuildContext context) {
     final currentRoute = ModalRoute.of(context)?.settings.name;
@@ -140,7 +140,6 @@ class CustomBottomNav extends StatelessWidget {
   void _navigateToNotification(BuildContext context) {
     final currentRoute = ModalRoute.of(context)?.settings.name;
     if (currentRoute != AppRoutes.notification) {
-      // Sử dụng pushNamed thay vì pushReplacementNamed để có thể back
       Navigator.of(context).pushNamed(AppRoutes.notification);
     }
   }
@@ -148,7 +147,6 @@ class CustomBottomNav extends StatelessWidget {
   void _navigateToMenu(BuildContext context) {
     final currentRoute = ModalRoute.of(context)?.settings.name;
     if (currentRoute != AppRoutes.menu) {
-      // Sử dụng pushNamed thay vì pushReplacementNamed để có thể back
       Navigator.of(context).pushNamed(AppRoutes.menu);
     }
   }
@@ -161,7 +159,6 @@ class CustomBottomNav extends StatelessWidget {
     
     final currentRoute = ModalRoute.of(context)?.settings.name;
     if (currentRoute != AppRoutes.cart) {
-      // Sử dụng pushNamed thay vì pushReplacementNamed để có thể back
       Navigator.of(context).pushNamed(AppRoutes.cart);
     }
   }
@@ -174,7 +171,6 @@ class CustomBottomNav extends StatelessWidget {
     
     final currentRoute = ModalRoute.of(context)?.settings.name;
     if (currentRoute != AppRoutes.profile) {
-      // Sử dụng pushNamed thay vì pushReplacementNamed để có thể back
       Navigator.of(context).pushNamed(AppRoutes.profile);
     }
   }

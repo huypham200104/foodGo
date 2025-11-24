@@ -2,7 +2,7 @@ version: "3.1"
 
 nlu:
 
-# --- regex cho số lượng (dạng chữ số & chữ) ---
+# --- REGEX & LOOKUP ---
 - regex: NUMBER
   examples: |
     - \d+
@@ -11,214 +11,226 @@ nlu:
     - ba
     - bốn
     - năm
-    - sáu
-    - bảy
-    - tám
-    - chín
-    - mười
-    - mười một
-    - mười hai
-    - mười ba
-    - mười bốn
-    - mười lăm
-    - mười sáu
-    - mười bảy
-    - mười tám  
-    - mười chín
-    - hai mươi
-
-# --- lookup table cho đơn vị thường gặp (giúp model học) ---
-- lookup: quantity_unit
-  examples: |
-    - phần
-    - cái
-    - ly
-    - cốc
-    - bát
-    - hộp
-    - đĩa
-    - suất
-    - chai
-    - lon
-    - tô
-
-# --- CHÀO HỎI ---
 - intent: greet
   examples: |
     - Xin chào
     - Chào bạn
-    - Chào
     - Hi
     - Hello
     - Hey
-    - Ê bot
-    - Chào buổi sáng
-    - Chào buổi trưa
-    - Chào buổi tối
-    - Có ai ở đó không?
-    - Are you there?
-    - Hey there
-    - Good morning
-    - Good afternoon
-    - Good evening
+    - hello bot
+    - xin chao
+    - chao ban
+    - lo
+    - alo
+    - co ai o do khong
 
-# --- TẠM BIỆT ---
 - intent: goodbye
   examples: |
     - Tạm biệt
     - Hẹn gặp lại
     - Bye
     - Goodbye
-    - See you
-    - Gặp lại sau nhé
-    - Tôi đi đây
-    - Cảm ơn, tạm biệt
-    - Thanks, bye!
+    - tam biet
+    - bye bye
+    - gap lai sau
 
-# --- CẢM ƠN ---
 - intent: thank
   examples: |
     - Cảm ơn
     - Cảm ơn nhiều
-    - Cảm ơn bạn nhé
     - Thanks
     - Thank you
-    - Appreciate it
-    - Great, thanks!
-    - Ok, cảm ơn
-    - Cảm ơn nha
+    - cam on
+    - tks
 
-# --- ĐẶT MÓN ĂN ---
 - intent: order_food
   examples: |
     - Tôi muốn đặt [1](quantity) phần [mì ý](food)
     - Cho tôi [3](quantity) phần [mì ý sốt bò băm](food)
     - Mình muốn gọi [2](quantity) ly [trà sữa trân châu](food)
-    - Làm ơn cho [1](quantity) phần [cơm gà xối mỡ](food)
-    - Cho [5](quantity) phần [gà rán](food)
-    - Tôi muốn đặt [2](quantity) ly [cà phê sữa](food)
-    - Tôi muốn [1](quantity) phần [pizza hải sản](food)
-    - Đặt giúp tôi [1](quantity) phần [bánh mì trứng](food)
-    - Gọi [3](quantity) ly [sinh tố xoài](food)
-    - Đặt [2](quantity) cái [hamburger](food)
-    - Cho tôi [2](quantity) phần [pizza phô mai](food)
-    - Cho mình [4](quantity) ly [nước cam](food)
-    - Tôi muốn order [1](quantity) [burger](food)
-    - I'd like to order [1](quantity) portion of [spaghetti](food)
-    - Please give me [2](quantity) [fried chickens](food)
-    - I want to order [3](quantity) [cups of milk tea](food)
-    - Give me [1](quantity) [bowl of noodles](food)
-    - Let me have [2](quantity) [burgers](food)
-    - I’ll take [4](quantity) [fries](food)
-    - Cho tôi [1](quantity) ly [cà phê đen](food)
-    - Tôi muốn gọi [2](quantity) ly [trà đào](food)
-    - Đặt giúp tôi [3](quantity) phần [gà rán giòn](food)
-    - Mình muốn gọi [1](quantity) phần [bánh mì thịt](food)
-    - Làm ơn cho [2](quantity) ly [sinh tố dâu](food)
-    - Tôi muốn order [1](quantity) phần [cơm tấm](food)
-    - I'd like to order [2](quantity) [cups of coffee](food)
-    - Please give me [3](quantity) [plates of fried rice](food)
-    - I want to order [1](quantity) [pizza](food)
-    - Give me [2](quantity) [bowls of soup](food)
-    - Let me have [3](quantity) [sandwiches](food)
-    - I’ll take [1](quantity) [milk tea](food)
+    - Cho [1](quantity) [burger](food)
+    - cho toi 1 phan mi y
+    - dat 1 com ga
+    - order 1 pizza
+    - cho 1 burger bo
+    - them 1 phan khoai tay chien
+    - lay 1 coc coca
+    - dat mon ga ran
+    - 1 bun bo
+    - 2 tra dao cam sa
+    - toi muon an pizza
+    - order giup minh mon nay
+    - cho toi 1 phan [salad](food)
+    - lay cho minh 1 [salad](food)
+    - order [salad](food)
+    - cho 1 phan [salad](food)
+    - them 1 [salad](food)
+    - goi mon [salad](food)
+    - 1 [salad](food)
+    - cho toi 1 [ga ran](food)
+    - lay 1 [ga ran](food)
+    - 1 [com ga](food)
+    - cho 1 [burger](food)
+    - lay 1 [pizza](food)
+    - cho toi 1 [tra sua](food)
+    - 1 [tra sua](food)
+    - lay 1 [nuoc suoi](food)
+    - cho 1 [pepsi](food)
+    - 1 [coca](food)
+    - cho toi 1 [khoai tay chien](food)
+    - lay 1 [khoai tay lac](food)
+    - 1 [xuc xich](food)
+    - cho 1 [mi y](food)
+    - lay 1 [kem ly](food)
+    - 1 [banh tart trung](food)
+    - cho toi 1 [pudding](food)
+    - lay 1 [combo 1](food)
+    - 1 [combo 2](food)
+    - cho toi 1 phan [ga](food)
+    - lay 1 [ga](food)
+    - 1 [ga](food)
+    - cho 1 [ga](food)
+    - them 1 [ga](food)
+    - goi mon [ga](food)
+    - cho toi 1 phan [ga ran](food)
 
-# --- HỎI MENU ---
 - intent: ask_menu
   examples: |
     - Menu hôm nay có gì?
     - Cho tôi xem menu
     - Có những món gì vậy?
-    - Các món ăn hiện có là gì?
-    - Có món [trà sữa](food) không?
-    - Hiện tại còn [pizza](food) không?
-    - What’s on the menu?
-    - Show me the menu
-    - What food do you have?
-    - Can I see the food list?
-    - What drinks do you have?
-    - Tell me what I can order
-    - Do you have [coffee](food)?
-    - Có món nước nào không?
-    - Có món ăn vặt không?
+    - menu co gi
+    - xem thuc don
+    - quan co mon gi ngon
+    - list mon an
+    - co ban tra sua khong
 
-# --- HỎI GIÁ ---
 - intent: ask_price
   examples: |
     - [Pizza](food) bao nhiêu tiền?
-    - [Trà sữa](food) giá bao nhiêu?
     - Giá của [hamburger](food) là bao nhiêu?
-    - Một phần [cơm gà](food) bao nhiêu?
-    - How much is the [pizza](food)?
-    - What’s the price of [fried chicken](food)?
-    - How much does a [burger](food) cost?
-    - Tell me the price of [milk tea](food)
-    - Giá của [khoai tây chiên](food) là bao nhiêu vậy?
+    - mon nay bao nhieu
+    - gia bao nhieu
+    - cai nay gia sao
+    - tra sua bao nhieu tien
+    - xin gia
+    - price please
 
-
-# --- PHỦ ĐỊNH ---
 - intent: deny
   examples: |
     - Không
     - Không phải
     - Sai rồi
-    - Không đúng
     - No
-    - Nope
-    - Not really
-    - I don’t think so
-    - Never mind
+    - khong
+    - ko
+    - khong phai
+    - sai roi
 
-# --- XÁC NHẬN ĐƠN HÀNG ---
 - intent: confirm_order
   examples: |
     - Xác nhận đơn hàng giúp tôi
-    - Tôi muốn xác nhận đặt món
-    - Confirm my order
-    - Please confirm my food order
-    - Xong rồi, xác nhận nhé
-    - Đặt món này nhé
     - Ok, chốt đơn này
-    - Xác nhận luôn đi
-    - I'm ready to confirm
-    - Confirm please
+    - chot don
+    - xac nhan
+    - ok dat di
+    - dong y
+    - confirm
 
-# --- HUỶ ĐƠN ---
 - intent: cancel_order
   examples: |
     - Hủy đơn hàng
-    - Tôi muốn hủy đặt món
-    - Cancel my order
-    - Don’t order anymore
-    - I changed my mind
     - Thôi không đặt nữa
-    - Bỏ qua đơn này đi
-    - Stop my order
+    - huy don
+    - thoi khong dat nua
+    - dung lai
+    - cancel
+    - huy bo
+    - xoa don
 
-# --- HỎI GIỜ MỞ CỬA ---
 - intent: ask_opening_hours
   examples: |
     - Quán mở cửa lúc mấy giờ?
-    - Giờ mở cửa thế nào?
     - Bao giờ mở cửa?
-    - What are your opening hours?
-    - When do you open?
-    - What time do you close?
+    - quan mo cua may gio
+    - gio mo cua
 
-# --- NGOẠI LỆ / KHÔNG HIỂU ---
 - intent: out_of_scope
   examples: |
     - Hôm nay thời tiết thế nào?
-    - Mấy giờ rồi?
-    - Ai là tổng thống Mỹ?
     - Bạn bao nhiêu tuổi?
-    - Sing me a song
-    - Tell me a joke
-    - Tôi muốn xem phim
-    - Mở nhạc cho tôi
-    - What’s your name?
-    - Do you love me?
     - Kể chuyện cười đi
-    - Hôm nay là ngày mấy?
-    - Tôi bị đau đầu
-    - Bạn học trường nào?
+    - Ai là tổng thống Mỹ?
+    - thoi tiet hom nay
+    - ke chuyen cuoi
+
+# --- CÁC TÍNH NĂNG MỚI ---
+
+- intent: ask_recommendation
+  examples: |
+    - Gợi ý món ăn đi
+    - Có món nào ngon không?
+    - Món nào được gọi nhiều nhất?
+    - goi y mon an
+    - hom nay an gi
+    - mon nao ngon nhat
+    - best seller la gi
+
+- intent: ask_new_items
+  examples: |
+    - Có món gì mới không?
+    - Món mới hôm nay là gì?
+    - co mon moi khong
+    - mon gi moi
+    - new items
+
+- intent: ask_ingredients
+  examples: |
+    - Món này làm từ gì?
+    - Thành phần của món [burger bò](food) là gì?
+    - mon nay lam tu gi
+    - thanh phan la gi
+    - trong nay co hanh tay khong
+
+- intent: ask_vouchers
+  examples: |
+    - Có voucher nào không?
+    - Đang có khuyến mãi gì hot?
+    - co ma giam gia khong
+    - xin voucher
+    - khuyen mai hom nay
+    - ma freeship
+    - tim ma giam gia
+
+- intent: check_membership
+  examples: |
+    - Xem xếp hạng của bản thân
+    - Tôi đang ở hạng nào?
+    - Điểm tích lũy của tôi là bao nhiêu?
+    - xem hang thanh vien
+    - tich duoc bao nhieu diem roi
+    - check member
+
+- intent: search_by_price
+  examples: |
+    - Gợi ý cho tôi món dưới [80k](price_value)
+    - Có món nào tầm [50 nghìn](price_value) đổ lại không?
+    - Tìm món ăn rẻ hơn [100.000](price_value)
+    - tim mon duoi [50k](price_value)
+    - co mon nao re hon [30 ngan](price_value) khong
+    - duoi [100k](price_value) an gi
+    - tam gia [50000](price_value)
+    - goi y mon duoi [80k](price_value)
+    - co mon nao tam [50 nghin](price_value) do lai khong
+    - tim mon an re hon [100.000](price_value)
+
+- intent: ask_more
+  examples: |
+    - Xem thêm
+    - Còn món nào nữa không?
+    - Gợi ý tiếp đi
+    - xem them
+    - con nua khong
+    - next
+    - tiep tuc

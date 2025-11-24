@@ -15,10 +15,11 @@ class OrderService {
           .get();
 
       return querySnapshot.docs
-          .map((doc) => OrderModel.fromJson({
-                'id': doc.id,
-                ...doc.data(),
-              }))
+          .where((doc) => doc.data().isNotEmpty) // Ensure data exists
+          .map((doc) {
+            final data = doc.data();
+            return OrderModel.fromFirestore(data, doc.id);
+          })
           .toList();
     } catch (e) {
       print('Error getting user orders: $e');
@@ -34,11 +35,8 @@ class OrderService {
           .doc(orderId)
           .get();
 
-      if (doc.exists) {
-        return OrderModel.fromJson({
-          'id': doc.id,
-          ...doc.data()!,
-        });
+      if (doc.exists && doc.data() != null) {
+        return OrderModel.fromFirestore(doc.data()!, doc.id);
       }
       return null;
     } catch (e) {
@@ -57,14 +55,12 @@ class OrderService {
           .collection(_collection)
           .where('userId', isEqualTo: userId)
           .where('status', isEqualTo: status)
-          .orderBy('orderDate', descending: true)
+          .orderBy('createdAt', descending: true)
           .get();
 
       return querySnapshot.docs
-          .map((doc) => OrderModel.fromJson({
-                'id': doc.id,
-                ...doc.data(),
-              }))
+          .where((doc) => doc.data().isNotEmpty)
+          .map((doc) => OrderModel.fromFirestore(doc.data(), doc.id))
           .toList();
     } catch (e) {
       print('Error getting orders by status: $e');
@@ -77,7 +73,7 @@ class OrderService {
     try {
       final docRef = await _firestore
           .collection(_collection)
-          .add(order.toJson());
+          .add(order.toFirestore());
       
       return docRef.id;
     } catch (e) {

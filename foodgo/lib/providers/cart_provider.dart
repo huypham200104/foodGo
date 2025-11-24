@@ -113,6 +113,33 @@ class CartProvider extends ChangeNotifier {
     }
   }
 
+  // Thêm nhiều món vào giỏ hàng (cho chức năng Đặt lại)
+  Future<void> addItems(List<CartItemModel> items, {required String userId}) async {
+    try {
+      _isLoading = true;
+      _errorMessage = null;
+      notifyListeners();
+
+      // Sử dụng Future.wait để thêm song song, hoặc vòng lặp để thêm tuần tự
+      // Tuần tự an toàn hơn để tránh race condition với Firestore nếu mạng chậm
+      for (final item in items) {
+        await addToCart(
+          userId: userId,
+          item: item.item,
+          quantity: item.quantity,
+          selectedToppings: item.selectedToppings,
+          note: item.note,
+        );
+      }
+    } catch (e) {
+      _errorMessage = 'Lỗi khi đặt lại đơn hàng: $e';
+      debugPrint('Error reordering: $e');
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
   Future<void> updateQuantity(CartItemModel cartItem, int newQuantity) async {
     try {
       if (newQuantity <= 0) {

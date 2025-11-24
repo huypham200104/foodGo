@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../services/screen_service.dart' as screen;
-import '../../../utils/format_helper.dart';
 import '../../../models/address_model.dart';
 
 class CheckoutBottomBar extends StatelessWidget {

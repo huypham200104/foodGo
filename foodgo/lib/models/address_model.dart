@@ -103,9 +103,18 @@ class AddressModel {
       userId: data['userId'] as String?,
       latitude: data['latitude']?.toDouble(),
       longitude: data['longitude']?.toDouble(),
-      createdAt: (data['createdAt'] as Timestamp?)?.toDate(),
-      updatedAt: (data['updatedAt'] as Timestamp?)?.toDate(),
+      createdAt: _parseDateTime(data['createdAt']),
+      updatedAt: _parseDateTime(data['updatedAt']),
     );
+  }
+
+  // Helper method to parse DateTime from various types
+  static DateTime? _parseDateTime(dynamic value) {
+    if (value == null) return null;
+    if (value is Timestamp) return value.toDate();
+    if (value is String) return DateTime.tryParse(value);
+    if (value is DateTime) return value;
+    return null;
   }
 
   // Convert AddressModel to Firestore document

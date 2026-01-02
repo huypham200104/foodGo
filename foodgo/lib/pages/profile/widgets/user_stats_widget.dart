@@ -5,14 +5,12 @@ import 'user_stat_column.dart';
 class UserStatsWidget extends StatelessWidget {
   final int rewardPoints;
   final int totalOrders;
-  final String formattedTotalSpent;
   final bool showSeparator;
 
   const UserStatsWidget({
     super.key,
     required this.rewardPoints,
     required this.totalOrders,
-    required this.formattedTotalSpent,
     this.showSeparator = true,
   });
 
@@ -35,15 +33,6 @@ class UserStatsWidget extends StatelessWidget {
             value: '$totalOrders',
             icon: Icons.shopping_bag,
             color: AppColors.primary,
-          ),
-        ),
-        if (showSeparator) _buildSeparator(),
-        Expanded(
-          child: UserStatColumn(
-            label: 'Chi tiêu',
-            value: formattedTotalSpent,
-            icon: Icons.account_balance_wallet,
-            color: AppColors.success,
           ),
         ),
       ],

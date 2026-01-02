@@ -235,3 +235,4 @@ class CartProvider extends ChangeNotifier {
     notifyListeners();
   }
 }
+

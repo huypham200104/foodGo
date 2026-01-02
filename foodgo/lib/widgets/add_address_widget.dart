@@ -5,10 +5,10 @@ import '../services/address_service.dart';
 class AddAddressWidget extends StatefulWidget {
   final String userId;
 
-  const AddAddressWidget({Key? key, required this.userId}) : super(key: key);
+  const AddAddressWidget({super.key, required this.userId});
 
   @override
-  _AddAddressWidgetState createState() => _AddAddressWidgetState();
+  State<AddAddressWidget> createState() => _AddAddressWidgetState();
 }
 
 class _AddAddressWidgetState extends State<AddAddressWidget> {
@@ -39,11 +39,13 @@ class _AddAddressWidgetState extends State<AddAddressWidget> {
 
       try {
         await AddressService.addAddress(newAddress);
+        if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Địa chỉ đã được thêm thành công!')),
         );
         Navigator.of(context).pop(true); // Return success result
       } catch (e) {
+        if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Lỗi khi thêm địa chỉ: $e')),
         );
@@ -150,3 +152,4 @@ class _AddAddressWidgetState extends State<AddAddressWidget> {
     super.dispose();
   }
 }
+

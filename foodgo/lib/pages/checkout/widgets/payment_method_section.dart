@@ -3,7 +3,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../services/screen_service.dart' as screen;
 import 'payment_method_card.dart';
 
-enum PaymentMethod { cash, bank }
+enum PaymentMethod { cash, vietqr }
 
 class PaymentMethodSection extends StatelessWidget {
   final PaymentMethod selectedPaymentMethod;
@@ -54,11 +54,11 @@ class PaymentMethodSection extends StatelessWidget {
           SizedBox(height: screen.ScreenService.smallSpacing),
           
           PaymentMethodCard(
-            icon: Icons.credit_card,
-            title: 'Chuyển khoản',
-            subtitle: 'Thanh toán qua ngân hàng',
-            isSelected: selectedPaymentMethod == PaymentMethod.bank,
-            onTap: () => onPaymentMethodChanged(PaymentMethod.bank),
+            icon: Icons.qr_code,
+            title: 'VietQR',
+            subtitle: 'Quét mã QR để thanh toán',
+            isSelected: selectedPaymentMethod == PaymentMethod.vietqr,
+            onTap: () => onPaymentMethodChanged(PaymentMethod.vietqr),
           ),
         ],
       ),

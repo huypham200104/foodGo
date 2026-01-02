@@ -24,18 +24,34 @@ class _ChatPageState extends State<ChatPage> {
   final TextEditingController _messageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   bool _isLoading = false;
+  bool _showScrollToBottomButton = false;
   String? _userId;
 
   @override
   void initState() {
     super.initState();
     _initializeChat();
+    _scrollController.addListener(_onScroll);
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     screen.ScreenService.init(context);
+  }
+
+  void _onScroll() {
+    if (!_scrollController.hasClients) return;
+    
+    // Show button if user scrolled up more than 200 pixels from bottom
+    final isNearBottom = _scrollController.position.maxScrollExtent - 
+        _scrollController.position.pixels < 200;
+    
+    if (_showScrollToBottomButton == isNearBottom) {
+      setState(() {
+        _showScrollToBottomButton = !isNearBottom;
+      });
+    }
   }
 
   void _initializeChat() {
@@ -296,42 +312,63 @@ class _ChatPageState extends State<ChatPage> {
             
             // Messages area
             Expanded(
-              child: StreamBuilder<List<ChatMessage>>(
-                stream: ChatService.getMessagesStream(_userId ?? 'anonymous_user'),
-                builder: (context, snapshot) {
-                  if (snapshot.hasError) {
-                    return Center(child: Text('Lỗi: ${snapshot.error}'));
-                  }
+              child: Stack(
+                children: [
+                  StreamBuilder<List<ChatMessage>>(
+                    stream: ChatService.getMessagesStream(_userId ?? 'anonymous_user'),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasError) {
+                        return Center(child: Text('Lỗi: ${snapshot.error}'));
+                      }
 
-                  if (!snapshot.hasData) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
+                      if (!snapshot.hasData) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
 
-                  final messages = snapshot.data!;
-                  
-                  if (messages.isEmpty) {
-                     // Show welcome message if empty
-                     // Note: We don't save welcome message to DB to avoid clutter, 
-                     // or we could save it once. For now, just show it.
-                     return ChatMessageList(
-                        messages: [ChatService.getWelcomeMessage()],
+                      final messages = snapshot.data!;
+                      
+                      if (messages.isEmpty) {
+                         // Show welcome message if empty
+                         // Note: We don't save welcome message to DB to avoid clutter, 
+                         // or we could save it once. For now, just show it.
+                         return ChatMessageList(
+                            messages: [ChatService.getWelcomeMessage()],
+                            scrollController: _scrollController,
+                            onQuickReply: _sendQuickReply,
+                            onAddToCart: _handleManualAddToCart,
+                            onGoToCart: _goToCart,
+                            onDelete: null, // Cannot delete welcome message
+                          );
+                      }
+
+                      return ChatMessageList(
+                        messages: messages,
                         scrollController: _scrollController,
                         onQuickReply: _sendQuickReply,
                         onAddToCart: _handleManualAddToCart,
                         onGoToCart: _goToCart,
-                        onDelete: null, // Cannot delete welcome message
+                        onDelete: _deleteMessage,
                       );
-                  }
-
-                  return ChatMessageList(
-                    messages: messages,
-                    scrollController: _scrollController,
-                    onQuickReply: _sendQuickReply,
-                    onAddToCart: _handleManualAddToCart,
-                    onGoToCart: _goToCart,
-                    onDelete: _deleteMessage,
-                  );
-                },
+                    },
+                  ),
+                  
+                  // Scroll to bottom button
+                  if (_showScrollToBottomButton)
+                    Positioned(
+                      bottom: 16,
+                      right: 16,
+                      child: FloatingActionButton.small(
+                        onPressed: _scrollToBottom,
+                        backgroundColor: AppColors.primary,
+                        elevation: 4,
+                        child: const Icon(
+                          Icons.arrow_downward,
+                          color: Colors.white,
+                          size: 20,
+                        ),
+                      ),
+                    ),
+                ],
               ),
             ),
             

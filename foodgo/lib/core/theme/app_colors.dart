@@ -110,7 +110,7 @@ class AppColors {
     shape: BoxShape.circle,
     boxShadow: [
       BoxShadow(
-        color: primary.withOpacity(0.25),
+        color: primary.withValues(alpha: 0.25),
         blurRadius: 12,
         offset: Offset(0, 4),
       ),
@@ -129,3 +129,4 @@ class AppColors {
     ],
   );
 }
+

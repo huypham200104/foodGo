@@ -272,7 +272,16 @@ class _MenuPageState extends State<MenuPage> with SingleTickerProviderStateMixin
                 );
               },
               onAddToCart: () {
-                _addToCart(menuItem);
+                // Nếu món có topping options, mở trang chi tiết để chọn
+                if (menuItem.effectiveToppingOptions.isNotEmpty) {
+                  Navigator.of(context).pushNamed(
+                    '/product-detail',
+                    arguments: menuItem,
+                  );
+                } else {
+                  // Nếu không có topping, thêm trực tiếp vào giỏ hàng
+                  _addToCart(menuItem);
+                }
               },
             );
           },
@@ -333,5 +342,6 @@ class _MenuPageState extends State<MenuPage> with SingleTickerProviderStateMixin
     });
   }
 }
+
 
 

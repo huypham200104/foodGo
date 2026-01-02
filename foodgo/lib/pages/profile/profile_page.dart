@@ -5,6 +5,7 @@ import '../../core/routes/app_routes.dart'; // Import AppRoutes
 import '../../services/screen_service.dart' as screen;
 import '../../providers/auth_provider.dart';
 import '../../models/user_model.dart';
+import '../../utils/tier_system.dart';
 import 'widgets/profile_info_widget.dart';
 import 'widgets/profile_menu_item.dart';
 import 'widgets/profile_edit_dialog.dart';
@@ -93,6 +94,20 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
                 
                 ProfileMenuItem(
+                  icon: Icons.local_offer,
+                  title: 'Voucher',
+                  subtitle: 'Xem voucher khả dụng',
+                  onTap: () => Navigator.pushNamed(context, AppRoutes.vouchers),
+                ),
+                
+                ProfileMenuItem(
+                  icon: Icons.card_membership,
+                  title: 'Hạng thành viên',
+                  subtitle: 'Xem các hạng thành viên',
+                  onTap: () => _showTierListDialog(),
+                ),
+                
+                ProfileMenuItem(
                   icon: Icons.location_on,
                   title: 'Địa chỉ giao hàng',
                   subtitle: 'Quản lý địa chỉ giao hàng',
@@ -111,7 +126,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   icon: Icons.favorite,
                   title: 'Yêu thích',
                   subtitle: 'Món ăn yêu thích của bạn',
-                  onTap: () => _showComingSoonDialog('Danh sách yêu thích'), // 👈 Temporary
+                  onTap: () => Navigator.pushNamed(context, AppRoutes.favorites),
                 ),
                 
                 ProfileMenuItem(
@@ -165,6 +180,204 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
+  // 👈 Thêm dialog hiển thị danh sách tiers
+  void _showTierListDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Container(
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery.of(context).size.height * 0.8,
+            maxWidth: 500,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Header
+              Container(
+                padding: EdgeInsets.all(screen.ScreenService.mediumSpacing),
+                decoration: BoxDecoration(
+                  gradient: AppColors.primaryGradient,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(16),
+                    topRight: Radius.circular(16),
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.card_membership,
+                      color: Colors.white,
+                      size: 24,
+                    ),
+                    SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        'Hạng Thành Viên',
+                        style: TextStyle(
+                          fontSize: screen.ScreenService.mediumText,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.close, color: Colors.white),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ],
+                ),
+              ),
+              // Tier list
+              Flexible(
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  padding: EdgeInsets.all(screen.ScreenService.mediumSpacing),
+                  itemCount: TierSystem.tiers.length,
+                  itemBuilder: (context, index) {
+                    final tier = TierSystem.tiers[index];
+                    return _buildTierCard(tier);
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTierCard(TierConfig tier) {
+    // Color mapping for tiers
+    Color getTierColor() {
+      switch (tier.name) {
+        case 'New':
+          return Colors.grey;
+        case 'Bronze':
+          return Color(0xFFCD7F32);
+        case 'Silver':
+          return Colors.grey.shade400;
+        case 'Gold':
+          return Color(0xFFFFD700);
+        case 'Platinum':
+          return Color(0xFFE5E4E2);
+        default:
+          return AppColors.primary;
+      }
+    }
+
+    return Container(
+      margin: EdgeInsets.only(bottom: screen.ScreenService.mediumSpacing),
+      padding: EdgeInsets.all(screen.ScreenService.mediumSpacing),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: getTierColor().withValues(alpha: 0.3),
+          width: 2,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: getTierColor().withValues(alpha: 0.1),
+            blurRadius: 8,
+            offset: Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Tier name and discount
+          Row(
+            children: [
+              Icon(
+                Icons.stars,
+                color: getTierColor(),
+                size: 24,
+              ),
+              SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  tier.name,
+                  style: TextStyle(
+                    fontSize: screen.ScreenService.mediumText,
+                    fontWeight: FontWeight.bold,
+                    color: getTierColor(),
+                  ),
+                ),
+              ),
+              if (tier.discountPercentage > 0)
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: AppColors.success.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    '-${tier.discountPercentage.toInt()}%',
+                    style: TextStyle(
+                      fontSize: screen.ScreenService.smallText,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.success,
+                    ),
+                  ),
+                ),
+            ],
+          ),
+          SizedBox(height: 8),
+          // Points requirement
+          Text(
+            tier.maxPoints != null
+                ? 'Yêu cầu: ${tier.minPoints} - ${tier.maxPoints} điểm'
+                : 'Yêu cầu: ${tier.minPoints}+ điểm',
+            style: TextStyle(
+              fontSize: screen.ScreenService.smallText,
+              color: AppColors.textSecondary,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          SizedBox(height: 12),
+          // Benefits
+          Text(
+            'Quyền lợi:',
+            style: TextStyle(
+              fontSize: screen.ScreenService.smallText,
+              fontWeight: FontWeight.bold,
+              color: AppColors.textPrimary,
+            ),
+          ),
+          SizedBox(height: 6),
+          ...tier.benefits.map((benefit) => Padding(
+                padding: EdgeInsets.only(bottom: 4),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Icon(
+                      Icons.check_circle,
+                      size: 16,
+                      color: AppColors.success,
+                    ),
+                    SizedBox(width: 6),
+                    Expanded(
+                      child: Text(
+                        benefit,
+                        style: TextStyle(
+                          fontSize: screen.ScreenService.smallText - 1,
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              )),
+        ],
+      ),
+    );
+  }
+
   // 👈 Thêm dialog cho coming soon features
   void _showComingSoonDialog(String feature) {
     showDialog(
@@ -194,7 +407,7 @@ class _ProfilePageState extends State<ProfilePage> {
             Container(
               padding: EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: AppColors.primary.withOpacity(0.1),
+                color: AppColors.primary.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Row(
@@ -349,3 +562,5 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 }
+
+

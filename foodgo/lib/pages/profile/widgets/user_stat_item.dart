@@ -21,7 +21,7 @@ class UserStatItem extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(screen.ScreenService.smallSpacing),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(screen.ScreenService.smallSpacing / 2),
       ),
       child: Column(
@@ -53,3 +53,4 @@ class UserStatItem extends StatelessWidget {
     );
   }
 }
+

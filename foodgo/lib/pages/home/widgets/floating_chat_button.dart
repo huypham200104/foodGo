@@ -161,7 +161,7 @@ class _FloatingChatButtonState extends State<FloatingChatButton>
                   gradient: LinearGradient(
                     colors: [
                       AppColors.primary,
-                      AppColors.primaryDark ?? AppColors.primary.withOpacity(0.8),
+                      AppColors.primaryDark ?? AppColors.primary.withValues(alpha: 0.8),
                     ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
@@ -169,7 +169,7 @@ class _FloatingChatButtonState extends State<FloatingChatButton>
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.primary.withOpacity(_isDragging ? 0.6 : 0.4),
+                      color: AppColors.primary.withValues(alpha: _isDragging ? 0.6 : 0.4),
                       blurRadius: _isDragging ? 16 : 12,
                       offset: Offset(0, _isDragging ? 6 : 4),
                     ),
@@ -208,7 +208,7 @@ class _FloatingChatButtonState extends State<FloatingChatButton>
                                   ),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: AppColors.success.withOpacity(0.6),
+                                      color: AppColors.success.withValues(alpha: 0.6),
                                       blurRadius: 4,
                                       offset: const Offset(0, 1),
                                     ),
@@ -355,3 +355,4 @@ class _FloatingChatButtonState extends State<FloatingChatButton>
     );
   }
 }
+

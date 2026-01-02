@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:foodgo/models/user_model.dart';
 
 class UserService {
@@ -28,7 +29,7 @@ class UserService {
         return newUser;
       }
     } catch (e) {
-      print('Error getting current user: $e');
+      debugPrint('Error getting current user: $e');
       return null;
     }
   }
@@ -41,7 +42,7 @@ class UserService {
           .doc(user.id)
           .set(user.toFirestoreJson());
     } catch (e) {
-      print('Error creating user profile: $e');
+      debugPrint('Error creating user profile: $e');
       rethrow;
     }
   }
@@ -54,7 +55,7 @@ class UserService {
           .doc(user.id)
           .update(user.toFirestoreJson());
     } catch (e) {
-      print('Error updating user profile: $e');
+      debugPrint('Error updating user profile: $e');
       rethrow;
     }
   }
@@ -70,7 +71,7 @@ class UserService {
             'updatedAt': DateTime.now().toIso8601String(),
           });
     } catch (e) {
-      print('Error updating user field: $e');
+      debugPrint('Error updating user field: $e');
       rethrow;
     }
   }
@@ -86,7 +87,7 @@ class UserService {
             'updatedAt': DateTime.now().toIso8601String(),
           });
     } catch (e) {
-      print('Error adding reward points: $e');
+      debugPrint('Error adding reward points: $e');
       rethrow;
     }
   }
@@ -102,7 +103,7 @@ class UserService {
             'updatedAt': DateTime.now().toIso8601String(),
           });
     } catch (e) {
-      print('Error updating membership level: $e');
+      debugPrint('Error updating membership level: $e');
       rethrow;
     }
   }
@@ -119,7 +120,7 @@ class UserService {
             'updatedAt': DateTime.now().toIso8601String(),
           });
     } catch (e) {
-      print('Error adding to favorites: $e');
+      debugPrint('Error adding to favorites: $e');
       rethrow;
     }
   }
@@ -136,7 +137,7 @@ class UserService {
             'updatedAt': DateTime.now().toIso8601String(),
           });
     } catch (e) {
-      print('Error removing from favorites: $e');
+      debugPrint('Error removing from favorites: $e');
       rethrow;
     }
   }
@@ -175,7 +176,7 @@ class UserService {
         await addRewardPoints(userId, rewardPoints);
       }
     } catch (e) {
-      print('Error updating order stats: $e');
+      debugPrint('Error updating order stats: $e');
       rethrow;
     }
   }
@@ -195,8 +196,9 @@ class UserService {
       // Delete Firebase Auth account
       await user.delete();
     } catch (e) {
-      print('Error deleting user account: $e');
+      debugPrint('Error deleting user account: $e');
       rethrow;
     }
   }
 }
+

@@ -206,3 +206,4 @@ class CategoryInfo {
   @override
   String toString() => '$icon $name';
 }
+

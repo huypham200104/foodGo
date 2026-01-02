@@ -1,7 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:foodgo/models/user_model.dart';
 import 'package:foodgo/services/user_service.dart';
+import 'package:foodgo/services/reward_service.dart';
 
 class AuthProvider extends ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -58,7 +60,7 @@ class AuthProvider extends ChangeNotifier {
       }
       return null;
     } catch (e) {
-      print('Sign in error: $e');
+      debugPrint('Sign in error: $e');
       rethrow;
     } finally {
       _isLoading = false;
@@ -85,13 +87,22 @@ class AuthProvider extends ChangeNotifier {
         final newUser = UserModel.fromFirebaseUser(credential.user!);
         await UserService.createUserProfile(newUser);
         
+        // Create initial reward for new user
+        try {
+          await RewardService.createUserReward(newUser.id);
+          debugPrint('✅ Initial reward created for new user: ${newUser.id}');
+        } catch (e) {
+          debugPrint('⚠️ Failed to create reward for new user: $e');
+          // Don't block signup if reward creation fails
+        }
+        
         _currentUser = newUser;
         notifyListeners();
         return _currentUser;
       }
       return null;
     } catch (e) {
-      print('Sign up error: $e');
+      debugPrint('Sign up error: $e');
       rethrow;
     } finally {
       _isLoading = false;
@@ -106,7 +117,7 @@ class AuthProvider extends ChangeNotifier {
       _currentUser = null;
       notifyListeners();
     } catch (e) {
-      print('Sign out error: $e');
+      debugPrint('Sign out error: $e');
       rethrow;
     }
   }
@@ -123,7 +134,7 @@ class AuthProvider extends ChangeNotifier {
       _currentUser = updatedUser;
       notifyListeners();
     } catch (e) {
-      print('Update profile error: $e');
+      debugPrint('Update profile error: $e');
       rethrow;
     }
   }
@@ -144,7 +155,7 @@ class AuthProvider extends ChangeNotifier {
       _currentUser = updatedUser;
       notifyListeners();
     } catch (e) {
-      print('Update user info and save error: $e');
+      debugPrint('Update user info and save error: $e');
       rethrow;
     } finally {
       _isLoading = false;
@@ -158,7 +169,7 @@ class AuthProvider extends ChangeNotifier {
       _currentUser = await UserService.getCurrentUser();
       notifyListeners();
     } catch (e) {
-      print('Refresh user error: $e');
+      debugPrint('Refresh user error: $e');
     }
   }
 
@@ -172,7 +183,7 @@ class AuthProvider extends ChangeNotifier {
       _currentUser = null;
       notifyListeners();
     } catch (e) {
-      print('Delete account error: $e');
+      debugPrint('Delete account error: $e');
       rethrow;
     } finally {
       _isLoading = false;
@@ -185,8 +196,10 @@ class AuthProvider extends ChangeNotifier {
     try {
       await _auth.sendPasswordResetEmail(email: email);
     } catch (e) {
-      print('Reset password error: $e');
+      debugPrint('Reset password error: $e');
       rethrow;
     }
   }
 }
+
+

@@ -82,7 +82,7 @@ class AppTheme {
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(color: AppColors.textLight.withOpacity(0.5)),
+          borderSide: BorderSide(color: AppColors.textLight.withValues(alpha: 0.5)),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
@@ -98,7 +98,7 @@ class AppTheme {
       
       // Divider theme
       dividerTheme: DividerThemeData(
-        color: AppColors.textLight.withOpacity(0.2),
+        color: AppColors.textLight.withValues(alpha: 0.2),
         thickness: 1,
       ),
       
@@ -182,7 +182,7 @@ class AppTheme {
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(color: Colors.grey.withOpacity(0.5)),
+          borderSide: BorderSide(color: Colors.grey.withValues(alpha: 0.5)),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
@@ -199,7 +199,7 @@ class AppTheme {
       
       // Divider theme
       dividerTheme: DividerThemeData(
-        color: Colors.grey.withOpacity(0.3),
+        color: Colors.grey.withValues(alpha: 0.3),
         thickness: 1,
       ),
       
@@ -215,3 +215,4 @@ class AppTheme {
     );
   }
 }
+

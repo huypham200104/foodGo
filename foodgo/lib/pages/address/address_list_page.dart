@@ -332,13 +332,13 @@ class _AddressListPageState extends State<AddressListPage> {
               width: screen.ScreenService.isSmallScreen ? 80 : 96,
               height: screen.ScreenService.isSmallScreen ? 80 : 96,
               decoration: BoxDecoration(
-                color: AppColors.primary.withOpacity(0.1),
+                color: AppColors.primary.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 Icons.location_off,
                 size: screen.ScreenService.isSmallScreen ? 40 : 48,
-                color: AppColors.primary.withOpacity(0.6),
+                color: AppColors.primary.withValues(alpha: 0.6),
               ),
             ),
             SizedBox(height: screen.ScreenService.mediumSpacing),
@@ -398,34 +398,8 @@ class _AddressListPageState extends State<AddressListPage> {
   }
 
   Future<void> _addNewAddress(AddressModel address) async {
-    try {
-      final authProvider = Provider.of<AuthProvider>(context, listen: false);
-      final userId = authProvider.currentUser?.id;
-      
-      if (userId != null) {
-        final newAddress = address.copyWith(userId: userId);
-        await AddressService.addAddress(newAddress);
-        await _refreshAddresses();
-        
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: const Text('Đã thêm địa chỉ mới'),
-              backgroundColor: AppColors.success,
-            ),
-          );
-        }
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Lỗi khi thêm địa chỉ: $e'),
-            backgroundColor: AppColors.error,
-          ),
-        );
-      }
-    }
+    // AddAddressDialog already saves to Firebase, just refresh the list
+    await _refreshAddresses();
   }
 
   void _selectAddress(AddressModel address) {
@@ -591,98 +565,6 @@ class _AddressListPageState extends State<AddressListPage> {
       }
     }
   }
-
-  Widget _buildAddressItem(AddressModel address) {
-    return Card(
-      margin: EdgeInsets.only(bottom: ScreenService.smallSpacing),
-      child: InkWell(
-        onTap: widget.selectMode 
-            ? () => _selectAddress(address)  // 👈 Select in select mode
-            : null,
-        child: Padding(
-          padding: EdgeInsets.all(ScreenService.mediumSpacing),
-          child: Row(
-            children: [
-              // Checkbox or Radio button for selection
-              widget.selectMode 
-                  ? Radio<AddressModel>(
-                      value: address,
-                      groupValue: _addresses.firstWhere(
-                        (addr) => addr.isDefault,
-                        orElse: () => AddressModel.empty(),
-                      ),
-                      onChanged: (value) {
-                        if (value != null) {
-                          _selectAddress(value);
-                        }
-                      },
-                      activeColor: AppColors.primary,
-                    )
-                  : SizedBox(width: 48), // Space for alignment
-              
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      address.displayName,
-                      style: TextStyle(
-                        fontSize: ScreenService.mediumText,
-                        fontWeight: FontWeight.w500,
-                        color: AppColors.textPrimary,
-                      ),
-                    ),
-                    SizedBox(height: 4),
-                    Text(
-                      address.displayAddress,
-                      style: TextStyle(
-                        fontSize: ScreenService.smallText,
-                        color: AppColors.textSecondary,
-                      ),
-                    ),
-                    SizedBox(height: 8),
-                    if (address.isDefault)
-                      Container(
-                        padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                        decoration: BoxDecoration(
-                          color: AppColors.primary.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: Text(
-                          'Mặc định',
-                          style: TextStyle(
-                            fontSize: ScreenService.smallText,
-                            color: AppColors.primary,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                  ],
-                ),
-              ),
-              
-              // Actions: Edit, Delete, Set as Default
-              if (!widget.selectMode) ...{
-                IconButton(
-                  icon: Icon(Icons.edit, color: AppColors.primary),
-                  onPressed: () => _editAddress(address),
-                ),
-                IconButton(
-                  icon: Icon(Icons.delete, color: AppColors.error),
-                  onPressed: () => _deleteAddress(address),
-                ),
-                IconButton(
-                  icon: Icon(
-                    address.isDefault ? Icons.star : Icons.star_border,
-                    color: address.isDefault ? AppColors.primary : AppColors.textSecondary,
-                  ),
-                  onPressed: () => _setAsDefault(address),
-                ),
-              },
-            ],
-          ),
-        ),
-      ),
-    );
-  }
 }
+
+

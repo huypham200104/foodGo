@@ -186,6 +186,14 @@ class _HomePageState extends State<HomePage> {
 
   void _addToCart(MenuItemModel item) {
     try {
+      // Check if item has toppings - navigate to detail page instead
+      final effectiveToppingOptions = item.toppingOptions ?? item.toppings ?? [];
+      if (effectiveToppingOptions.isNotEmpty) {
+        debugPrint('Item has ${effectiveToppingOptions.length} topping options, navigating to detail page');
+        _navigateToProductDetail(item.id);
+        return;
+      }
+
       final cartProvider = Provider.of<CartProvider>(context, listen: false);
 
       cartProvider.addItem(item, 1);

@@ -25,7 +25,7 @@ class CartTotalWidget extends StatelessWidget {
         color: Theme.of(context).colorScheme.surface,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 12,
             offset: const Offset(0, -2),
           ),
@@ -106,3 +106,4 @@ class CartTotalWidget extends StatelessWidget {
 }
 
 // Removed duplicate ScreenService; use the shared one from services/screen_service.dart
+

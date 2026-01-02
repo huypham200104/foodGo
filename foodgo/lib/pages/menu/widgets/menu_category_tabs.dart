@@ -44,7 +44,7 @@ class MenuCategoryTabs extends StatelessWidget {
               selected: isSelected,
               onSelected: (_) => onCategoryChanged(index),
               backgroundColor: AppColors.background,
-              selectedColor: AppColors.primary.withOpacity(0.1),
+              selectedColor: AppColors.primary.withValues(alpha: 0.1),
               checkmarkColor: AppColors.primary,
               side: BorderSide(
                 color: isSelected ? AppColors.primary : Colors.grey[300]!,
@@ -90,5 +90,7 @@ class MenuCategoryTabs extends StatelessWidget {
     return AppIcons.getIconData(categoryId);
   }
 }
+
+
 
 

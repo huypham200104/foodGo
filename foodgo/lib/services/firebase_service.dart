@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import '../models/menu_item_model.dart';
@@ -21,9 +22,9 @@ class FirebaseService {
       }
       
       await batch.commit();
-      print('✅ Successfully imported ${menuItems.length} menu items to Firestore');
+      debugPrint('✅ Successfully imported ${menuItems.length} menu items to Firestore');
     } catch (e) {
-      print('❌ Error importing menu items: $e');
+      debugPrint('❌ Error importing menu items: $e');
       rethrow;
     }
   }
@@ -37,7 +38,7 @@ class FirebaseService {
         return MenuItemModel.fromJson(convertFirestoreData(data));
       }).toList();
     } catch (e) {
-      print('❌ Error getting menu items: $e');
+      debugPrint('❌ Error getting menu items: $e');
       rethrow;
     }
   }
@@ -53,9 +54,9 @@ class FirebaseService {
       }
       
       await batch.commit();
-      print('✅ Successfully cleared all menu items from Firestore');
+      debugPrint('✅ Successfully cleared all menu items from Firestore');
     } catch (e) {
-      print('❌ Error clearing menu items: $e');
+      debugPrint('❌ Error clearing menu items: $e');
       rethrow;
     }
   }
@@ -73,3 +74,5 @@ class FirebaseService {
     return converted;
   }
 }
+
+

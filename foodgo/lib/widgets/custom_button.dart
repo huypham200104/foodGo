@@ -92,9 +92,9 @@ class CustomButton extends StatelessWidget {
           ),
         ),
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.primary.withOpacity(0.1),
+          backgroundColor: AppColors.primary.withValues(alpha: 0.1),
           foregroundColor: AppColors.primary,
-          disabledBackgroundColor: AppColors.textLight.withOpacity(0.1),
+          disabledBackgroundColor: AppColors.textLight.withValues(alpha: 0.1),
           elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(screen.ScreenService.smallSpacing),
@@ -160,3 +160,4 @@ class CustomButton extends StatelessWidget {
     );
   }
 }
+

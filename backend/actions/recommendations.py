@@ -43,10 +43,11 @@ class ActionRecommendPopular(Action):
 
             dispatcher.utter_message(
                 json_message={
-                    "type": "recommendations",
+                    "type": "recommendation",
                     "items": items,
                     "total_items": len(items),
-                    "message": f"Đây là {len(items)} món được yêu thích nhất tại quán:"
+                    "message": f"Đây là {len(items)} món được yêu thích nhất tại quán:",
+                    "quick_replies": ["Đặt món ngay", "Xem menu đầy đủ", "Món mới"]
                 }
             )
 
@@ -119,7 +120,8 @@ class ActionRecommendNew(Action):
                     "type": "new_items",
                     "items": items,
                     "total_items": len(items),
-                    "message": f"Đây là {len(items)} món mới tại quán:"
+                    "message": f"Đây là {len(items)} món mới tại quán:",
+                    "quick_replies": ["Đặt món ngay", "Xem menu đầy đủ", "Món phổ biến"]
                 }
             )
 

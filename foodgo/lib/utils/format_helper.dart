@@ -6,13 +6,13 @@ class FormatHelper {
     
     for (int i = amountStr.length - 1; i >= 0; i--) {
       if (count == 3) {
-        result = '.' + result;
+        result = '.$result';
         count = 0;
       }
-      result = amountStr[i] + result;
+      result = '${amountStr[i]}$result';
       count++;
     }
     
-    return result + 'đ';
+    return '$resultđ';
   }
 }

@@ -86,7 +86,7 @@ class MenuItemCard extends StatelessWidget {
                             vertical: 2,
                           ),
                           decoration: BoxDecoration(
-                            color: AppColors.primary.withOpacity(0.1),
+                            color: AppColors.primary.withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(4),
                           ),
                           child: Text(
@@ -98,6 +98,38 @@ class MenuItemCard extends StatelessWidget {
                             ),
                           ),
                         ),
+                        
+                        // Topping indicator badge
+                        if (menuItem.effectiveToppingOptions.isNotEmpty)
+                          Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: ScreenService.smallSpacing / 2,
+                              vertical: 2,
+                            ),
+                            decoration: BoxDecoration(
+                              color: AppColors.warning.withValues(alpha: 0.15),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.add_circle_outline,
+                                  size: 10,
+                                  color: AppColors.warning,
+                                ),
+                                SizedBox(width: 2),
+                                Text(
+                                  'Có topping',
+                                  style: TextStyle(
+                                    fontSize: ScreenService.smallText - 2,
+                                    color: AppColors.warning,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         
                         // Sold count or availability
                         if (menuItem.soldCount > 0)
@@ -167,13 +199,19 @@ class MenuItemCard extends StatelessWidget {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Icon(
-                                Icons.add,
+                                // Hiển thị icon khác nếu món có topping
+                                menuItem.effectiveToppingOptions.isNotEmpty
+                                    ? Icons.menu_book
+                                    : Icons.add,
                                 size: 16,
                                 color: Colors.white,
                               ),
                               SizedBox(width: 4),
                               Text(
-                                'Thêm',
+                                // Hiển thị text khác nếu món có topping
+                                menuItem.effectiveToppingOptions.isNotEmpty
+                                    ? 'Chọn'
+                                    : 'Thêm',
                                 style: TextStyle(
                                   fontSize: ScreenService.smallText,
                                   color: Colors.white,
@@ -197,5 +235,7 @@ class MenuItemCard extends StatelessWidget {
 
   
 }
+
+
 
 

@@ -75,7 +75,7 @@ class SectionHeader extends StatelessWidget {
               ),
               style: TextButton.styleFrom(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                backgroundColor: AppColors.primary.withOpacity(0.1),
+                backgroundColor: AppColors.primary.withValues(alpha: 0.1),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -86,4 +86,6 @@ class SectionHeader extends StatelessWidget {
     );
   }
 }
+
+
 

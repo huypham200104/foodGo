@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../services/screen_service.dart' as screen;
 import '../../../models/address_model.dart';
+import '../../../utils/format_helper.dart';
 
 class CheckoutBottomBar extends StatelessWidget {
   final double totalPrice;
-  final double deliveryFee;  // Giữ lại nhưng sẽ pass 0
+  final double deliveryFee;
   final bool isProcessing;
   final AddressModel? selectedAddress;
   final VoidCallback onPlaceOrder;
@@ -13,7 +14,7 @@ class CheckoutBottomBar extends StatelessWidget {
   const CheckoutBottomBar({
     super.key,
     required this.totalPrice,
-    this.deliveryFee = 0,  // 👈 Default to 0
+    this.deliveryFee = 0,
     required this.isProcessing,
     required this.selectedAddress,
     required this.onPlaceOrder,
@@ -21,6 +22,8 @@ class CheckoutBottomBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final total = totalPrice + deliveryFee;
+
     return Container(
       padding: EdgeInsets.all(screen.ScreenService.mediumSpacing),
       decoration: BoxDecoration(
@@ -33,7 +36,7 @@ class CheckoutBottomBar extends StatelessWidget {
           BoxShadow(
             color: AppColors.shadowLight,
             blurRadius: 8,
-            offset: const Offset(0, -2),
+            offset: Offset(0, -2),
           ),
         ],
       ),
@@ -41,20 +44,62 @@ class CheckoutBottomBar extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Price Summary - 👈 Không hiển thị delivery fee
+            // Price breakdown
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Tổng cộng:',
+                  'Tạm tính:',
                   style: TextStyle(
-                    fontSize: screen.ScreenService.largeText,
-                    fontWeight: FontWeight.w600,
+                    fontSize: screen.ScreenService.smallText,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+                Text(
+                  FormatHelper.formatCurrency(totalPrice),
+                  style: TextStyle(
+                    fontSize: screen.ScreenService.smallText,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+              ],
+            ),
+            if (deliveryFee > 0) ...[
+              SizedBox(height: 4),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Phí giao hàng:',
+                    style: TextStyle(
+                      fontSize: screen.ScreenService.smallText,
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                  Text(
+                    FormatHelper.formatCurrency(deliveryFee),
+                    style: TextStyle(
+                      fontSize: screen.ScreenService.smallText,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+            Divider(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Tổng thanh toán',
+                  style: TextStyle(
+                    fontSize: screen.ScreenService.mediumText,
+                    fontWeight: FontWeight.bold,
                     color: AppColors.textPrimary,
                   ),
                 ),
                 Text(
-                  '${totalPrice.toStringAsFixed(0)}đ', // 👈 Chỉ hiển thị total price
+                  FormatHelper.formatCurrency(total),
                   style: TextStyle(
                     fontSize: screen.ScreenService.largeText,
                     fontWeight: FontWeight.bold,
@@ -63,23 +108,17 @@ class CheckoutBottomBar extends StatelessWidget {
                 ),
               ],
             ),
-            
-            SizedBox(height: screen.ScreenService.mediumSpacing),
-            
-            // Place Order Button
+            SizedBox(height: 12),
             SizedBox(
               width: double.infinity,
-              height: screen.ScreenService.buttonHeight,
               child: ElevatedButton(
-                onPressed: selectedAddress != null && !isProcessing 
-                    ? onPlaceOrder 
-                    : null,
+                onPressed: !isProcessing ? onPlaceOrder : null,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primary,
                   foregroundColor: Colors.white,
-                  disabledBackgroundColor: AppColors.textLight,
+                  padding: EdgeInsets.symmetric(vertical: 14),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(screen.ScreenService.smallSpacing),
+                    borderRadius: BorderRadius.circular(8),
                   ),
                 ),
                 child: isProcessing

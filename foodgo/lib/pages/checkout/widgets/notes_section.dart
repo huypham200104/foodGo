@@ -67,7 +67,7 @@ class NotesSection extends StatelessWidget {
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(screen.ScreenService.smallSpacing),
-                borderSide: BorderSide(color: AppColors.textLight.withOpacity(0.5)),
+                borderSide: BorderSide(color: AppColors.textLight.withValues(alpha: 0.5)),
               ),
               contentPadding: EdgeInsets.all(screen.ScreenService.mediumSpacing),
               counterStyle: TextStyle(
@@ -85,3 +85,4 @@ class NotesSection extends StatelessWidget {
     );
   }
 }
+

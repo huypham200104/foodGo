@@ -43,7 +43,7 @@ class CategoryIcons extends StatelessWidget {
                         width: ScreenService.buttonHeight,
                         height: ScreenService.buttonHeight,
                         decoration: BoxDecoration(
-                          color: categoryColor.withOpacity(0.1),
+                          color: categoryColor.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(ScreenService.smallSpacing),
                         ),
                         child: Icon(
@@ -194,3 +194,4 @@ class AppIcons {
     }
   }
 }
+

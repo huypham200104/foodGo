@@ -8,12 +8,12 @@ class NetworkImageWithFallback extends StatelessWidget {
   final BoxFit fit;
 
   const NetworkImageWithFallback({
-    Key? key,
+    super.key,
     required this.imageUrl,
     required this.width,
     required this.height,
     this.fit = BoxFit.cover,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -170,3 +170,4 @@ class RestaurantImage extends StatelessWidget {
     );
   }
 }
+

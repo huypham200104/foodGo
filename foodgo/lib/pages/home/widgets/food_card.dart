@@ -3,14 +3,18 @@ import 'package:cached_network_image/cached_network_image.dart';
 import '../../../models/menu_item_model.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../services/screen_service.dart';
+import '../../../services/favorite_service.dart';
+import '../../../utils/format_helper.dart';
 
-class FoodCard extends StatelessWidget {
+class FoodCard extends StatefulWidget {
   final MenuItemModel item;
   final VoidCallback? onTap;
   final VoidCallback? onAddToCart;
   final bool showBadge;
   final String? badgeText;
   final Color? badgeColor;
+  final bool? isFavorite;
+  final VoidCallback? onFavoriteToggle;
 
   const FoodCard({
     super.key,
@@ -20,7 +24,72 @@ class FoodCard extends StatelessWidget {
     this.showBadge = false,
     this.badgeText,
     this.badgeColor,
+    this.isFavorite,
+    this.onFavoriteToggle,
   });
+
+  @override
+  State<FoodCard> createState() => _FoodCardState();
+}
+
+class _FoodCardState extends State<FoodCard> {
+  bool _isFavorite = false;
+  bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _isFavorite = widget.isFavorite ?? false;
+    if (widget.isFavorite == null) {
+      _checkFavoriteStatus();
+    }
+  }
+
+  Future<void> _checkFavoriteStatus() async {
+    final isFav = await FavoriteService.isFavorite(widget.item.id);
+    if (mounted) {
+      setState(() {
+        _isFavorite = isFav;
+      });
+    }
+  }
+
+  Future<void> _toggleFavorite() async {
+    if (_isLoading) return;
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    final success = await FavoriteService.toggleFavorite(widget.item.id);
+
+    if (mounted) {
+      setState(() {
+        _isLoading = false;
+        if (success) {
+          _isFavorite = !_isFavorite;
+        }
+      });
+
+      if (success) {
+        // Call parent callback if provided
+        widget.onFavoriteToggle?.call();
+
+        // Show snackbar
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              _isFavorite
+                  ? '❤️ Đã thêm "${widget.item.name}" vào yêu thích'
+                  : '💔 Đã xóa "${widget.item.name}" khỏi yêu thích',
+            ),
+            backgroundColor: _isFavorite ? AppColors.success : AppColors.textSecondary,
+            duration: const Duration(seconds: 2),
+          ),
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,12 +107,12 @@ class FoodCard extends StatelessWidget {
         child: InkWell(
           onTap: () {
             // Debug: In ra thông tin item để kiểm tra
-            debugPrint('Food card tapped: ${item.id} - ${item.name}');
-            debugPrint('onTap callback exists: ${onTap != null}');
+            debugPrint('Food card tapped: ${widget.item.id} - ${widget.item.name}');
+            debugPrint('onTap callback exists: ${widget.onTap != null}');
             
             // Gọi onTap callback nếu có
-            if (onTap != null) {
-              onTap!();
+            if (widget.onTap != null) {
+              widget.onTap!();
             } else {
               debugPrint('No onTap callback provided');
             }
@@ -67,7 +136,7 @@ class FoodCard extends StatelessWidget {
                         width: double.infinity,
                         height: double.infinity,
                         child: CachedNetworkImage(
-                          imageUrl: item.imageUrl ?? '',
+                          imageUrl: widget.item.imageUrl,
                           width: double.infinity,
                           height: double.infinity,
                           fit: BoxFit.cover,
@@ -95,7 +164,7 @@ class FoodCard extends StatelessWidget {
                     ),
                     
                     // Badge (NEW hoặc HOT)
-                    if (showBadge && badgeText != null)
+                    if (widget.showBadge && widget.badgeText != null)
                       Positioned(
                         top: 8,
                         left: 8,
@@ -105,18 +174,18 @@ class FoodCard extends StatelessWidget {
                             vertical: 3,
                           ),
                           decoration: BoxDecoration(
-                            color: badgeColor ?? AppColors.primary,
+                            color: widget.badgeColor ?? AppColors.primary,
                             borderRadius: BorderRadius.circular(10),
                             boxShadow: [
                               BoxShadow(
-                                color: (badgeColor ?? AppColors.primary).withOpacity(0.3),
+                                color: (widget.badgeColor ?? AppColors.primary).withValues(alpha: 0.3),
                                 blurRadius: 4,
                                 offset: const Offset(0, 2),
                               ),
                             ],
                           ),
                           child: Text(
-                            badgeText!,
+                            widget.badgeText!,
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: ScreenService.isSmallScreen ? 8 : 9,
@@ -131,15 +200,12 @@ class FoodCard extends StatelessWidget {
                       top: 6,
                       right: 6,
                       child: GestureDetector(
-                        onTap: () {
-                          debugPrint('Favorite tapped: ${item.id}');
-                          // TODO: Implement favorite functionality
-                        },
+                        onTap: _toggleFavorite,
                         child: Container(
                           width: 28,
                           height: 28,
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.9),
+                            color: Colors.white.withValues(alpha: 0.9),
                             shape: BoxShape.circle,
                             boxShadow: [
                               BoxShadow(
@@ -149,11 +215,19 @@ class FoodCard extends StatelessWidget {
                               ),
                             ],
                           ),
-                          child: Icon(
-                            Icons.favorite_border,
-                            color: AppColors.textSecondary,
-                            size: 16,
-                          ),
+                          child: _isLoading
+                              ? Padding(
+                                  padding: const EdgeInsets.all(6.0),
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    valueColor: AlwaysStoppedAnimation<Color>(AppColors.error),
+                                  ),
+                                )
+                              : Icon(
+                                  _isFavorite ? Icons.favorite : Icons.favorite_border,
+                                  color: _isFavorite ? AppColors.error : AppColors.textSecondary,
+                                  size: 16,
+                                ),
                         ),
                       ),
                     ),
@@ -173,7 +247,7 @@ class FoodCard extends StatelessWidget {
                       // Product Name
                       Flexible(
                         child: Text(
-                          item.name,
+                          widget.item.name,
                           style: TextStyle(
                             fontSize: ScreenService.isSmallScreen ? 11 : 13,
                             fontWeight: FontWeight.w600,
@@ -195,7 +269,7 @@ class FoodCard extends StatelessWidget {
                           // Price
                           Flexible(
                             child: Text(
-                              '${item.price.toStringAsFixed(0)}đ',
+                              FormatHelper.formatCurrency(widget.item.price),
                               style: TextStyle(
                                 fontSize: ScreenService.isSmallScreen ? 12 : 14,
                                 fontWeight: FontWeight.bold,
@@ -211,12 +285,12 @@ class FoodCard extends StatelessWidget {
                           // Add Button với stopPropagation
                           GestureDetector(
                             onTap: () {
-                              debugPrint('Add to cart tapped: ${item.id} - ${item.name}');
-                              debugPrint('onAddToCart callback exists: ${onAddToCart != null}');
+                              debugPrint('Add to cart tapped: ${widget.item.id} - ${widget.item.name}');
+                              debugPrint('onAddToCart callback exists: ${widget.onAddToCart != null}');
                               
                               // Prevent event bubbling to parent InkWell
-                              if (onAddToCart != null) {
-                                onAddToCart!();
+                              if (widget.onAddToCart != null) {
+                                widget.onAddToCart!();
                               } else {
                                 debugPrint('No onAddToCart callback provided');
                               }
@@ -229,7 +303,7 @@ class FoodCard extends StatelessWidget {
                                 shape: BoxShape.circle,
                                 boxShadow: [
                                   BoxShadow(
-                                    color: AppColors.primary.withOpacity(0.3),
+                                    color: AppColors.primary.withValues(alpha: 0.3),
                                     blurRadius: 4,
                                     offset: const Offset(0, 2),
                                   ),
@@ -255,4 +329,6 @@ class FoodCard extends StatelessWidget {
     );
   }
 }
+
+
 

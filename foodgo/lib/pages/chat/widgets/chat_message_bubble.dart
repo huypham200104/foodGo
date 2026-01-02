@@ -73,6 +73,12 @@ class ChatMessageBubble extends StatelessWidget {
                     _buildCartActions(),
                   ],
                   
+                  // Menu items display
+                  if (message.menuItems != null && message.menuItems!.isNotEmpty && isBot) ...[
+                    SizedBox(height: screen.ScreenService.smallSpacing),
+                    _buildMenuItems(),
+                  ],
+                  
                   // Quick replies for ask_more type
                   if (message.cartAction?.isAskMoreAction == true && isBot) ...[
                     SizedBox(height: screen.ScreenService.smallSpacing),
@@ -147,10 +153,10 @@ class ChatMessageBubble extends StatelessWidget {
         Container(
           padding: EdgeInsets.all(screen.ScreenService.smallSpacing),
           decoration: BoxDecoration(
-            color: AppColors.success.withOpacity(0.1),
+            color: AppColors.success.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(8),
             border: Border.all(
-              color: AppColors.success.withOpacity(0.3),
+              color: AppColors.success.withValues(alpha: 0.3),
               width: 1,
             ),
           ),
@@ -264,6 +270,157 @@ class ChatMessageBubble extends StatelessWidget {
     );
   }
 
+  Widget _buildMenuItems() {
+    final items = message.menuItems!;
+    
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Menu items list
+        Container(
+          padding: EdgeInsets.all(screen.ScreenService.smallSpacing),
+          decoration: BoxDecoration(
+            color: AppColors.primary.withValues(alpha: 0.05),
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(
+              color: AppColors.primary.withValues(alpha: 0.2),
+              width: 1,
+            ),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: items.asMap().entries.map((entry) {
+              final index = entry.key;
+              final item = entry.value;
+              return Column(
+                children: [
+                  if (index > 0) Divider(color: AppColors.borderLight, height: 8),
+                  Row(
+                    children: [
+                      Container(
+                        width: 24,
+                        height: 24,
+                        decoration: BoxDecoration(
+                          color: AppColors.primary.withValues(alpha: 0.1),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Center(
+                          child: Text(
+                            '${index + 1}',
+                            style: TextStyle(
+                              color: AppColors.primary,
+                              fontSize: screen.ScreenService.smallText - 2,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: screen.ScreenService.smallSpacing),
+                      Expanded(
+                        child: Text(
+                          item.name,
+                          style: TextStyle(
+                            color: AppColors.textPrimary,
+                            fontSize: screen.ScreenService.mediumText,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                      Text(
+                        '${item.price.toInt().toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]}.')}đ',
+                        style: TextStyle(
+                          color: AppColors.primary,
+                          fontSize: screen.ScreenService.mediumText,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              );
+            }).toList(),
+          ),
+        ),
+        
+        // "Xem thêm" button if has more
+        if (message.hasMoreMenu) ...[
+          SizedBox(height: screen.ScreenService.smallSpacing),
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton.icon(
+              onPressed: () => onQuickReply?.call('xem thêm'),
+              icon: Icon(Icons.expand_more, size: 18),
+              label: Text('Xem thêm món'),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: AppColors.primary,
+                side: BorderSide(color: AppColors.primary),
+                padding: EdgeInsets.symmetric(
+                  vertical: screen.ScreenService.smallSpacing,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+            ),
+          ),
+        ],
+        
+        // Quick replies for menu items
+        if (message.quickReplies != null && message.quickReplies!.isNotEmpty) ...[
+          SizedBox(height: screen.ScreenService.smallSpacing),
+          _buildMenuQuickReplies(),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildMenuQuickReplies() {
+    final replies = message.quickReplies!;
+    
+    return Wrap(
+      spacing: screen.ScreenService.smallSpacing / 2,
+      runSpacing: screen.ScreenService.smallSpacing / 2,
+      children: replies.map((reply) => 
+        InkWell(
+          onTap: () => onQuickReply?.call(reply),
+          child: Container(
+            padding: EdgeInsets.symmetric(
+              horizontal: screen.ScreenService.smallSpacing,
+              vertical: screen.ScreenService.smallSpacing / 2,
+            ),
+            decoration: BoxDecoration(
+              color: AppColors.primary.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: AppColors.primary.withValues(alpha: 0.3),
+                width: 1,
+              ),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.touch_app,
+                  size: 14,
+                  color: AppColors.primary,
+                ),
+                SizedBox(width: 4),
+                Text(
+                  reply,
+                  style: TextStyle(
+                    color: AppColors.primary,
+                    fontSize: screen.ScreenService.smallText,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ).toList(),
+    );
+  }
+
   Widget _buildQuickReplies() {
     final quickReplies = message.cartAction?.quickReplies ?? [];
     
@@ -293,10 +450,10 @@ class ChatMessageBubble extends StatelessWidget {
                   vertical: screen.ScreenService.smallSpacing / 2,
                 ),
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withOpacity(0.1),
+                  color: AppColors.primary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(
-                    color: AppColors.primary.withOpacity(0.3),
+                    color: AppColors.primary.withValues(alpha: 0.3),
                     width: 1,
                   ),
                 ),
@@ -316,3 +473,4 @@ class ChatMessageBubble extends StatelessWidget {
     );
   }
 }
+

@@ -182,14 +182,18 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
   }
 
   Future<void> _rateOrder(OrderModel order) async {
-    final result = await showDialog<double>(
+    final result = await showDialog<Map<String, dynamic>>(
       context: context,
       builder: (context) => OrderRatingDialog(order: order),
     );
 
     if (result != null) {
       try {
-        await OrderService.rateOrder(order.id, result, null);
+        await OrderService.rateOrder(
+          order.id, 
+          result['rating'] as double, 
+          result['comment'] as String?,
+        );
         _loadOrders();
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(

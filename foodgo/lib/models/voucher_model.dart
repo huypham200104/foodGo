@@ -1,5 +1,6 @@
 class VoucherModel {
   final String id;
+  final String code;
   final String title;
   final String description;
   final double discountValue;
@@ -13,6 +14,7 @@ class VoucherModel {
 
   VoucherModel({
     required this.id,
+    required this.code,
     required this.title,
     required this.description,
     required this.discountValue,
@@ -27,6 +29,7 @@ class VoucherModel {
 
   factory VoucherModel.fromJson(Map<String, dynamic> json) => VoucherModel(
     id: json['id'] ?? '',
+    code: json['code'] ?? '',
     title: json['title'] ?? '',
     description: json['description'] ?? '',
     discountValue: (json['discountValue'] ?? 0).toDouble(),
@@ -41,6 +44,7 @@ class VoucherModel {
 
   Map<String, dynamic> toJson() => {
     'id': id,
+    'code': code,
     'title': title,
     'description': description,
     'discountValue': discountValue,
@@ -53,3 +57,4 @@ class VoucherModel {
     'usedCount': usedCount,
   };
 }
+

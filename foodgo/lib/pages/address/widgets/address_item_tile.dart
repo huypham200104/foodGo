@@ -41,7 +41,7 @@ class _AddressItemTileState extends State<AddressItemTile> {
       onTap: widget.onTap,
       child: Container(
         decoration: BoxDecoration(
-          color: widget.isSelected ? AppColors.primary.withOpacity(0.1) : AppColors.surface,
+          color: widget.isSelected ? AppColors.primary.withValues(alpha: 0.1) : AppColors.surface,
           border: Border.all(
             color: widget.isSelected ? AppColors.primary : AppColors.textLight,
             width: widget.isSelected ? 2 : 1,
@@ -209,4 +209,6 @@ class _AddressItemTileState extends State<AddressItemTile> {
     return parts.isNotEmpty ? parts.join(', ') : 'Địa chỉ không đầy đủ';
   }
 }
+
+
 

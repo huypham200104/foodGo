@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
@@ -37,10 +38,10 @@ class CloudinaryService {
     final data = json.decode(resBody);
 
     if (response.statusCode == 200) {
-      print('Upload successful: ${data['secure_url']}');
+      debugPrint('Upload successful: ${data['secure_url']}');
       return data;
     } else {
-      print('Upload failed: ${data['error']}');
+      debugPrint('Upload failed: ${data['error']}');
       return null;
     }
   }
@@ -63,10 +64,10 @@ class CloudinaryService {
 
     final data = json.decode(response.body);
     if (response.statusCode == 200 && data['result'] == 'ok') {
-      print('Image deleted successfully');
+      debugPrint('Image deleted successfully');
       return true;
     } else {
-      print('Image deletion failed: ${response.body}');
+      debugPrint('Image deletion failed: ${response.body}');
       return false;
     }
   }
@@ -90,11 +91,12 @@ class CloudinaryService {
 
     final data = json.decode(response.body);
     if (response.statusCode == 200 && data['public_id'] == newPublicId) {
-      print('Image renamed successfully');
+      debugPrint('Image renamed successfully');
       return true;
     } else {
-      print('Image renaming failed: ${response.body}');
+      debugPrint('Image renaming failed: ${response.body}');
       return false;
     }
   }
 }
+

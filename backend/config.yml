@@ -2,9 +2,11 @@ recipe: default.v1
 assistant_id: 20251021-134950-matte-watt
 language: vi
 
+# Cấu hình tham số
 pipeline:
   # 1️⃣ Tokenizer tiếng Việt (nếu bạn có file actions/vietnamese_tokenizer.py)
   # Nếu chưa có, bạn nên thay bằng WhitespaceTokenizer để tránh lỗi import.
+  # Tham số truyền vào
   - name: actions.vietnamese_tokenizer.VietnameseTokenizer
     intent_tokenization_flag: False
     intent_split_symbol: "_"
@@ -54,7 +56,7 @@ pipeline:
     threshold: 0.4
     ambiguity_threshold: 0.1
 
-
+# 
 policies:
   - name: MemoizationPolicy
   - name: RulePolicy

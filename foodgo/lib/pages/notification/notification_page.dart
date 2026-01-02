@@ -42,12 +42,7 @@ class NotificationPage extends StatelessWidget {
             ),
             onPressed: () {
               // Navigate to notification settings
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: const Text('Cài đặt thông báo'),
-                  backgroundColor: AppColors.primary,
-                ),
-              );
+              Navigator.pushNamed(context, '/notification-settings');
             },
             tooltip: 'Cài đặt thông báo',
           ),
@@ -140,13 +135,13 @@ class _EmptyState extends StatelessWidget {
               width: ScreenService.isSmallScreen ? 80 : 96,
               height: ScreenService.isSmallScreen ? 80 : 96,
               decoration: BoxDecoration(
-                color: AppColors.primary.withOpacity(0.1),
+                color: AppColors.primary.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 Icons.notifications_none_rounded,
                 size: ScreenService.isSmallScreen ? 40 : 48,
-                color: AppColors.primary.withOpacity(0.6),
+                color: AppColors.primary.withValues(alpha: 0.6),
               ),
             ),
             SizedBox(height: ScreenService.mediumSpacing),
@@ -361,10 +356,10 @@ class _NotificationTile extends StatelessWidget {
       child: Container(
         margin: EdgeInsets.symmetric(vertical: ScreenService.smallSpacing / 2),
         decoration: BoxDecoration(
-          color: isNew ? AppColors.primary.withOpacity(0.05) : AppColors.surface,
+          color: isNew ? AppColors.primary.withValues(alpha: 0.05) : AppColors.surface,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: isNew ? AppColors.primary.withOpacity(0.2) : AppColors.borderLight,
+            color: isNew ? AppColors.primary.withValues(alpha: 0.2) : AppColors.borderLight,
           ),
         ),
         child: ListTile(
@@ -374,7 +369,7 @@ class _NotificationTile extends StatelessWidget {
           ),
           leading: CircleAvatar(
             radius: ScreenService.isSmallScreen ? 20 : 24,
-            backgroundColor: AppColors.primary.withOpacity(0.1),
+            backgroundColor: AppColors.primary.withValues(alpha: 0.1),
             backgroundImage: avatar.isNotEmpty ? AssetImage(avatar) as ImageProvider : null,
             child: avatar.isEmpty
                 ? Icon(
@@ -439,7 +434,7 @@ class _NotificationTile extends StatelessWidget {
                 _formatTimestamp(timestamp),
                 style: TextStyle(
                   fontSize: ScreenService.isSmallScreen ? 11 : 12,
-                  color: AppColors.textSecondary.withOpacity(0.7),
+                  color: AppColors.textSecondary.withValues(alpha: 0.7),
                   fontWeight: FontWeight.w400,
                 ),
               ),
@@ -447,7 +442,7 @@ class _NotificationTile extends StatelessWidget {
           ),
           trailing: Icon(
             Icons.chevron_right,
-            color: AppColors.textSecondary.withOpacity(0.5),
+            color: AppColors.textSecondary.withValues(alpha: 0.5),
             size: ScreenService.isSmallScreen ? 18 : 20,
           ),
           onTap: () {
@@ -511,5 +506,7 @@ class _ActionBackground extends StatelessWidget {
     );
   }
 }
+
+
 
 

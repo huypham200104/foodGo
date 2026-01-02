@@ -20,7 +20,7 @@ class ProcessingOverlay extends StatelessWidget {
         child,
         if (isProcessing)
           Container(
-            color: Colors.black.withOpacity(0.3),
+            color: Colors.black.withValues(alpha: 0.3),
             child: Center(
               child: Container(
                 padding: EdgeInsets.all(24),
@@ -49,3 +49,4 @@ class ProcessingOverlay extends StatelessWidget {
     );
   }
 }
+

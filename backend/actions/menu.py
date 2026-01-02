@@ -32,32 +32,54 @@ class ActionShowMenu(Action):
         try:
             menu_ref = db.collection("menu_items").where(filter=FieldFilter("isAvailable", "==", True))
             docs = menu_ref.stream()
-            menu_items = []
+            all_items = []
             for doc in docs:
                 data = doc.to_dict()
-                menu_items.append({
+                all_items.append({
                     "id": doc.id,
                     "name": data.get("name", "Không rõ"),
                     "price": data.get("price", 0)
                 })
 
-            if not menu_items:
+            if not all_items:
                 dispatcher.utter_message(
                     json_message={
                         "type": "menu", "status": "empty",
                         "message": "Hiện tại quán chưa có món nào."
                     }
                 )
-                return []
+                return [SlotSet("menu_offset", 0)]
+
+            # Pagination: 5 items per page
+            PAGE_SIZE = 5
+            offset = 0
+            items_to_show = all_items[offset:offset + PAGE_SIZE]
+            has_more = len(all_items) > PAGE_SIZE
+            
+            message = f"Menu hôm nay nè! (Hiển thị {len(items_to_show)}/{len(all_items)} món)"
+            
+            quick_replies = []
+            if has_more:
+                message += "\n💡 Bấm nút bên dưới để xem thêm nhé!"
+                quick_replies.append("Xem thêm")
+            quick_replies.extend(["Đặt món ngay", "Gợi ý món hot"])
 
             dispatcher.utter_message(
                 json_message={
-                    "type": "menu", "status": "success",
-                    "message": "Menu hôm nay nè!",
-                    "total_items": len(menu_items),
-                    "items": menu_items
+                    "type": "menu", 
+                    "status": "success",
+                    "message": message,
+                    "total_items": len(all_items),
+                    "showing": len(items_to_show),
+                    "has_more": has_more,
+                    "items": items_to_show,
+                    "quick_replies": quick_replies
                 }
             )
+            
+            # Save offset for next request
+            return [SlotSet("menu_offset", PAGE_SIZE)]
+            
         except Exception as e:
             print(f"[ERROR] Lỗi khi tải menu: {e}")
             dispatcher.utter_message(
@@ -67,7 +89,7 @@ class ActionShowMenu(Action):
                     "error": str(e)
                 }
             )
-        return []
+            return [SlotSet("menu_offset", 0)]
 
 
 class ActionGetPrice(Action):
@@ -476,6 +498,96 @@ class ActionShowMoreItems(Action):
         except Exception as e:
             print(f"[ERROR] Lỗi khi xem thêm: {e}")
             dispatcher.utter_message(text="Có lỗi xảy ra, bạn thử lại sau nhé.")
+            return []
+
+
+class ActionShowMoreMenu(Action):
+    """Show more menu items with pagination"""
+    def name(self) -> Text:
+        return "action_show_more_menu"
+
+    def run(
+        self,
+        dispatcher: CollectingDispatcher,
+        tracker: Tracker,
+        domain: Dict[Text, Any],
+    ) -> List[Dict[Text, Any]]:
+        try:
+            # Get current offset
+            current_offset = tracker.get_slot("menu_offset")
+            if current_offset is None:
+                current_offset = 0
+            offset = int(current_offset)
+            
+            # Fetch all available items
+            menu_ref = db.collection("menu_items").where(filter=FieldFilter("isAvailable", "==", True))
+            docs = menu_ref.stream()
+            all_items = []
+            for doc in docs:
+                data = doc.to_dict()
+                all_items.append({
+                    "id": doc.id,
+                    "name": data.get("name", "Không rõ"),
+                    "price": data.get("price", 0)
+                })
+
+            total_items = len(all_items)
+            
+            # Check if already at end
+            if offset >= total_items:
+                dispatcher.utter_message(
+                    json_message={
+                        "type": "menu",
+                        "status": "end",
+                        "message": "🎉 Đã hết món trong menu rồi ạ! Bạn muốn đặt món nào không?",
+                        "total_items": total_items,
+                        "showing": 0,
+                        "has_more": False,
+                        "items": []
+                    }
+                )
+                return [SlotSet("menu_offset", offset)]
+            
+            # Get next 5 items
+            PAGE_SIZE = 5
+            items_to_show = all_items[offset:offset + PAGE_SIZE]
+            new_offset = offset + len(items_to_show)
+            has_more = new_offset < total_items
+            
+            message = f"Thêm {len(items_to_show)} món nữa đây! (Đã xem {new_offset}/{total_items} món)"
+            
+            quick_replies = []
+            if has_more:
+                message += "\n💡 Còn nữa, bấm để xem tiếp!"
+                quick_replies.append("Xem thêm")
+            else:
+                message += "\n🎉 Hết menu rồi ạ!"
+            quick_replies.extend(["Đặt món ngay", "Xem voucher"])
+
+            dispatcher.utter_message(
+                json_message={
+                    "type": "menu",
+                    "status": "success",
+                    "message": message,
+                    "total_items": total_items,
+                    "showing": len(items_to_show),
+                    "has_more": has_more,
+                    "items": items_to_show,
+                    "quick_replies": quick_replies
+                }
+            )
+            
+            return [SlotSet("menu_offset", new_offset)]
+            
+        except Exception as e:
+            print(f"[ERROR] Lỗi khi xem thêm menu: {e}")
+            dispatcher.utter_message(
+                json_message={
+                    "type": "error",
+                    "message": "Lỗi khi tải thêm menu. Vui lòng thử lại!",
+                    "error": str(e)
+                }
+            )
             return []
 
 

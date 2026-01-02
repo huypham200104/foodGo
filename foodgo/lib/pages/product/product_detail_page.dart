@@ -404,8 +404,8 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
           selectedToppings: _selectedToppings.map((t) => {
             'name': t.name,
             'price': t.price,
-          }).toList(), // 👈 Chuyển đổi sang Map để tương thích
-          // Require selection if product has topping options
+          }).toList(),
+          // Nếu món không có topping hoặc đã chọn ít nhất 1 topping thì cho phép thêm
           canAdd: _product!.effectiveToppingOptions.isEmpty || _selectedToppings.isNotEmpty,
           onAddToCart: _handleAddToCart,
         ),
@@ -413,3 +413,4 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     );
   }
 }
+

@@ -184,7 +184,7 @@ class AddressFormWidgetState extends State<AddressFormWidget> {
       decoration: BoxDecoration(
         color: AppColors.background,
         borderRadius: BorderRadius.circular(screen.ScreenService.smallSpacing),
-        border: Border.all(color: AppColors.textLight.withOpacity(0.5)),
+        border: Border.all(color: AppColors.textLight.withValues(alpha: 0.5)),
       ),
       padding: EdgeInsets.symmetric(
         horizontal: screen.ScreenService.mediumSpacing,
@@ -308,3 +308,4 @@ class AddressFormWidgetState extends State<AddressFormWidget> {
     setState(() => _isDefault = false);
   }
 }
+

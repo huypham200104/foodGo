@@ -83,11 +83,11 @@ class CheckoutAddressWidget extends StatelessWidget {
         padding: EdgeInsets.all(16),
         decoration: BoxDecoration(
           border: Border.all(
-            color: AppColors.primary.withOpacity(0.5),
+            color: AppColors.primary.withValues(alpha: 0.5),
             width: 2,
           ),
           borderRadius: BorderRadius.circular(8),
-          color: AppColors.primary.withOpacity(0.05),
+          color: AppColors.primary.withValues(alpha: 0.05),
         ),
         child: Column(
           children: [
@@ -205,3 +205,5 @@ class CheckoutAddressWidget extends StatelessWidget {
     );
   }
 }
+
+

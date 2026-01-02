@@ -58,7 +58,7 @@ class TopBar extends StatelessWidget {
                     'Giao hàng nhanh chóng',
                     style: TextStyle(
                       fontSize: 12,
-                      color: Colors.white.withOpacity(0.9),
+                      color: Colors.white.withValues(alpha: 0.9),
                     ),
                   ),
                 ],
@@ -71,3 +71,5 @@ class TopBar extends StatelessWidget {
     );
   }
 }
+
+

@@ -60,7 +60,7 @@ class _SocialButton extends StatelessWidget {
           border: borderColor != null ? Border.all(color: borderColor!) : null,
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withValues(alpha: 0.1),
               blurRadius: 6,
               offset: const Offset(0, 3),
             ),
@@ -92,3 +92,5 @@ class _SocialButton extends StatelessWidget {
     );
   }
 }
+
+

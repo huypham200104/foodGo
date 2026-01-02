@@ -50,7 +50,7 @@ class NotFoundPage extends StatelessWidget {
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.error.withOpacity(0.3),
+                      color: AppColors.error.withValues(alpha: 0.3),
                       blurRadius: 20,
                       offset: const Offset(0, 8),
                     ),
@@ -147,7 +147,7 @@ class NotFoundPage extends StatelessWidget {
                           borderRadius: BorderRadius.circular(12),
                         ),
                         elevation: 2,
-                        shadowColor: AppColors.primary.withOpacity(0.3),
+                        shadowColor: AppColors.primary.withValues(alpha: 0.3),
                       ),
                     ),
                   ),
@@ -160,10 +160,10 @@ class NotFoundPage extends StatelessWidget {
               Container(
                 padding: EdgeInsets.all(screen.ScreenService.mediumSpacing),
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withOpacity(0.05),
+                  color: AppColors.primary.withValues(alpha: 0.05),
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
-                    color: AppColors.primary.withOpacity(0.1),
+                    color: AppColors.primary.withValues(alpha: 0.1),
                   ),
                 ),
                 child: Row(
@@ -202,3 +202,4 @@ class NotFoundPage extends StatelessWidget {
     );
   }
 }
+

@@ -39,7 +39,7 @@ class OrderItemsSection extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: AppColors.border.withOpacity(0.3)),
+        border: Border.all(color: AppColors.border.withValues(alpha: 0.3)),
       ),
       child: Column(
         children: [
@@ -124,7 +124,7 @@ class OrderItemsSection extends StatelessWidget {
               width: double.infinity,
               padding: EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: AppColors.surfaceVariant.withOpacity(0.5),
+                color: AppColors.surfaceVariant.withValues(alpha: 0.5),
                 borderRadius: BorderRadius.circular(6),
               ),
               child: Row(
@@ -162,3 +162,4 @@ class OrderItemsSection extends StatelessWidget {
     )}đ';
   }
 }
+

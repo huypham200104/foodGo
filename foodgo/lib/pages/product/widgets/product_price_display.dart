@@ -31,7 +31,7 @@ class ProductPriceDisplay extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.primary.withOpacity(0.2)),
+        border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -168,3 +168,5 @@ class ProductPriceDisplay extends StatelessWidget {
     )} VND';
   }
 }
+
+

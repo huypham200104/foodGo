@@ -9,12 +9,12 @@ class AppIcon extends StatelessWidget {
   final VoidCallback? onTap;
 
   const AppIcon({
-    Key? key,
+    super.key,
     required this.iconPath,
     this.size,
     this.color,
     this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

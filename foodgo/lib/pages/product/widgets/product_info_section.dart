@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../utils/format_helper.dart';
 import '../../../models/menu_item_model.dart';
 import '../../../core/theme/app_colors.dart';
 
@@ -29,7 +30,7 @@ class ProductInfoSection extends StatelessWidget {
               ),
             ),
             Text(
-              '${product.price.toStringAsFixed(0)}đ',
+              FormatHelper.formatCurrency(product.price),
               style: const TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,

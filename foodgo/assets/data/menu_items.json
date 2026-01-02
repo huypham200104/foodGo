@@ -76,6 +76,7 @@
       "price": 29000,
       "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339575/burgerBo_ccuojj.png",
       "toppings": [
+        {"name": "Không topping", "price": 0},
         {"name": "Thêm phô mai", "price": 3000},
         {"name": "Thêm trứng ốp la", "price": 3000}
       ],
@@ -93,6 +94,7 @@
       "price": 29000,
       "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1760339576/burgerGa_xufy8q.png",
       "toppings": [
+        {"name": "Không topping", "price": 0},
         {"name": "Thêm trứng ốp la", "price": 3000},
         {"name": "Thêm phô mai", "price": 3000}
       ],
@@ -371,6 +373,7 @@
       "price": 69000,
       "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1762741483/pizzaPhoMai_w7yfkb.png",
       "toppings": [
+        {"name": "Không topping thêm", "price": 0},
         {"name": "Thêm phô mai", "price": 10000},
         {"name": "Thêm pepperoni", "price": 15000},
         {"name": "Đế mỏng", "price": 0},
@@ -391,6 +394,7 @@
       "price": 79000,
       "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1762741483/pizzaGa_t4eioz.png",
       "toppings": [
+        {"name": "Không topping thêm", "price": 0},
         {"name": "Size 8 inch", "price": 0},
         {"name": "Size 10 inch", "price": 15000},
         {"name": "Đế mỏng", "price": 0},
@@ -412,6 +416,7 @@
       "price": 99000,
       "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1762741483/gaNuong_yxsgc3.png",
       "toppings": [
+        {"name": "Không topping thêm", "price": 0},
         {"name": "Cay", "price": 0},
         {"name": "Không cay", "price": 0},
         {"name": "Thêm cơm trắng", "price": 10000},
@@ -432,6 +437,7 @@
       "price": 35000,
       "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1762741483/pizzaSpeciaCombo_svnilr.png",
       "toppings": [
+        {"name": "Không topping thêm", "price": 0},
         {"name": "Trà đen", "price": 0},
         {"name": "Trà xanh", "price": 0},
         {"name": "Oolong", "price": 0},
@@ -455,6 +461,7 @@
       "price": 29000,
       "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1762741484/banhSukem_vf7sju.png",
       "toppings": [
+        {"name": "Không topping thêm", "price": 0},
         {"name": "Kem vanilla", "price": 0},
         {"name": "Kem chocolate", "price": 0},
         {"name": "Thêm sốt chocolate", "price": 5000},

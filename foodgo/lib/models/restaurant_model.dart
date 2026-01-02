@@ -50,3 +50,4 @@ class RestaurantModel {
     'promotions': promotions.map((e) => e.toJson()).toList(),
   };
 }
+

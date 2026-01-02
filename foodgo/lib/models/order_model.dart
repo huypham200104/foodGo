@@ -24,6 +24,11 @@ class OrderModel {
   final String? cancelReason;
   final DateTime? cancelledAt;
   final DateTime? updatedAt;
+  // ✨ New fields for rewards & checkout
+  final double discount;
+  final String? voucherCode;
+  final int earnedPoints;
+  final String deliveryMethod; // 'delivery' or 'pickup'
 
   // Constructor chính
   OrderModel({
@@ -47,6 +52,10 @@ class OrderModel {
     this.cancelReason,
     this.cancelledAt,
     this.updatedAt,
+    this.discount = 0.0,
+    this.voucherCode,
+    this.earnedPoints = 0,
+    this.deliveryMethod = 'delivery',
   });
 
   // Factory constructor để tạo order mới từ checkout
@@ -60,6 +69,10 @@ class OrderModel {
     required AddressModel deliveryAddress,
     String note = '',
     int? estimatedDeliveryTime,
+    double discount = 0.0,
+    String? voucherCode,
+    int earnedPoints = 0,
+    String deliveryMethod = 'delivery',
   }) {
     return OrderModel(
       id: '', // Will be set by Firestore
@@ -76,17 +89,47 @@ class OrderModel {
       note: note,
       deliveryAddress: deliveryAddress,
       estimatedDeliveryTime: estimatedDeliveryTime ?? 30,
+      discount: discount,
+      voucherCode: voucherCode,
+      earnedPoints: earnedPoints,
+      deliveryMethod: deliveryMethod,
     );
   }
 
-  // Getter cho tổng tiền bao gồm phí giao hàng
-  double get totalAmount => totalPrice + deliveryFee;
+  // Getter cho tổng tiền bao gồm phí giao hàng và trừ giảm giá
+  double get totalAmount => totalPrice + deliveryFee - discount;
 
   // Getter cho tổng tiền đã format
-  String get formattedTotal => '${totalPrice.toStringAsFixed(0)}đ';
+  String get formattedTotal {
+    String amountStr = totalPrice.toStringAsFixed(0);
+    String result = '';
+    int count = 0;
+    for (int i = amountStr.length - 1; i >= 0; i--) {
+      if (count == 3) {
+        result = '.$result';
+        count = 0;
+      }
+      result = '${amountStr[i]}$result';
+      count++;
+    }
+    return '$resultđ';
+  }
 
   // Getter cho tổng tiền + phí giao hàng đã format
-  String get formattedTotalWithDelivery => '${totalAmount.toStringAsFixed(0)}đ';
+  String get formattedTotalWithDelivery {
+    String amountStr = totalAmount.toStringAsFixed(0);
+    String result = '';
+    int count = 0;
+    for (int i = amountStr.length - 1; i >= 0; i--) {
+      if (count == 3) {
+        result = '.$result';
+        count = 0;
+      }
+      result = '${amountStr[i]}$result';
+      count++;
+    }
+    return '$resultđ';
+  }
 
   // Getter cho địa chỉ giao hàng dạng string
   String get deliveryAddressString {
@@ -148,6 +191,10 @@ class OrderModel {
         return 'Đã giao hàng';
       case 'cancelled':
         return 'Đã hủy';
+      case 'pending_payment':
+        return 'Chưa thanh toán';
+      case 'processing':
+        return 'Đang xử lý';
       default:
         return 'Không xác định';
     }
@@ -168,6 +215,10 @@ class OrderModel {
         return 'green';
       case 'cancelled':
         return 'red';
+      case 'pending_payment':
+        return 'orange';
+      case 'processing':
+        return 'blue';
       default:
         return 'gray';
     }
@@ -229,6 +280,10 @@ class OrderModel {
       cancelReason: data['cancelReason'],
       cancelledAt: (data['cancelledAt'] as Timestamp?)?.toDate(),
       updatedAt: (data['updatedAt'] as Timestamp?)?.toDate(),
+      discount: (data['discount'] ?? 0).toDouble(),
+      voucherCode: data['voucherCode'],
+      earnedPoints: data['earnedPoints'] ?? 0,
+      deliveryMethod: data['deliveryMethod'] ?? 'delivery',
     );
   }
 
@@ -251,6 +306,10 @@ class OrderModel {
       'rating': rating,
       'review': review,
       'cancelReason': cancelReason,
+      'discount': discount,
+      'voucherCode': voucherCode,
+      'earnedPoints': earnedPoints,
+      'deliveryMethod': deliveryMethod,
     };
 
     if (deliveredAt != null) {
@@ -318,6 +377,10 @@ class OrderModel {
     cancelReason: json['cancelReason'],
     cancelledAt: _parseDateTime(json['cancelledAt']),
     updatedAt: _parseDateTime(json['updatedAt']),
+    discount: (json['discount'] ?? 0).toDouble(),
+    voucherCode: json['voucherCode'],
+    earnedPoints: json['earnedPoints'] ?? 0,
+    deliveryMethod: json['deliveryMethod'] ?? 'delivery',
   );
 
   Map<String, dynamic> toJson() => {
@@ -341,6 +404,10 @@ class OrderModel {
     'cancelReason': cancelReason,
     'cancelledAt': cancelledAt?.toIso8601String(),
     'updatedAt': updatedAt?.toIso8601String(),
+    'discount': discount,
+    'voucherCode': voucherCode,
+    'earnedPoints': earnedPoints,
+    'deliveryMethod': deliveryMethod,
   };
 
   // Copy with method
@@ -365,6 +432,10 @@ class OrderModel {
     String? cancelReason,
     DateTime? cancelledAt,
     DateTime? updatedAt,
+    double? discount,
+    String? voucherCode,
+    int? earnedPoints,
+    String? deliveryMethod,
   }) {
     return OrderModel(
       id: id ?? this.id,
@@ -387,6 +458,10 @@ class OrderModel {
       cancelReason: cancelReason ?? this.cancelReason,
       cancelledAt: cancelledAt ?? this.cancelledAt,
       updatedAt: updatedAt ?? this.updatedAt,
+      discount: discount ?? this.discount,
+      voucherCode: voucherCode ?? this.voucherCode,
+      earnedPoints: earnedPoints ?? this.earnedPoints,
+      deliveryMethod: deliveryMethod ?? this.deliveryMethod,
     );
   }
 
@@ -404,3 +479,4 @@ class OrderModel {
   @override
   int get hashCode => id.hashCode;
 }
+

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -36,7 +37,7 @@ class MenuService {
 
       return _cachedMenu!;
     } catch (e) {
-      print('Error loading menu data from Firebase: $e');
+      debugPrint('Error loading menu data from Firebase: $e');
       
       // Fallback to local JSON file
       return await _loadMenuFromLocal();
@@ -55,7 +56,7 @@ class MenuService {
       
       return _cachedMenu!;
     } catch (e) {
-      print('Error loading menu data from local: $e');
+      debugPrint('Error loading menu data from local: $e');
       return [];
     }
   }
@@ -94,7 +95,7 @@ class MenuService {
       _cachedNewProducts = candidates.take(10).toList();
       return _cachedNewProducts!;
     } catch (e) {
-      print('Error loading new products: $e');
+      debugPrint('Error loading new products: $e');
       final all = await _loadMenuFromLocal();
       final candidates = all
           .where((e) => e.isAvailable && (e.isNew == true))
@@ -136,7 +137,7 @@ class MenuService {
       _cachedBestsellerProducts = all.take(10).toList();
       return _cachedBestsellerProducts!;
     } catch (e) {
-      print('Error loading bestseller products: $e');
+      debugPrint('Error loading bestseller products: $e');
       final all = await _loadMenuFromLocal();
       all.sort((a, b) => (b.soldCount).compareTo(a.soldCount));
       _cachedBestsellerProducts = all.take(10).toList();
@@ -159,7 +160,7 @@ class MenuService {
         return MenuItemModel.fromJson(data);
       }).toList();
     } catch (e) {
-      print('Error loading products by category: $e');
+      debugPrint('Error loading products by category: $e');
       
       // Fallback to local data
       final menu = await loadMenuData();
@@ -189,7 +190,7 @@ class MenuService {
         );
       }).toList();
     } catch (e) {
-      print('Error searching products: $e');
+      debugPrint('Error searching products: $e');
       return [];
     }
   }
@@ -227,7 +228,7 @@ class MenuService {
       
       return categories;
     } catch (e) {
-      print('Error getting categories: $e');
+      debugPrint('Error getting categories: $e');
       // Return default categories on error
       return _getDefaultCategories();
     }
@@ -346,7 +347,7 @@ class MenuService {
       // Clear cache để force reload
       clearCache();
     } catch (e) {
-      print('Error updating sold count: $e');
+      debugPrint('Error updating sold count: $e');
     }
   }
 
@@ -364,7 +365,7 @@ class MenuService {
         return MenuItemModel.fromJson(FirebaseService.convertFirestoreData(data));
       }).toList();
     } catch (e) {
-      print('Error getting all menu items: $e');
+      debugPrint('Error getting all menu items: $e');
       return [];
     }
   }
@@ -384,8 +385,9 @@ class MenuService {
         return MenuItemModel.fromJson(FirebaseService.convertFirestoreData(data));
       }).toList();
     } catch (e) {
-      print('Error getting menu items by category: $e');
+      debugPrint('Error getting menu items by category: $e');
       return [];
     }
   }
 }
+

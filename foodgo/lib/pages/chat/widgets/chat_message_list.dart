@@ -30,11 +30,8 @@ class ChatMessageList extends StatelessWidget {
       itemCount: messages.length + 1,
       itemBuilder: (context, index) {
         if (index == messages.length) {
-          // Quick replies at the end
-          return ChatQuickReplies(
-            onQuickReply: onQuickReply,
-            showReplies: messages.length <= 1,
-          );
+          // Don't show quick replies at the beginning
+          return SizedBox.shrink();
         }
         
         final message = messages[index];

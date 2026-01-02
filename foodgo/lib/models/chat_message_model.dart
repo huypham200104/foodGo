@@ -1,5 +1,25 @@
 import 'chat_cart_action.dart';
 
+class MenuItem {
+  final String id;
+  final String name;
+  final double price;
+
+  MenuItem({
+    required this.id,
+    required this.name,
+    required this.price,
+  });
+
+  factory MenuItem.fromJson(Map<String, dynamic> json) {
+    return MenuItem(
+      id: json['id'] ?? '',
+      name: json['name'] ?? 'Món ăn',
+      price: (json['price'] ?? 0).toDouble(),
+    );
+  }
+}
+
 class ChatMessage {
   final String id;
   final String message;
@@ -7,6 +27,10 @@ class ChatMessage {
   final DateTime timestamp;
   final bool isTyping;
   final ChatCartAction? cartAction;
+  final List<MenuItem>? menuItems;
+  final bool hasMoreMenu;
+  final int totalMenuItems;
+  final List<String>? quickReplies;
 
   ChatMessage({
     required this.id,
@@ -15,6 +39,10 @@ class ChatMessage {
     required this.timestamp,
     this.isTyping = false,
     this.cartAction,
+    this.menuItems,
+    this.hasMoreMenu = false,
+    this.totalMenuItems = 0,
+    this.quickReplies,
   });
 
   factory ChatMessage.user(String message) {
@@ -49,11 +77,35 @@ class ChatMessage {
     // Parse cart action if present
     ChatCartAction? cartAction;
     String message = '';
+    List<MenuItem>? menuItems;
+    bool hasMoreMenu = false;
+    int totalMenuItems = 0;
+    List<String>? quickReplies;
     
     // Check if response has 'custom' field (Rasa format)
     if (json.containsKey('custom') && json['custom'] != null) {
       final customData = json['custom'] as Map<String, dynamic>;
       message = customData['message'] ?? customData['text'] ?? '';
+      
+      // Parse menu items if type is 'menu', 'new_items', 'recommendation', 'price_range_items'
+      final type = customData['type'];
+      if ((type == 'menu' || type == 'new_items' || type == 'recommendation' || type == 'price_range_items') 
+          && customData.containsKey('items')) {
+        final items = customData['items'] as List<dynamic>?;
+        if (items != null) {
+          menuItems = items.map((item) => MenuItem.fromJson(item)).toList();
+        }
+        hasMoreMenu = customData['has_more'] ?? false;
+        totalMenuItems = customData['total_items'] ?? 0;
+      }
+      
+      // Parse quick_replies if present
+      if (customData.containsKey('quick_replies')) {
+        final replies = customData['quick_replies'] as List<dynamic>?;
+        if (replies != null) {
+          quickReplies = replies.map((r) => r.toString()).toList();
+        }
+      }
       
       if (customData.containsKey('type') && customData['type'] != null) {
         cartAction = ChatCartAction.fromJson(customData);
@@ -73,6 +125,10 @@ class ChatMessage {
       isBot: true,
       timestamp: DateTime.now(),
       cartAction: cartAction,
+      menuItems: menuItems,
+      hasMoreMenu: hasMoreMenu,
+      totalMenuItems: totalMenuItems,
+      quickReplies: quickReplies,
     );
   }
 

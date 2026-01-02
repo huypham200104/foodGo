@@ -198,8 +198,8 @@ class CustomBottomNav extends StatelessWidget {
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(12),
-        splashColor: AppColors.primary.withOpacity(0.1),
-        highlightColor: AppColors.primary.withOpacity(0.05),
+        splashColor: AppColors.primary.withValues(alpha: 0.1),
+        highlightColor: AppColors.primary.withValues(alpha: 0.05),
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
           child: Column(
@@ -216,15 +216,15 @@ class CustomBottomNav extends StatelessWidget {
                       : isSelected
                           ? LinearGradient(
                               colors: [
-                                AppColors.primary.withOpacity(0.15),
-                                AppColors.primaryLight.withOpacity(0.15),
+                                AppColors.primary.withValues(alpha: 0.15),
+                                AppColors.primaryLight.withValues(alpha: 0.15),
                               ],
                             )
                           : null,
                   shape: BoxShape.circle,
                   boxShadow: isHighlighted ? [
                     BoxShadow(
-                      color: AppColors.primary.withOpacity(0.3),
+                      color: AppColors.primary.withValues(alpha: 0.3),
                       blurRadius: 4,
                       offset: const Offset(0, 1),
                     ),
@@ -321,3 +321,4 @@ class CustomBottomNav extends StatelessWidget {
     );
   }
 }
+

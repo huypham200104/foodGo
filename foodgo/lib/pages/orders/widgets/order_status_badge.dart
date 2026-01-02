@@ -22,10 +22,10 @@ class OrderStatusBadge extends StatelessWidget {
         vertical: isSmall ? 2 : 4,
       ),
       decoration: BoxDecoration(
-        color: statusInfo.color.withOpacity(0.1),
+        color: statusInfo.color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(isSmall ? 8 : 12),
         border: Border.all(
-          color: statusInfo.color.withOpacity(0.3),
+          color: statusInfo.color.withValues(alpha: 0.3),
           width: 1,
         ),
       ),
@@ -112,3 +112,4 @@ class StatusInfo {
     required this.icon,
   });
 }
+

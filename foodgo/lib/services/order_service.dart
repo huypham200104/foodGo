@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/order_model.dart';
 
@@ -22,7 +23,7 @@ class OrderService {
           })
           .toList();
     } catch (e) {
-      print('Error getting user orders: $e');
+      debugPrint('Error getting user orders: $e');
       throw Exception('Không thể tải đơn hàng: $e');
     }
   }
@@ -40,7 +41,7 @@ class OrderService {
       }
       return null;
     } catch (e) {
-      print('Error getting order by ID: $e');
+      debugPrint('Error getting order by ID: $e');
       throw Exception('Không thể tải thông tin đơn hàng: $e');
     }
   }
@@ -63,7 +64,7 @@ class OrderService {
           .map((doc) => OrderModel.fromFirestore(doc.data(), doc.id))
           .toList();
     } catch (e) {
-      print('Error getting orders by status: $e');
+      debugPrint('Error getting orders by status: $e');
       throw Exception('Không thể tải đơn hàng theo trạng thái: $e');
     }
   }
@@ -77,7 +78,7 @@ class OrderService {
       
       return docRef.id;
     } catch (e) {
-      print('Error creating order: $e');
+      debugPrint('Error creating order: $e');
       throw Exception('Không thể tạo đơn hàng: $e');
     }
   }
@@ -93,7 +94,7 @@ class OrderService {
             'updatedAt': FieldValue.serverTimestamp(),
           });
     } catch (e) {
-      print('Error updating order status: $e');
+      debugPrint('Error updating order status: $e');
       throw Exception('Không thể cập nhật trạng thái đơn hàng: $e');
     }
   }
@@ -111,7 +112,7 @@ class OrderService {
             'updatedAt': FieldValue.serverTimestamp(),
           });
     } catch (e) {
-      print('Error cancelling order: $e');
+      debugPrint('Error cancelling order: $e');
       throw Exception('Không thể hủy đơn hàng: $e');
     }
   }
@@ -133,7 +134,7 @@ class OrderService {
             'updatedAt': FieldValue.serverTimestamp(),
           });
     } catch (e) {
-      print('Error rating order: $e');
+      debugPrint('Error rating order: $e');
       throw Exception('Không thể đánh giá đơn hàng: $e');
     }
   }
@@ -153,3 +154,4 @@ class OrderService {
     return order.canReorder;
   }
 }
+

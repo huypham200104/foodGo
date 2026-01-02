@@ -1,8 +1,11 @@
+import 'package:flutter/foundation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/order_model.dart';
 import '../models/address_model.dart';
 import '../providers/cart_provider.dart';
 import '../providers/auth_provider.dart';
+import '../utils/reward_calculator.dart';
+import 'user_service.dart';
 
 class CheckoutService {
   static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -16,51 +19,17 @@ class CheckoutService {
     String notes = '',
     String? customOrderId,
   }) async {
-    try {
-      final user = authProvider.currentUser!;
-      final orderId = customOrderId ?? _generateOrderId();
-      
-      // 👈 FIXED: Use correct methods from models
-      final orderData = {
-        'id': orderId,
-        'userId': user.id,
-        'items': cartProvider.items.map((cartItem) => {
-          'menuItemId': cartItem.item.id,           // 👈 cartItem.item.id
-          'name': cartItem.item.name,               // 👈 cartItem.item.name  
-          'price': cartItem.item.price,             // 👈 cartItem.item.price
-          'quantity': cartItem.quantity,            // 👈 cartItem.quantity
-          'note': cartItem.note,                    // 👈 cartItem.note
-          'selectedToppings': cartItem.selectedToppings, // 👈 cartItem.selectedToppings
-          'totalPrice': cartItem.totalPrice,        // 👈 cartItem.totalPrice
-        }).toList(),
-        'totalAmount': cartProvider.totalPrice,
-        'deliveryFee': 0,
-        'finalAmount': cartProvider.totalPrice + 0,
-        'paymentMethod': paymentMethod,
-        'orderStatus': 'pending',
-        'paymentStatus': paymentMethod == 'bank_transfer' ? 'pending' : 'paid',
-        'deliveryAddress': deliveryAddress.toJson(), // 👈 Use toJson() instead of toMap()
-        'notes': notes,
-        'createdAt': FieldValue.serverTimestamp(),
-        'estimatedDeliveryTime': DateTime.now().add(Duration(minutes: 30)).toIso8601String(),
-        
-        // 👈 Add missing fields for OrderModel compatibility
-        'status': 'pending',
-        'restaurantId': _getRestaurantIdFromItems(cartProvider.items),
-        'restaurantName': _getRestaurantNameFromItems(cartProvider.items),
-        'restaurantImage': null,
-        'totalPrice': cartProvider.totalPrice,
-        'deliveryFee': 0.0,
-        'note': notes, // 👈 Note for OrderModel (singular)
-      };
-
-      // Save to Firestore
-      await _firestore.collection('orders').doc(orderId).set(orderData);
-
-      return orderId;
-    } catch (e) {
-      throw Exception('Lỗi khi xử lý đơn hàng: $e');
-    }
+    // This method seems redundant if we use createOrderFromCart, 
+    // but keeping it for backward compatibility if used elsewhere.
+    // For now, redirect to createOrderFromCart
+    return createOrderFromCart(
+      cartProvider: cartProvider,
+      authProvider: authProvider,
+      deliveryAddress: deliveryAddress,
+      paymentMethod: paymentMethod,
+      notes: notes,
+      customOrderId: customOrderId,
+    );
   }
 
   /// Generate unique order ID
@@ -72,7 +41,6 @@ class CheckoutService {
   /// Get restaurant ID from cart items (assuming all items from same restaurant)
   static String _getRestaurantIdFromItems(List<dynamic> items) {
     if (items.isNotEmpty) {
-      // MenuItemModel has restaurantId field
       return items.first.item.restaurantId ?? 'default_restaurant';
     }
     return 'default_restaurant';
@@ -80,8 +48,6 @@ class CheckoutService {
 
   /// Get restaurant name from cart items
   static String _getRestaurantNameFromItems(List<dynamic> items) {
-    // MenuItemModel does NOT have restaurantName field
-    // Return default value instead
     return 'FoodGo Restaurant';
   }
 
@@ -90,7 +56,7 @@ class CheckoutService {
     try {
       final doc = await _firestore.collection('orders').doc(orderId).get();
       if (doc.exists && doc.data() != null) {
-        return OrderModel.fromFirestore(doc.data()!, doc.id); // 👈 Use fromFirestore()
+        return OrderModel.fromFirestore(doc.data()!, doc.id);
       }
       return null;
     } catch (e) {
@@ -108,7 +74,7 @@ class CheckoutService {
           .get();
 
       return snapshot.docs
-          .map((doc) => OrderModel.fromFirestore(doc.data(), doc.id)) // 👈 Use fromFirestore()
+          .map((doc) => OrderModel.fromFirestore(doc.data(), doc.id))
           .toList();
     } catch (e) {
       throw Exception('Lỗi khi lấy danh sách đơn hàng: $e');
@@ -119,9 +85,14 @@ class CheckoutService {
   static Future<void> updateOrderStatus(String orderId, String status) async {
     try {
       await _firestore.collection('orders').doc(orderId).update({
-        'status': status, // 👈 Use 'status' field name from OrderModel
+        'status': status,
         'updatedAt': FieldValue.serverTimestamp(),
       });
+
+      // ✨ Award points only when order is delivered
+      if (status == 'delivered') {
+        await _awardPointsForDeliveredOrder(orderId);
+      }
     } catch (e) {
       throw Exception('Lỗi khi cập nhật trạng thái đơn hàng: $e');
     }
@@ -139,7 +110,7 @@ class CheckoutService {
     }
   }
 
-  /// Create order directly from cart for better compatibility
+  /// Create order directly from cart
   static Future<String> createOrderFromCart({
     required CartProvider cartProvider,
     required AuthProvider authProvider,
@@ -147,35 +118,108 @@ class CheckoutService {
     required String paymentMethod,
     String notes = '',
     String? customOrderId,
+    // ✨ New parameters
+    double discount = 0.0,
+    String? voucherCode,
+    String deliveryMethod = 'delivery',
+    String status = 'pending', // ✨ Add status parameter
   }) async {
     try {
       final user = authProvider.currentUser!;
       final orderId = customOrderId ?? _generateOrderId();
       
+      // ✨ Calculate points
+      final tempOrder = OrderModel(
+        id: orderId,
+        status: status, // ✨ Use passed status
+        userId: user.id,
+        restaurantId: '',
+        restaurantName: '',
+        items: cartProvider.items,
+        deliveryFee: deliveryMethod == 'delivery' ? 30000 : 0,
+        totalPrice: cartProvider.totalPrice,
+        paymentMethod: paymentMethod,
+        createdAt: DateTime.now(),
+        discount: discount,
+      );
+      
+      final earnedPoints = RewardCalculator.calculateEarnedPoints(tempOrder, user);
+
       // 👈 Create OrderModel directly for better type safety
       final order = OrderModel(
         id: orderId,
-        status: 'pending',
+        status: status, // ✨ Use passed status
         userId: user.id,
         restaurantId: _getRestaurantIdFromItems(cartProvider.items),
         restaurantName: _getRestaurantNameFromItems(cartProvider.items),
         restaurantImage: null,
         items: cartProvider.items,
-        deliveryFee: 0.0,
+        deliveryFee: deliveryMethod == 'delivery' ? 30000.0 : 0.0, // ✨ Fixed fee logic
         totalPrice: cartProvider.totalPrice,
         paymentMethod: paymentMethod,
         createdAt: DateTime.now(),
         note: notes,
         deliveryAddress: deliveryAddress,
         estimatedDeliveryTime: 30,
+        // ✨ New fields
+        discount: discount,
+        voucherCode: voucherCode,
+        earnedPoints: earnedPoints,
+        deliveryMethod: deliveryMethod,
       );
 
       // Save using OrderModel's toFirestore method
       await _firestore.collection('orders').doc(orderId).set(order.toFirestore());
 
+      // Update user's order statistics (totalSpent, totalOrders, membership level)
+      await UserService.updateOrderStats(user.id, order.totalAmount);
+
+      // ✨ Points will be awarded only when order status changes to 'delivered'
+      // Not awarding points here to prevent premature point accumulation
+
       return orderId;
     } catch (e) {
       throw Exception('Lỗi khi tạo đơn hàng: $e');
+    }
+  }
+
+  // ✨ Award points when order is delivered
+  static Future<void> _awardPointsForDeliveredOrder(String orderId) async {
+    try {
+      // Get order details
+      final orderDoc = await _firestore.collection('orders').doc(orderId).get();
+      if (!orderDoc.exists) return;
+      
+      final order = OrderModel.fromFirestore(orderDoc.data()!, orderDoc.id);
+      
+      // Get user details
+      final userDoc = await _firestore.collection('users').doc(order.userId).get();
+      if (!userDoc.exists) return;
+      
+      final userData = userDoc.data()!;
+      final currentTotalEarned = userData['totalEarnedPoints'] ?? 0;
+      final currentRewardPoints = userData['rewardPoints'] ?? 0;
+      
+      // Calculate earned points for this order
+      final earnedPoints = order.earnedPoints;
+      if (earnedPoints <= 0) return;
+      
+      // Update user rewards
+      final newTotalEarned = currentTotalEarned + earnedPoints;
+      final newCurrentPoints = currentRewardPoints + earnedPoints;
+      
+      // Calculate new tier
+      final newTier = RewardCalculator.calculateTier(newTotalEarned);
+      
+      // Update user document
+      await _firestore.collection('users').doc(order.userId).update({
+        'totalEarnedPoints': newTotalEarned,
+        'rewardPoints': newCurrentPoints,
+        'membershipLevel': newTier,
+      });
+    } catch (e) {
+      debugPrint('Error awarding points for delivered order: $e');
+      // Don't throw, just log - points award failure shouldn't break order status update
     }
   }
 
@@ -204,15 +248,10 @@ class CheckoutService {
     required AddressModel deliveryAddress,
     required String paymentMethod,
   }) {
-    // Check cart not empty
     if (cartProvider.items.isEmpty) return false;
-    
-    // Check address is complete
     if (!deliveryAddress.isComplete) return false;
-    
-    // Check payment method is valid
     if (!['cash', 'bank_transfer', 'card'].contains(paymentMethod)) return false;
-    
     return true;
   }
 }
+

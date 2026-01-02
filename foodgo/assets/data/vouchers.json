@@ -2,24 +2,26 @@
   "vouchers": [
     {
       "id": "v1",
+      "code": "FREESHIP300",
       "title": "Freeship cho đơn trên 300k",
       "description": "Freeship cho đơn hàng trên 300,000đ",
       "discountValue": 30000,
       "freeShip": false,
-      "expiryDate": "2025-12-31T23:59:59Z",
+      "expiryDate": "2030-12-31T23:59:59Z",
       "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1761410205/voucher_freeship_oh4lv3.jpg",
-      "minOrderValue": 150000,
+      "minOrderValue": 300000,
       "restaurantId": "r1",
       "usageLimit": 100,
       "usedCount": 5
     },
     {
       "id": "v2",
+      "code": "WELCOME",
       "title": "Freeship",
       "description": "Áp dụng cho đơn hàng đầu tiên",
       "discountValue": 0,
       "freeShip": true,
-      "expiryDate": "2025-08-31T23:59:59Z",
+      "expiryDate": "2030-08-31T23:59:59Z",
       "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1761410205/voucher_freeship_oh4lv3.jpg",
       "minOrderValue": 0,
       "restaurantId": "",
@@ -28,18 +30,59 @@
     },
     {
       "id": "v3",
+      "code": "T3VUIVE",
       "title": "Thứ 3 Hàng Tuần",
-      "description": "Giảm 10% thứ 3",
-      "discountValue": 0,
+      "description": "Giảm 10k cho đơn từ 100k vào thứ 3",
+      "discountValue": 10000,
       "freeShip": false,
-      "expiryDate": "2025-12-31T23:59:59Z",
+      "expiryDate": "2030-12-31T23:59:59Z",
       "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1761410206/voucher_t3HangTuan_qitnib.jpg",
       "minOrderValue": 100000,
       "restaurantId": "",
       "usageLimit": 200,
       "usedCount": 45
+    },
+    {
+      "id": "v4",
+      "code": "FOODGO10",
+      "title": "Giảm 10k",
+      "description": "Giảm 10k cho đơn từ 50k",
+      "discountValue": 10000,
+      "freeShip": false,
+      "expiryDate": "2030-12-31T23:59:59Z",
+      "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1761410205/voucher_freeship_oh4lv3.jpg",
+      "minOrderValue": 50000,
+      "restaurantId": "",
+      "usageLimit": 1000,
+      "usedCount": 10
+    },
+    {
+      "id": "v5",
+      "code": "FOODGO20",
+      "title": "Giảm 20k",
+      "description": "Giảm 20k cho đơn từ 100k",
+      "discountValue": 20000,
+      "freeShip": false,
+      "expiryDate": "2030-12-31T23:59:59Z",
+      "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1761410205/voucher_freeship_oh4lv3.jpg",
+      "minOrderValue": 100000,
+      "restaurantId": "",
+      "usageLimit": 500,
+      "usedCount": 20
+    },
+    {
+      "id": "v6",
+      "code": "BIGSALE",
+      "title": "Siêu Sale",
+      "description": "Giảm 50k cho đơn từ 500k",
+      "discountValue": 50000,
+      "freeShip": false,
+      "expiryDate": "2030-12-31T23:59:59Z",
+      "imageUrl": "https://res.cloudinary.com/dbw8mvdqo/image/upload/v1761410205/voucher_freeship_oh4lv3.jpg",
+      "minOrderValue": 500000,
+      "restaurantId": "",
+      "usageLimit": 50,
+      "usedCount": 2
     }
   ]
 }
-
-

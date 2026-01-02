@@ -50,50 +50,100 @@ nlu:
     - Cho tôi [3](quantity) phần [mì ý sốt bò băm](food)
     - Mình muốn gọi [2](quantity) ly [trà sữa trân châu](food)
     - Cho [1](quantity) [burger](food)
-    - cho toi 1 phan mi y
-    - dat 1 com ga
-    - order 1 pizza
-    - cho 1 burger bo
-    - them 1 phan khoai tay chien
-    - lay 1 coc coca
-    - dat mon ga ran
-    - 1 bun bo
-    - 2 tra dao cam sa
-    - toi muon an pizza
-    - order giup minh mon nay
-    - cho toi 1 phan [salad](food)
-    - lay cho minh 1 [salad](food)
-    - order [salad](food)
-    - cho 1 phan [salad](food)
-    - them 1 [salad](food)
-    - goi mon [salad](food)
-    - 1 [salad](food)
-    - cho toi 1 [ga ran](food)
-    - lay 1 [ga ran](food)
-    - 1 [com ga](food)
-    - cho 1 [burger](food)
-    - lay 1 [pizza](food)
-    - cho toi 1 [tra sua](food)
-    - 1 [tra sua](food)
-    - lay 1 [nuoc suoi](food)
-    - cho 1 [pepsi](food)
-    - 1 [coca](food)
-    - cho toi 1 [khoai tay chien](food)
-    - lay 1 [khoai tay lac](food)
-    - 1 [xuc xich](food)
-    - cho 1 [mi y](food)
-    - lay 1 [kem ly](food)
-    - 1 [banh tart trung](food)
-    - cho toi 1 [pudding](food)
-    - lay 1 [combo 1](food)
-    - 1 [combo 2](food)
-    - cho toi 1 phan [ga](food)
-    - lay 1 [ga](food)
-    - 1 [ga](food)
-    - cho 1 [ga](food)
-    - them 1 [ga](food)
-    - goi mon [ga](food)
-    - cho toi 1 phan [ga ran](food)
+    - cho toi [1](quantity) phan [mi y](food)
+    - cho toi [3](quantity) phan [mi y sot bo bam](food)
+    - cho toi [2](quantity) phan [mi y](food)
+    - dat [1](quantity) [com ga](food)
+    - dat [2](quantity) [com ga](food)
+    - dat [3](quantity) [com ga](food)
+    - order [1](quantity) pizza
+    - order [2](quantity) pizza
+    - cho [1](quantity) burger bo
+    - cho [2](quantity) [burger bo](food)
+    - them [1](quantity) phan [khoai tay chien](food)
+    - them [2](quantity) phan [khoai tay chien](food)
+    - lay [1](quantity) coc [coca](food)
+    - lay [2](quantity) coc [coca](food)
+    - dat mon [ga ran](food) [1](quantity) phan
+    - dat mon [ga ran](food) [2](quantity) phan
+    - [1](quantity) [bun bo](food)
+    - [2](quantity) [tra dao cam sa](food)
+    - [3](quantity) [tra dao cam sa](food)
+    - toi muon an [2](quantity) [pizza](food)
+    - order giup minh [1](quantity) mon [burger](food)
+    - order giup minh [3](quantity) mon [burger](food)
+    - cho toi [1](quantity) phan [salad](food)
+    - cho toi [2](quantity) phan [salad](food)
+    - cho toi [3](quantity) phan [salad](food)
+    - lay cho minh [1](quantity) [salad](food)
+    - lay cho minh [2](quantity) [salad](food)
+    - order [1](quantity) [salad](food)
+    - order [2](quantity) [salad](food)
+    - cho [1](quantity) phan [salad](food)
+    - cho [3](quantity) phan [salad](food)
+    - them [1](quantity) [salad](food)
+    - them [2](quantity) [salad](food)
+    - goi mon [1](quantity) [salad](food)
+    - goi mon [2](quantity) [salad](food)
+    - [1](quantity) [salad](food)
+    - [2](quantity) [salad](food)
+    - cho toi [1](quantity) [ga ran](food)
+    - cho toi [2](quantity) [ga ran](food)
+    - cho toi [3](quantity) [ga ran](food)
+    - lay [1](quantity) [ga ran](food)
+    - lay [2](quantity) [ga ran](food)
+    - [1](quantity) [com ga](food)
+    - [2](quantity) [com ga](food)
+    - [3](quantity) [com ga](food)
+    - cho [1](quantity) [burger](food)
+    - cho [2](quantity) [burger](food)
+    - lay [1](quantity) [pizza](food)
+    - lay [2](quantity) [pizza](food)
+    - cho toi [1](quantity) [tra sua](food)
+    - cho toi [2](quantity) [tra sua](food)
+    - [1](quantity) [tra sua](food)
+    - [2](quantity) [tra sua](food)
+    - lay [1](quantity) [nuoc suoi](food)
+    - lay [2](quantity) [nuoc suoi](food)
+    - cho [1](quantity) [pepsi](food)
+    - cho [2](quantity) [pepsi](food)
+    - [1](quantity) [coca](food)
+    - [2](quantity) [coca](food)
+    - cho toi [1](quantity) [khoai tay chien](food)
+    - cho toi [2](quantity) [khoai tay chien](food)
+    - lay [1](quantity) [khoai tay lac](food)
+    - lay [2](quantity) [khoai tay lac](food)
+    - [1](quantity) [xuc xich](food)
+    - [2](quantity) [xuc xich](food)
+    - cho [1](quantity) [mi y](food)
+    - cho [2](quantity) [mi y](food)
+    - cho [3](quantity) [mi y](food)
+    - lay [1](quantity) [kem ly](food)
+    - lay [2](quantity) [kem ly](food)
+    - [1](quantity) [banh tart trung](food)
+    - [2](quantity) [banh tart trung](food)
+    - cho toi [1](quantity) [pudding](food)
+    - cho toi [2](quantity) [pudding](food)
+    - lay [1](quantity) [combo 1](food)
+    - lay [2](quantity) [combo 1](food)
+    - [1](quantity) [combo 2](food)
+    - [2](quantity) [combo 2](food)
+    - cho toi [1](quantity) phan [ga](food)
+    - cho toi [2](quantity) phan [ga](food)
+    - cho toi [3](quantity) phan [ga](food)
+    - lay [1](quantity) [ga](food)
+    - lay [2](quantity) [ga](food)
+    - [1](quantity) [ga](food)
+    - [2](quantity) [ga](food)
+    - [3](quantity) [ga](food)
+    - cho [1](quantity) [ga](food)
+    - cho [2](quantity) [ga](food)
+    - them [1](quantity) [ga](food)
+    - them [2](quantity) [ga](food)
+    - goi mon [1](quantity) [ga](food)
+    - goi mon [2](quantity) [ga](food)
+    - cho toi [1](quantity) phan [ga ran](food)
+    - cho toi [2](quantity) phan [ga ran](food)
 
 - intent: ask_menu
   examples: |
@@ -105,6 +155,18 @@ nlu:
     - quan co mon gi ngon
     - list mon an
     - co ban tra sua khong
+
+- intent: ask_more_menu
+  examples: |
+    - Xem thêm món
+    - Còn món gì nữa?
+    - Show thêm
+    - Hiển thị thêm
+    - xem them
+    - con gi nua
+    - them nua
+    - tiep theo
+    - next
 
 - intent: ask_price
   examples: |

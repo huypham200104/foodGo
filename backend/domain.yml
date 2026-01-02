@@ -6,6 +6,7 @@ intents:
   - thank
   - order_food
   - ask_menu
+  - ask_more_menu
   - ask_price
   - deny
   - confirm_order
@@ -29,6 +30,11 @@ slots:
     type: float
     mappings:
       - type: custom
+  menu_offset:
+    type: float
+    initial_value: 0
+    mappings:
+      - type: custom
   food:
     type: text
     mappings:
@@ -48,7 +54,7 @@ slots:
 
 responses:
   utter_greet:
-    - text: "Chào bạn! Mình là FoodGo Bot. Mình có thể giúp gì cho bạn hôm nay?"
+    - text: "Chào bạn! Bạn muốn xem menu, gợi ý món hay đặt món nào không?"
 
   utter_goodbye:
     - text: "Tạm biệt bạn! Hẹn gặp lại nhé!"
@@ -64,6 +70,7 @@ responses:
 
 actions:
   - action_show_menu
+  - action_show_more_menu
   - action_get_price
   - action_order_food
   - action_recommend_popular

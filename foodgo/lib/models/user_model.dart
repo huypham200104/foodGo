@@ -14,6 +14,7 @@ class UserModel {
   final String membershipLevel;
   final int totalOrders;
   final double totalSpent;
+  final int totalEarnedPoints; // ✨ New field for tier calculation
   final DateTime? lastOrderDate;
   final List<String> favoriteRestaurants;
   final List<String> favoriteItems;
@@ -33,6 +34,7 @@ class UserModel {
     this.membershipLevel = 'Bronze',
     this.totalOrders = 0,
     this.totalSpent = 0.0,
+    this.totalEarnedPoints = 0, // ✨ Init
     this.lastOrderDate,
     this.favoriteRestaurants = const [],
     this.favoriteItems = const [],
@@ -60,6 +62,7 @@ class UserModel {
       membershipLevel: json['membershipLevel'] ?? 'Bronze',
       totalOrders: json['totalOrders'] ?? 0,
       totalSpent: (json['totalSpent'] ?? 0.0).toDouble(),
+      totalEarnedPoints: json['totalEarnedPoints'] ?? 0, // ✨ Parse
       lastOrderDate: json['lastOrderDate'] != null 
           ? _parseDateTime(json['lastOrderDate'])
           : null,
@@ -128,6 +131,7 @@ class UserModel {
       membershipLevel: firestoreData?['membershipLevel'] ?? 'Bronze',
       totalOrders: firestoreData?['totalOrders'] ?? 0,
       totalSpent: (firestoreData?['totalSpent'] ?? 0.0).toDouble(),
+      totalEarnedPoints: firestoreData?['totalEarnedPoints'] ?? 0, // ✨ Parse
       lastOrderDate: firestoreData?['lastOrderDate'] != null 
           ? _parseDateTime(firestoreData!['lastOrderDate'])
           : null,
@@ -160,6 +164,7 @@ class UserModel {
       'membershipLevel': membershipLevel,
       'totalOrders': totalOrders,
       'totalSpent': totalSpent,
+      'totalEarnedPoints': totalEarnedPoints, // ✨ To JSON
       'lastOrderDate': lastOrderDate?.toIso8601String(),
       'favoriteRestaurants': favoriteRestaurants,
       'favoriteItems': favoriteItems,
@@ -180,6 +185,7 @@ class UserModel {
       'membershipLevel': membershipLevel,
       'totalOrders': totalOrders,
       'totalSpent': totalSpent,
+      'totalEarnedPoints': totalEarnedPoints, // ✨ To Firestore
       'lastOrderDate': lastOrderDate?.toIso8601String(),
       'favoriteRestaurants': favoriteRestaurants,
       'favoriteItems': favoriteItems,
@@ -201,6 +207,7 @@ class UserModel {
     String? membershipLevel,
     int? totalOrders,
     double? totalSpent,
+    int? totalEarnedPoints, // ✨ Copy param
     DateTime? lastOrderDate,
     List<String>? favoriteRestaurants,
     List<String>? favoriteItems,
@@ -220,6 +227,7 @@ class UserModel {
       membershipLevel: membershipLevel ?? this.membershipLevel,
       totalOrders: totalOrders ?? this.totalOrders,
       totalSpent: totalSpent ?? this.totalSpent,
+      totalEarnedPoints: totalEarnedPoints ?? this.totalEarnedPoints, // ✨ Copy logic
       lastOrderDate: lastOrderDate ?? this.lastOrderDate,
       favoriteRestaurants: favoriteRestaurants ?? this.favoriteRestaurants,
       favoriteItems: favoriteItems ?? this.favoriteItems,
@@ -246,9 +254,10 @@ class UserModel {
 
   /// Calculate next membership level
   String get nextMembershipLevel {
-    if (totalSpent >= 5000000) return 'Gold';
-    if (totalSpent >= 2000000) return 'Silver';
-    return 'Bronze';
+    if (totalEarnedPoints < 300) return 'Silver';
+    if (totalEarnedPoints < 1000) return 'Gold';
+    if (totalEarnedPoints < 2000) return 'Platinum';
+    return 'Platinum'; // Max tier
   }
 
   /// Check if user can get free delivery
@@ -271,9 +280,10 @@ class UserModel {
 
   /// Get user level progress
   double get membershipProgress {
-    if (membershipLevel == 'Gold') return 1.0;
-    if (membershipLevel == 'Silver') return (totalSpent / 5000000).clamp(0.0, 1.0);
-    return (totalSpent / 2000000).clamp(0.0, 1.0);
+    if (membershipLevel == 'Platinum') return 1.0;
+    if (membershipLevel == 'Gold') return (totalEarnedPoints - 1000) / 1000;
+    if (membershipLevel == 'Silver') return (totalEarnedPoints - 300) / 700;
+    return totalEarnedPoints / 300;
   }
 
   /// Check if user is active (ordered in last 30 days)

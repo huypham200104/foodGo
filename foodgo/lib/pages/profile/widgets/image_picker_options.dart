@@ -95,7 +95,7 @@ class ImagePickerOption extends StatelessWidget {
           Container(
             padding: EdgeInsets.all(screen.ScreenService.mediumSpacing),
             decoration: BoxDecoration(
-              color: (color ?? AppColors.primary).withOpacity(0.1),
+              color: (color ?? AppColors.primary).withValues(alpha: 0.1),
               shape: BoxShape.circle,
             ),
             child: Icon(
@@ -117,3 +117,4 @@ class ImagePickerOption extends StatelessWidget {
     );
   }
 }
+

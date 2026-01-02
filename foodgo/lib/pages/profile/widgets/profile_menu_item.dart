@@ -42,7 +42,7 @@ class ProfileMenuItem extends StatelessWidget {
         leading: Container(
           padding: EdgeInsets.all(screen.ScreenService.smallSpacing),
           decoration: BoxDecoration(
-            color: (iconColor ?? AppColors.primary).withOpacity(0.1),
+            color: (iconColor ?? AppColors.primary).withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(screen.ScreenService.smallSpacing),
           ),
           child: Icon(
@@ -86,3 +86,4 @@ class ProfileMenuItem extends StatelessWidget {
     );
   }
 }
+

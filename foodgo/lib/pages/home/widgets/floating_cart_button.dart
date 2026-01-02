@@ -39,7 +39,7 @@ class FloatingCartButton extends StatelessWidget {
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.primary.withOpacity(0.4),
+                      color: AppColors.primary.withValues(alpha: 0.4),
                       blurRadius: 12,
                       offset: const Offset(0, 4),
                     ),
@@ -85,7 +85,7 @@ class FloatingCartButton extends StatelessWidget {
         border: Border.all(color: Colors.white, width: 2),
         boxShadow: [
           BoxShadow(
-            color: AppColors.warning.withOpacity(0.4),
+            color: AppColors.warning.withValues(alpha: 0.4),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -114,3 +114,4 @@ class FloatingCartButton extends StatelessWidget {
     Navigator.pushNamed(context, AppRoutes.cart);
   }
 }
+

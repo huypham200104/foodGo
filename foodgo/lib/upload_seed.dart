@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter/foundation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 Future<List<dynamic>> _readArray(String assetPath, String rootKey) async {
@@ -51,7 +52,14 @@ Future<void> uploadRewards() async {
   final firestore = FirebaseFirestore.instance;
   final rewards = await _readArray('assets/data/rewards.json', 'rewards');
   for (final r in rewards) {
-    await firestore.collection('rewards').add(Map<String, dynamic>.from(r));
+    final userId = (r['userId'] ?? '').toString();
+    if (userId.isEmpty) {
+      debugPrint('⚠️  Skipping reward without userId: $r');
+      continue;
+    }
+    // Use userId as document ID so RewardService can query by userId
+    await firestore.collection('rewards').doc(userId).set(Map<String, dynamic>.from(r));
+    debugPrint('✅ Uploaded reward for user: $userId');
   }
 }
 
@@ -94,13 +102,13 @@ Future<void> uploadNotifications() async {
       success++;
     } catch (e, st) {
       failed++;
-      print('❌ Failed to upload a notification: $e');
-      print(st);
+      debugPrint('❌ Failed to upload a notification: $e');
+      debugPrint(st.toString());
       // continue with next
     }
   }
 
-  print('🔔 uploadNotifications completed. success=$success failed=$failed total=${notifications.length}');
+  debugPrint('🔔 uploadNotifications completed. success=$success failed=$failed total=${notifications.length}');
 }
 
 
@@ -120,7 +128,7 @@ Future<void> clearAllData() async {
   final firestore = FirebaseFirestore.instance;
   
   try {
-    print('🗑️  Đang xóa dữ liệu từ các collection...');
+    debugPrint('🗑️  Đang xóa dữ liệu từ các collection...');
     
     // Danh sách tất cả collections cần xóa
     final collectionsToDelete = [
@@ -144,10 +152,10 @@ Future<void> clearAllData() async {
       await _deleteCollection(firestore, collectionName);
     }
     
-    print('✅ Đã xóa tất cả dữ liệu thành công!');
+    debugPrint('✅ Đã xóa tất cả dữ liệu thành công!');
     
   } catch (e) {
-    print('❌ Lỗi khi xóa dữ liệu: $e');
+    debugPrint('❌ Lỗi khi xóa dữ liệu: $e');
     rethrow;
   }
 }
@@ -155,7 +163,7 @@ Future<void> clearAllData() async {
 // 👈 Method helper để xóa một collection
 Future<void> _deleteCollection(FirebaseFirestore firestore, String collectionName) async {
   try {
-    print('   🗑️  Đang xóa collection: $collectionName');
+    debugPrint('   🗑️  Đang xóa collection: $collectionName');
     
     // Lấy tất cả documents trong collection
     final querySnapshot = await firestore.collection(collectionName).get();
@@ -185,13 +193,13 @@ Future<void> _deleteCollection(FirebaseFirestore firestore, String collectionNam
         await batch.commit();
       }
       
-      print('   ✅ Đã xóa ${querySnapshot.docs.length} documents từ $collectionName');
+      debugPrint('   ✅ Đã xóa ${querySnapshot.docs.length} documents từ $collectionName');
     } else {
-      print('   ℹ️  Collection $collectionName đã trống');
+      debugPrint('   ℹ️  Collection $collectionName đã trống');
     }
     
   } catch (e) {
-    print('   ❌ Lỗi khi xóa collection $collectionName: $e');
+    debugPrint('   ❌ Lỗi khi xóa collection $collectionName: $e');
     // Không throw để tiếp tục xóa các collections khác
   }
 }
@@ -201,16 +209,16 @@ Future<void> clearSpecificData(List<String> collections) async {
   final firestore = FirebaseFirestore.instance;
   
   try {
-    print('🗑️  Đang xóa dữ liệu từ ${collections.length} collections...');
+    debugPrint('🗑️  Đang xóa dữ liệu từ ${collections.length} collections...');
     
     for (String collectionName in collections) {
       await _deleteCollection(firestore, collectionName);
     }
     
-    print('✅ Đã xóa dữ liệu từ các collections được chỉ định!');
+    debugPrint('✅ Đã xóa dữ liệu từ các collections được chỉ định!');
     
   } catch (e) {
-    print('❌ Lỗi khi xóa dữ liệu selective: $e');
+    debugPrint('❌ Lỗi khi xóa dữ liệu selective: $e');
     rethrow;
   }
 }
@@ -221,7 +229,7 @@ Future<void> clearOldData({int olderThanDays = 30}) async {
   final cutoffDate = DateTime.now().subtract(Duration(days: olderThanDays));
   
   try {
-    print('🗑️  Đang xóa dữ liệu cũ hơn $olderThanDays ngày...');
+    debugPrint('🗑️  Đang xóa dữ liệu cũ hơn $olderThanDays ngày...');
     
     // Collections có timestamp
     final timestampCollections = ['orders', 'reviews', 'notifications'];
@@ -230,10 +238,10 @@ Future<void> clearOldData({int olderThanDays = 30}) async {
       await _deleteOldDocuments(firestore, collectionName, cutoffDate);
     }
     
-    print('✅ Đã xóa dữ liệu cũ thành công!');
+    debugPrint('✅ Đã xóa dữ liệu cũ thành công!');
     
   } catch (e) {
-    print('❌ Lỗi khi xóa dữ liệu cũ: $e');
+    debugPrint('❌ Lỗi khi xóa dữ liệu cũ: $e');
     rethrow;
   }
 }
@@ -245,7 +253,7 @@ Future<void> _deleteOldDocuments(
   DateTime cutoffDate
 ) async {
   try {
-    print('   🗑️  Đang xóa documents cũ từ $collectionName...');
+    debugPrint('   🗑️  Đang xóa documents cũ từ $collectionName...');
     
     // Query documents có createdAt < cutoffDate
     final querySnapshot = await firestore
@@ -273,13 +281,13 @@ Future<void> _deleteOldDocuments(
         await batch.commit();
       }
       
-      print('   ✅ Đã xóa ${querySnapshot.docs.length} documents cũ từ $collectionName');
+      debugPrint('   ✅ Đã xóa ${querySnapshot.docs.length} documents cũ từ $collectionName');
     } else {
-      print('   ℹ️  Không có documents cũ trong $collectionName');
+      debugPrint('   ℹ️  Không có documents cũ trong $collectionName');
     }
     
   } catch (e) {
-    print('   ❌ Lỗi khi xóa documents cũ từ $collectionName: $e');
+    debugPrint('   ❌ Lỗi khi xóa documents cũ từ $collectionName: $e');
   }
 }
 
@@ -288,7 +296,7 @@ Future<void> backupBeforeClear() async {
   final firestore = FirebaseFirestore.instance;
   
   try {
-    print('💾 Đang backup dữ liệu trước khi xóa...');
+    debugPrint('💾 Đang backup dữ liệu trước khi xóa...');
     
     // Tạo backup collection với timestamp
     final backupTimestamp = DateTime.now().millisecondsSinceEpoch;
@@ -330,12 +338,13 @@ Future<void> backupBeforeClear() async {
       }
     }
     
-    print('✅ Backup hoàn tất trong collection: $backupCollectionName');
+    debugPrint('✅ Backup hoàn tất trong collection: $backupCollectionName');
     
   } catch (e) {
-    print('❌ Lỗi khi backup: $e');
+    debugPrint('❌ Lỗi khi backup: $e');
     rethrow;
   }
 }
+
 
 

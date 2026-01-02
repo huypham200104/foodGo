@@ -32,9 +32,9 @@ class ChatService {
             ...message.toMap(),
             'userId': userId, // Add userId to filter messages
           });
-      print('✅ Saved message to Firestore: ${message.id}');
+      debugPrint('✅ Saved message to Firestore: ${message.id}');
     } catch (e) {
-      print('❌ Error saving message to Firestore: $e');
+      debugPrint('❌ Error saving message to Firestore: $e');
     }
   }
 
@@ -44,9 +44,9 @@ class ChatService {
           .collection(collectionName)
           .doc(messageId)
           .delete();
-      print('✅ Deleted message from Firestore: $messageId');
+      debugPrint('✅ Deleted message from Firestore: $messageId');
     } catch (e) {
-      print('❌ Error deleting message from Firestore: $e');
+      debugPrint('❌ Error deleting message from Firestore: $e');
     }
   }
 
@@ -63,9 +63,9 @@ class ChatService {
       }
       
       await batch.commit();
-      print('✅ Cleared all messages for user: $userId');
+      debugPrint('✅ Cleared all messages for user: $userId');
     } catch (e) {
-      print('❌ Error clearing chat: $e');
+      debugPrint('❌ Error clearing chat: $e');
     }
   }
 
@@ -90,8 +90,8 @@ class ChatService {
     required String message,
   }) async {
     try {
-      print('🚀 Sending request to: $baseUrl$webhookPath');
-      print('📤 Payload: {"sender": "$userId", "message": "$message"}');
+      debugPrint('🚀 Sending request to: $baseUrl$webhookPath');
+      debugPrint('📤 Payload: {"sender": "$userId", "message": "$message"}');
       
       final response = await http.post(
         Uri.parse('$baseUrl$webhookPath'),
@@ -104,20 +104,20 @@ class ChatService {
         }),
       );
 
-      print('📊 Response status: ${response.statusCode}');
-      print('📥 Response body: ${response.body}');
+      debugPrint('📊 Response status: ${response.statusCode}');
+      debugPrint('📥 Response body: ${response.body}');
 
       if (response.statusCode == 200) {
         final List<dynamic> responseData = jsonDecode(response.body);
-        print('📋 Parsed data: $responseData');
+        debugPrint('📋 Parsed data: $responseData');
         
         final List<ChatMessage> messages = [];
         
         for (final data in responseData) {
-          print('🔍 Processing response item: $data');
+          debugPrint('🔍 Processing response item: $data');
           final chatMessage = ChatMessage.fromJson(data);
           messages.add(chatMessage);
-          print('✅ Created ChatMessage: ${chatMessage.message}, cartAction: ${chatMessage.cartAction?.type}');
+          debugPrint('✅ Created ChatMessage: ${chatMessage.message}, cartAction: ${chatMessage.cartAction?.type}');
         }
         
         return messages;
@@ -125,20 +125,19 @@ class ChatService {
         throw Exception('Failed to send message: ${response.statusCode}');
       }
     } catch (e) {
-      print('❌ Error sending message: $e');
+      debugPrint('❌ Error sending message: $e');
       throw Exception('Error sending message: $e');
     }
   }
 
   static ChatMessage getWelcomeMessage() {
     return ChatMessage.bot(
-      '👋 Xin chào! Tôi là FoodGo Assistant. Tôi có thể giúp bạn:\n\n'
-      '🍔 Tư vấn món ăn phù hợp\n'
-      '📦 Hỗ trợ đặt hàng\n'
-      '🚚 Theo dõi đơn hàng\n'
-      '💬 Giải đáp thắc mắc\n'
-      '🎁 Tìm khuyến mãi\n\n'
-      'Hãy nhập tin nhắn để bắt đầu nhé! 😊'
+      '👋 Xin chào! Tôi là FoodGo Bot. Tôi có thể giúp bạn:\n\n'
+      '📋 Xem menu món ăn\n'
+      '🍔 Gợi ý món ngon\n'
+      '🛒 Đặt món nhanh chóng\n'
+      '💰 Hỏi giá món ăn\n\n'
+      'Hãy nhắn tin để bắt đầu nhé! 😊'
     );
   }
 
@@ -152,3 +151,4 @@ class ChatService {
     ];
   }
 }
+

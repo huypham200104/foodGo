@@ -37,11 +37,16 @@ class MembershipBadge extends StatelessWidget {
 
   Color _getMembershipColor(String level) {
     switch (level) {
+      case 'Platinum':
+        return const Color(0xFF9C9C9C); // Platinum gray
       case 'Gold':
-        return const Color(0xFFFFD700);
+        return const Color(0xFFFFD700); // Gold
       case 'Silver':
-        return const Color(0xFFC0C0C0);
+        return const Color(0xFFC0C0C0); // Silver
       case 'Bronze':
+        return const Color(0xFFCD7F32); // Bronze
+      case 'New':
+        return const Color(0xFF757575); // Dark gray for New
       default:
         return const Color(0xFFCD7F32);
     }

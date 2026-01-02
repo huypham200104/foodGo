@@ -24,7 +24,7 @@ class PaymentMethodCard extends StatelessWidget {
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.primary.withOpacity(0.1) : AppColors.background,
+          color: isSelected ? AppColors.primary.withValues(alpha: 0.1) : AppColors.background,
           border: Border.all(
             color: isSelected ? AppColors.primary : AppColors.textLight,
             width: isSelected ? 2 : 1,
@@ -38,7 +38,7 @@ class PaymentMethodCard extends StatelessWidget {
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                color: isSelected ? AppColors.primary.withOpacity(0.2) : AppColors.textLight.withOpacity(0.2),
+                color: isSelected ? AppColors.primary.withValues(alpha: 0.2) : AppColors.textLight.withValues(alpha: 0.2),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Icon(
@@ -83,3 +83,4 @@ class PaymentMethodCard extends StatelessWidget {
     );
   }
 }
+

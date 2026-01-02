@@ -46,3 +46,4 @@ class HorizontalCardList<T> extends StatelessWidget {
     );
   }
 }
+

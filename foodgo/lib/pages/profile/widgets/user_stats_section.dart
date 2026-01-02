@@ -19,7 +19,7 @@ class UserStatsSection extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.background,
         borderRadius: BorderRadius.circular(screen.ScreenService.smallSpacing),
-        border: Border.all(color: AppColors.textLight.withOpacity(0.3)),
+        border: Border.all(color: AppColors.textLight.withValues(alpha: 0.3)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -57,26 +57,11 @@ class UserStatsSection extends StatelessWidget {
           ),
           SizedBox(height: screen.ScreenService.smallSpacing),
           
-          Row(
-            children: [
-              Expanded(
-                child: UserStatItem(
-                  label: 'Điểm thưởng',
-                  value: '${user.rewardPoints}',
-                  icon: Icons.monetization_on,
-                  color: AppColors.warning,
-                ),
-              ),
-              SizedBox(width: screen.ScreenService.smallSpacing),
-              Expanded(
-                child: UserStatItem(
-                  label: 'Tổng chi tiêu',
-                  value: user.formattedTotalSpent,
-                  icon: Icons.account_balance_wallet,
-                  color: AppColors.success,
-                ),
-              ),
-            ],
+          UserStatItem(
+            label: 'Điểm thưởng',
+            value: '${user.rewardPoints}',
+            icon: Icons.monetization_on,
+            color: AppColors.warning,
           ),
         ],
       ),
@@ -95,3 +80,4 @@ class UserStatsSection extends StatelessWidget {
     }
   }
 }
+

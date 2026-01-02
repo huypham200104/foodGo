@@ -8,11 +8,13 @@ import 'membership_badge.dart';
 class UserInfoHeader extends StatelessWidget {
   final UserModel user;
   final VoidCallback? onTap;
+  final String? actualTierName;
 
   const UserInfoHeader({
     super.key,
     required this.user,
     this.onTap,
+    this.actualTierName,
   });
 
   @override
@@ -21,7 +23,7 @@ class UserInfoHeader extends StatelessWidget {
       children: [
         ProfileAvatar(
           avatarUrl: user.avatarUrl,
-          membershipLevel: user.membershipLevel,
+          membershipLevel: actualTierName ?? user.membershipLevel,
           radius: 30,
         ),
         SizedBox(width: screen.ScreenService.mediumSpacing),
@@ -41,7 +43,7 @@ class UserInfoHeader extends StatelessWidget {
                       ),
                     ),
                   ),
-                  MembershipBadge(membershipLevel: user.membershipLevel),
+                  MembershipBadge(membershipLevel: actualTierName ?? user.membershipLevel),
                 ],
               ),
               SizedBox(height: screen.ScreenService.smallSpacing / 2),

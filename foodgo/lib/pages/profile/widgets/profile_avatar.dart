@@ -24,7 +24,7 @@ class ProfileAvatar extends StatelessWidget {
           backgroundImage: avatarUrl.isNotEmpty
               ? NetworkImage(avatarUrl)
               : null,
-          backgroundColor: AppColors.primary.withOpacity(0.1),
+          backgroundColor: AppColors.primary.withValues(alpha: 0.1),
           child: avatarUrl.isEmpty
               ? Icon(
                   Icons.person,
@@ -68,3 +68,4 @@ class ProfileAvatar extends StatelessWidget {
     }
   }
 }
+

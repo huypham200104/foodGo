@@ -5,6 +5,7 @@ import '../providers/locale_provider.dart';
 import '../providers/auth_provider.dart';
 import '../providers/cart_provider.dart';
 import '../providers/navigation_provider.dart';
+import '../providers/notification_settings_provider.dart';
 import '../services/screen_service.dart';
 import '../core/routes/route_generator.dart';
 import '../core/routes/app_routes.dart';
@@ -21,6 +22,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) => CartProvider()),
         ChangeNotifierProvider(create: (_) => NavigationProvider()),
+        ChangeNotifierProvider(create: (_) => NotificationSettingsProvider()),
       ],
       child: Consumer2<ThemeProvider, LocaleProvider>(
         builder: (context, themeProvider, localeProvider, child) {
@@ -97,3 +99,4 @@ class _AppNavigatorObserver extends NavigatorObserver {
     debugPrint('🚦 Removed: ${route.settings.name}');
   }
 }
+

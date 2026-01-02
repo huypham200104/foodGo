@@ -19,7 +19,7 @@ class EmptyOrdersWidget extends StatelessWidget {
             Container(
               padding: EdgeInsets.all(screen.ScreenService.largeSpacing),
               decoration: BoxDecoration(
-                color: AppColors.primary.withOpacity(0.1),
+                color: AppColors.primary.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
               child: Icon(
@@ -76,3 +76,4 @@ class EmptyOrdersWidget extends StatelessWidget {
     );
   }
 }
+

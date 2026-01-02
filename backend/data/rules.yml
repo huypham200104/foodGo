@@ -21,6 +21,11 @@ rules:
       - intent: ask_menu
       - action: action_show_menu
 
+  - rule: ask more menu
+    steps:
+      - intent: ask_more_menu
+      - action: action_show_more_menu
+
   - rule: ask price
     steps:
       - intent: ask_price

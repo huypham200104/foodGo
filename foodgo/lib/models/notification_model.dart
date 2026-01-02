@@ -405,7 +405,21 @@ class NotificationTemplates {
     DateTime? expiresAt,
     double? minOrderValue,
   }) {
-    final minOrder = minOrderValue != null ? ' cho đơn hàng từ ${minOrderValue.toStringAsFixed(0)}đ' : '';
+    String formatAmount(double amount) {
+      String amountStr = amount.toStringAsFixed(0);
+      String result = '';
+      int count = 0;
+      for (int i = amountStr.length - 1; i >= 0; i--) {
+        if (count == 3) {
+          result = '.$result';
+          count = 0;
+        }
+        result = '${amountStr[i]}$result';
+        count++;
+      }
+      return '$resultđ';
+    }
+    final minOrder = minOrderValue != null ? ' cho đơn hàng từ ${formatAmount(minOrderValue)}' : '';
     return NotificationModel(
       id: '',
       title: '🎉 Mã giảm giá $discountPercent%',

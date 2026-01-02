@@ -9,7 +9,11 @@ class AppRoutes {
   static const String cart = '/cart';
   static const String profile = '/profile';
   static const String notification = '/notification';
+  static const String notificationSettings = '/notification-settings';
   static const String search = '/search';
+  static const String rewards = '/rewards';
+  static const String vouchers = '/vouchers';
+  static const String favorites = '/favorites';
   
   // Product routes
   static const String productDetail = '/product-detail';
@@ -34,7 +38,11 @@ class AppRoutes {
     cart,
     profile,
     notification,
+    notificationSettings,
     search,
+    rewards,
+    vouchers,
+    favorites,
     productDetail,
     checkout,
     orderHistory,

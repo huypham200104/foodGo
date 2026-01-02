@@ -11,12 +11,16 @@ import '../../pages/cart/cart_page.dart';
 import '../../pages/checkout/checkout_page.dart';
 import '../../pages/profile/profile_page.dart';
 import '../../pages/notification/notification_page.dart';
+import '../../pages/notification/notification_settings_page.dart';
 import '../../pages/orders/order_history_page.dart';
 import '../../pages/error/not_found_page.dart';
 import '../../providers/auth_provider.dart';
 import '../../models/menu_item_model.dart';
 import '../../pages/address/address_list_page.dart';
 import '../../pages/address/address_management_page.dart';
+import '../../pages/rewards/rewards_list_page.dart';
+import '../../pages/vouchers/vouchers_list_page.dart';
+import '../../pages/favorites/favorite_page.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -40,7 +44,7 @@ class RouteGenerator {
         final menuArgs = args as Map<String, dynamic>?;
         return _createRoute(MenuPage(
           filter: menuArgs?['filter'],
-          initialCategory: menuArgs?['categoryId'], // 👈 Sửa từ categoryId thành initialCategory
+          initialCategory: menuArgs?['categoryId'],
         ));
       
       case AppRoutes.cart:
@@ -51,15 +55,27 @@ class RouteGenerator {
       
       case AppRoutes.notification:
         return _createRoute(const NotificationPage());
+      
+      case AppRoutes.notificationSettings:
+        return _protectedRoute(const NotificationSettingsPage());
+      
+      case AppRoutes.rewards:
+        return _protectedRoute(const RewardsListPage());
 
-      // Search route - 👈 Tạo SearchPage placeholder
+      case AppRoutes.vouchers:
+        return _protectedRoute(const VouchersListPage());
+
+      case AppRoutes.favorites:
+        return _protectedRoute(const FavoritePage());
+
+      // Search route
       case AppRoutes.search:
         final searchArgs = args as Map<String, dynamic>?;
         return _createRoute(_SearchPage(
           initialQuery: searchArgs?['query'],
         ));
 
-      // Product routes - 👈 Sửa lại product detail route
+      // Product routes
       case AppRoutes.productDetail:
         if (args is MenuItemModel) {
           // Truyền trực tiếp MenuItemModel
@@ -192,7 +208,6 @@ class RouteGenerator {
   }
 }
 
-// 👈 Temporary SearchPage placeholder
 class _SearchPage extends StatelessWidget {
   final String? initialQuery;
 

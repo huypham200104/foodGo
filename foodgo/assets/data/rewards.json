@@ -2,48 +2,73 @@
   "rewards": [
     {
       "points": 120,
-      "tier": "Silver",
+      "tier": "New",
+      "discountPercentage": 0.0,
       "redeemableVouchers": [
-        {"id": "v1", "title": "Giảm 30K", "description": "Đơn từ 150K", "discountValue": 30000, "freeShip": false, "expiryDate": "2025-12-31T23:59:59Z"}
+        {
+          "id": "v1",
+          "title": "Giảm 30K",
+          "description": "Đơn từ 150K",
+          "discountValue": 30000,
+          "freeShip": false,
+          "expiryDate": "2025-12-31T23:59:59Z"
+        }
       ],
       "userId": "u1",
       "updatedAt": "2025-03-05T12:00:00Z",
       "totalEarned": 500,
       "totalRedeemed": 380,
       "active": true,
-      "nextTier": "Gold",
+      "nextTier": "Bronze",
       "progress": 0.6
     },
     {
       "points": 30,
-      "tier": "Bronze",
+      "tier": "New",
+      "discountPercentage": 0.0,
       "redeemableVouchers": [],
       "userId": "u2",
       "updatedAt": "2025-10-10T09:15:00Z",
       "totalEarned": 30,
       "totalRedeemed": 0,
       "active": true,
-      "nextTier": "Silver",
-      "progress": 0.12
+      "nextTier": "Bronze",
+      "progress": 0.15
     },
     {
       "points": 780,
-      "tier": "Gold",
+      "tier": "Silver",
+      "discountPercentage": 10.0,
       "redeemableVouchers": [
-        {"id": "v10", "title": "Giảm 100K", "description": "Đơn từ 300K", "discountValue": 100000, "freeShip": false, "expiryDate": "2026-01-31T23:59:59Z"},
-        {"id": "v11", "title": "Free Ship 1 lần", "description": "Miễn phí giao hàng cho đơn kế tiếp", "discountValue": 0, "freeShip": true, "expiryDate": "2026-02-28T23:59:59Z"}
+        {
+          "id": "v10",
+          "title": "Giảm 100K",
+          "description": "Đơn từ 300K",
+          "discountValue": 100000,
+          "freeShip": false,
+          "expiryDate": "2026-01-31T23:59:59Z"
+        },
+        {
+          "id": "v11",
+          "title": "Free Ship 1 lần",
+          "description": "Miễn phí giao hàng cho đơn kế tiếp",
+          "discountValue": 0,
+          "freeShip": true,
+          "expiryDate": "2026-02-28T23:59:59Z"
+        }
       ],
       "userId": "u3",
       "updatedAt": "2025-11-01T16:45:00Z",
       "totalEarned": 1200,
       "totalRedeemed": 420,
       "active": true,
-      "nextTier": "Platinum",
-      "progress": 0.78
+      "nextTier": "Gold",
+      "progress": 0.56
     },
     {
       "points": 0,
       "tier": "New",
+      "discountPercentage": 0.0,
       "redeemableVouchers": [],
       "userId": "u4",
       "updatedAt": "2025-11-18T07:00:00Z",
@@ -55,59 +80,82 @@
     },
     {
       "points": 450,
-      "tier": "Silver",
+      "tier": "Bronze",
+      "discountPercentage": 5.0,
       "redeemableVouchers": [
-        {"id": "v5", "title": "Giảm 50K", "description": "Đơn từ 200K", "discountValue": 50000, "freeShip": false, "expiryDate": "2025-12-15T23:59:59Z"}
+        {
+          "id": "v5",
+          "title": "Giảm 50K",
+          "description": "Đơn từ 200K",
+          "discountValue": 50000,
+          "freeShip": false,
+          "expiryDate": "2025-12-15T23:59:59Z"
+        }
       ],
       "userId": "u5",
       "updatedAt": "2025-09-20T11:20:00Z",
       "totalEarned": 600,
       "totalRedeemed": 150,
       "active": true,
-      "nextTier": "Gold",
-      "progress": 0.45
+      "nextTier": "Silver",
+      "progress": 0.83
     },
     {
       "points": 1600,
-      "tier": "Platinum",
+      "tier": "Gold",
+      "discountPercentage": 15.0,
       "redeemableVouchers": [
-        {"id": "v20", "title": "Giảm 200K", "description": "Đơn từ 500K", "discountValue": 200000, "freeShip": false, "expiryDate": "2026-06-30T23:59:59Z"}
+        {
+          "id": "v20",
+          "title": "Giảm 200K",
+          "description": "Đơn từ 500K",
+          "discountValue": 200000,
+          "freeShip": false,
+          "expiryDate": "2026-06-30T23:59:59Z"
+        }
       ],
       "userId": "u6",
       "updatedAt": "2025-11-10T08:00:00Z",
       "totalEarned": 2000,
       "totalRedeemed": 400,
       "active": true,
-      "nextTier": null,
-      "progress": 1.0
+      "nextTier": "Platinum",
+      "progress": 0.6
     },
     {
       "points": 95,
-      "tier": "Bronze",
+      "tier": "New",
+      "discountPercentage": 0.0,
       "redeemableVouchers": [
-        {"id": "v3", "title": "Giảm 20K", "description": "Đơn từ 100K", "discountValue": 20000, "freeShip": false, "expiryDate": "2025-12-01T23:59:59Z"}
+        {
+          "id": "v3",
+          "title": "Giảm 20K",
+          "description": "Đơn từ 100K",
+          "discountValue": 20000,
+          "freeShip": false,
+          "expiryDate": "2025-12-01T23:59:59Z"
+        }
       ],
       "userId": "u7",
       "updatedAt": "2025-11-12T13:30:00Z",
       "totalEarned": 120,
       "totalRedeemed": 25,
       "active": true,
-      "nextTier": "Silver",
-      "progress": 0.2
+      "nextTier": "Bronze",
+      "progress": 0.475
     },
     {
       "points": 300,
-      "tier": "Silver",
+      "tier": "Bronze",
+      "discountPercentage": 5.0,
       "redeemableVouchers": [],
       "userId": "u8",
       "updatedAt": "2025-08-01T09:00:00Z",
       "totalEarned": 300,
       "totalRedeemed": 0,
       "active": true,
-      "nextTier": "Gold",
-      "progress": 0.3
+      "nextTier": "Silver",
+      "progress": 0.33
     }
   ]
 }
-
-

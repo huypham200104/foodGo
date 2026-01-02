@@ -3,9 +3,25 @@ import 'package:flutter/services.dart';
 import '../services/screen_service.dart';
 
 class QRService {
-  static const String defaultBankCode = "970433"; // Vietcombank code
+  static const String defaultBankCode = "Momo"; // Momo code
   static const String defaultAccountNumber = "0328559320";
   static const String defaultAccountName = "PHAM NGOC HUY";
+
+  // Helper to format currency
+  static String _formatAmount(double amount) {
+    String amountStr = amount.toStringAsFixed(0);
+    String result = '';
+    int count = 0;
+    for (int i = amountStr.length - 1; i >= 0; i--) {
+      if (count == 3) {
+        result = '.$result';
+        count = 0;
+      }
+      result = '${amountStr[i]}$result';
+      count++;
+    }
+    return result;
+  }
 
   // ============================================================
   // DISPLAY QR CODES (Using MoMo Image)
@@ -122,7 +138,7 @@ class QRService {
                           style: TextStyle(fontSize: ScreenService.smallText, color: Colors.grey[600]),
                         ),
                         Text(
-                          'Ngân hàng: Vietcombank',
+                          'Ngân hàng: Momo',
                           style: TextStyle(fontSize: ScreenService.smallText, color: Colors.grey[600]),
                         ),
                         Text(
@@ -142,6 +158,7 @@ class QRService {
                         child: OutlinedButton.icon(
                           onPressed: () async {
                             await _copyBankInfo();
+                            if (!context.mounted) return;
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: Text('Đã sao chép thông tin chuyển khoản'),
@@ -355,7 +372,7 @@ class QRService {
   static Future<void> _copyBankInfo() async {
     final bankInfo = '''
 STK: $defaultAccountNumber
-Ngân hàng: Vietcombank
+Ngân hàng: Momo
 Chủ TK: $defaultAccountName
 ''';
     await Clipboard.setData(ClipboardData(text: bankInfo));
@@ -377,9 +394,9 @@ Chủ TK: $defaultAccountName
   }) async {
     await showQRDialog(
       context,
-      qrData: 'FOODGO $orderId - ${amount.toStringAsFixed(0)}đ',
+      qrData: 'FOODGO $orderId - ${_formatAmount(amount)}đ',
       title: 'Thanh toán đơn hàng',
-      subtitle: 'Mã: $orderId - Số tiền: ${amount.toStringAsFixed(0)}đ',
+      subtitle: 'Mã: $orderId - Số tiền: ${_formatAmount(amount)}đ',
     );
   }
 

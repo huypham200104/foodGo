@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../services/screen_service.dart';
 
 /// A simplified toppings-only selector.
 ///
@@ -82,40 +83,51 @@ class ProductOptionsSection extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: Colors.grey[50],
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(ScreenService.smallSpacing / 2),
         border: Border.all(color: Colors.grey.shade200),
       ),
-      padding: const EdgeInsets.all(14),
+      padding: EdgeInsets.all(ScreenService.smallSpacing),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: [
           Row(
             children: [
-              const Icon(Icons.add_circle_outline_rounded, size: 20),
-              const SizedBox(width: 10),
-              const Text(
+              Icon(Icons.add_circle_outline_rounded, 
+                size: ScreenService.isSmallScreen ? 18 : 20),
+              SizedBox(width: ScreenService.smallSpacing / 2),
+              Text(
                 'Thêm topping',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  fontSize: ScreenService.mediumText, 
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               const Spacer(),
               if (selectedToppings.isNotEmpty)
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: ScreenService.smallSpacing / 2,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.black87,
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Text(
                     '${selectedToppings.length}',
-                    style: const TextStyle(color: Colors.white, fontSize: 12),
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: ScreenService.smallText,
+                    ),
                   ),
                 ),
             ],
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: ScreenService.smallSpacing / 2),
           Wrap(
-            spacing: 8,
-            runSpacing: 8,
+            spacing: ScreenService.smallSpacing / 2,
+            runSpacing: ScreenService.smallSpacing / 2,
             children: toppings.map((t) {
               var name = _getToppingName(t);
               // If name looks like a map string (e.g. "{price: 10000, name: Size M}"),
@@ -134,33 +146,40 @@ class ProductOptionsSection extends StatelessWidget {
                 onTap: () => _toggleTopping(name, price),
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 180),
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: ScreenService.smallSpacing, 
+                    vertical: ScreenService.smallSpacing / 2,
+                  ),
                   decoration: BoxDecoration(
                     color: selected ? AppColors.primary : Colors.white,
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(ScreenService.smallSpacing),
                     border: Border.all(color: selected ? AppColors.primary : Colors.grey.shade300),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       if (selected) ...[
-                        const Icon(Icons.check_circle, size: 16, color: Colors.white),
-                        const SizedBox(width: 6),
+                        Icon(Icons.check_circle, 
+                          size: ScreenService.isSmallScreen ? 14 : 16, 
+                          color: Colors.white,
+                        ),
+                        SizedBox(width: ScreenService.smallSpacing / 3),
                       ],
                       Text(
                         name,
                         style: TextStyle(
+                          fontSize: ScreenService.smallText,
                           color: selected ? Colors.white : AppColors.textPrimary,
                           fontWeight: selected ? FontWeight.bold : FontWeight.w600,
                         ),
                       ),
                       if (priceText.isNotEmpty) ...[
-                        const SizedBox(width: 6),
+                        SizedBox(width: ScreenService.smallSpacing / 3),
                         Text(
                           priceText,
                           style: TextStyle(
                             color: selected ? Colors.white70 : AppColors.textSecondary,
-                            fontSize: 13,
+                            fontSize: ScreenService.smallText - 1,
                           ),
                         ),
                       ],

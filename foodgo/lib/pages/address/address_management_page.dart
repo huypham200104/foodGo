@@ -209,7 +209,6 @@ class _AddressManagementPageState extends State<AddressManagementPage> {
       builder: (context) => AddressFormDialog(
         onSaved: (address) {
           _saveAddress(address);
-          Navigator.pop(context);
         },
       ),
     );
@@ -222,7 +221,6 @@ class _AddressManagementPageState extends State<AddressManagementPage> {
         address: address,
         onSaved: (updatedAddress) {
           _updateAddress(updatedAddress);
-          Navigator.pop(context);
         },
       ),
     );

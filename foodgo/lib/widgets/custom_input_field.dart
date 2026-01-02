@@ -74,7 +74,7 @@ class CustomInputField extends StatelessWidget {
         ),
         disabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(screen.ScreenService.smallSpacing),
-          borderSide: BorderSide(color: AppColors.textLight.withOpacity(0.5)),
+          borderSide: BorderSide(color: AppColors.textLight.withValues(alpha: 0.5)),
         ),
         labelStyle: TextStyle(
           color: AppColors.textSecondary,
@@ -98,3 +98,4 @@ class CustomInputField extends StatelessWidget {
     );
   }
 }
+

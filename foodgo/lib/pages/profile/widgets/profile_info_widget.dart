@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../services/screen_service.dart' as screen;
 import '../../../models/user_model.dart';
+import '../../../utils/tier_system.dart';
 import 'user_info_header.dart';
 import 'user_stats_widget.dart';
 
@@ -17,6 +18,9 @@ class ProfileInfoWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Calculate actual tier based on points
+    final actualTier = TierSystem.getTierByPoints(user.totalEarnedPoints);
+    
     return Container(
       margin: EdgeInsets.all(screen.ScreenService.mediumSpacing),
       padding: EdgeInsets.all(screen.ScreenService.mediumSpacing),
@@ -34,7 +38,11 @@ class ProfileInfoWidget extends StatelessWidget {
       child: Column(
         children: [
           // User info header
-          UserInfoHeader(user: user, onTap: onTap),
+          UserInfoHeader(
+            user: user, 
+            onTap: onTap,
+            actualTierName: actualTier.name,
+          ),
           
           SizedBox(height: screen.ScreenService.mediumSpacing),
           
@@ -42,8 +50,12 @@ class ProfileInfoWidget extends StatelessWidget {
           UserStatsWidget(
             rewardPoints: user.rewardPoints,
             totalOrders: user.totalOrders,
-            formattedTotalSpent: user.formattedTotalSpent,
           ),
+          
+          SizedBox(height: screen.ScreenService.mediumSpacing),
+
+          // ✨ Membership Progress Section
+          _buildMembershipProgress(context, user),
           
           SizedBox(height: screen.ScreenService.mediumSpacing),
           
@@ -74,6 +86,82 @@ class ProfileInfoWidget extends StatelessWidget {
                   borderRadius: BorderRadius.circular(screen.ScreenService.smallSpacing),
                 ),
               ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMembershipProgress(BuildContext context, UserModel user) {
+    // Use TierSystem to calculate tier based on ACTUAL points (not saved membershipLevel)
+    int currentPoints = user.totalEarnedPoints;
+    final currentTier = TierSystem.getTierByPoints(currentPoints);
+    final nextTierConfig = currentTier.nextTier != null 
+        ? TierSystem.getTierByName(currentTier.nextTier!) 
+        : null;
+    
+    double progress = TierSystem.calculateProgress(currentPoints, currentTier.name);
+    String nextTier = currentTier.nextTier ?? '';
+    int targetPoints = nextTierConfig?.minPoints ?? currentPoints;
+    
+    bool isMaxTier = currentTier.nextTier == null;
+
+    return Container(
+      padding: EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: AppColors.background,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: AppColors.borderLight),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Text(
+                  'Hạng thành viên: ${currentTier.name}',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.primary,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              if (!isMaxTier)
+                Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: Text(
+                    '$currentPoints / $targetPoints điểm',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                ),
+            ],
+          ),
+          SizedBox(height: 8),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(4),
+            child: LinearProgressIndicator(
+              value: progress,
+              backgroundColor: AppColors.textLight.withValues(alpha: 0.2),
+              valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
+              minHeight: 6,
+            ),
+          ),
+          SizedBox(height: 8),
+          Text(
+            isMaxTier 
+                ? 'Bạn đã đạt hạng cao nhất!' 
+                : 'Tích thêm ${targetPoints - currentPoints} điểm để lên hạng $nextTier',
+            style: TextStyle(
+              fontSize: 12,
+              fontStyle: FontStyle.italic,
+              color: AppColors.textSecondary,
             ),
           ),
         ],

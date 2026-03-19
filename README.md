@@ -36,6 +36,7 @@
 - Xem danh sách món ăn theo **danh mục** (categories)
 - Hình ảnh món ăn chất lượng cao với **cached images**
 - Tìm kiếm món ăn theo tên, giá, danh mục
+- Lưu món ăn vào **Danh sách yêu thích** (Favorites)
 - Xem chi tiết món ăn với mô tả, giá, đánh giá
 
 #### 🛒 Giỏ hàng & Thanh toán
@@ -119,8 +120,8 @@
 ### Database & Services
 
 - **Firebase Authentication**: Quản lý người dùng
-- **Cloud Firestore**: Lưu trữ dữ liệu (users, foods, orders, vouchers, notifications)
-- **Firebase Storage**: Lưu trữ hình ảnh món ăn, avatar
+- **Cloud Firestore**: Lưu trữ dữ liệu (users, foods, orders, vouchers, notifications, messages, favorites)
+- **Cloudinary / Firebase Storage**: Quản lý và lưu trữ hình ảnh tải lên (avatar...)
 
 ---
 
@@ -144,7 +145,9 @@ foodGo/
 │   │   │   ├── notification/   # Notifications & settings
 │   │   │   ├── address/        # Address management
 │   │   │   ├── voucher/        # Voucher list
-│   │   │   └── chatbot/        # Chatbot interface
+│   │   │   ├── favorites/      # Favorite foods
+│   │   │   ├── rewards/        # Rewards program
+│   │   │   └── chat/           # Chatbot interface
 │   │   ├── providers/          # State management với Provider
 │   │   │   ├── auth_provider.dart
 │   │   │   ├── cart_provider.dart
@@ -152,11 +155,13 @@ foodGo/
 │   │   │   └── ...
 │   │   ├── services/           # Business logic & API services
 │   │   │   ├── auth_service.dart
-│   │   │   ├── food_service.dart
+│   │   │   ├── checkOut_service.dart
 │   │   │   ├── order_service.dart
 │   │   │   ├── notification_service.dart
-│   │   │   ├── rasa_service.dart     # Rasa chatbot API
-│   │   │   └── payment_service.dart
+│   │   │   ├── chat_service.dart       # Rasa chatbot API integration
+│   │   │   ├── qr_service.dart         # VietQR payment
+│   │   │   ├── cloudinary_service.dart # Cloud image storage
+│   │   │   └── favorite_service.dart   # Favorites food
 │   │   ├── utils/              # Utility functions & helpers
 │   │   ├── widgets/            # Reusable UI widgets
 │   │   └── main.dart           # Entry point
@@ -303,6 +308,8 @@ Dự án sử dụng các collections sau trong Firestore:
 - **notifications**: Thông báo
 - **addresses**: Địa chỉ giao hàng
 - **reviews**: Đánh giá món ăn
+- **favorites**: Món ăn yêu thích của người dùng
+- **messages**: Lịch sử chat của người dùng với Chatbot AI
 
 ### Import dữ liệu mẫu
 

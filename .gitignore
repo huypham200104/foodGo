@@ -10,3 +10,15 @@ Bieumau/
 PhieuTienDo.docx
 foodgo/Overview.md
 firestore.rules
+
+# IDE & caches
+.idea/
+.vscode/
+*.iml
+__pycache__/
+.rasa/cache/
+.dart_tool/
+build/
+.flutter-plugins*
+!backend/models/
+

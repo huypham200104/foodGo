@@ -8,6 +8,10 @@
   <strong>Ứng dụng đặt món ăn trực tuyến hiện đại với Flutter & AI Chatbot</strong>
 </p>
 
+<p align="center">
+  <a href="https://drive.google.com/file/d/1EFE17U6GkHaCVmyova1Tkm0fj2i_86UB/view?usp=drive_link"><strong>🎥 Xem Video Demo Dự Án</strong></a>
+</p>
+
 ---
 
 ## 📖 Giới thiệu
